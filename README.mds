@@ -1,4 +1,3 @@
-
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))() 
 getgenv().Theme = "Synapse" 
 --[[
@@ -130,4 +129,7 @@ Section:NewButton("1 Pet simulator x", ".", function()
 end)
 Section:NewButton("2 Pet simulator x", ".", function()
    loadstring(game:HttpGet("https://raw.githubusercontent.com/PetSimBloxYT/script2/main/2023"))()
+end)
+Section:NewButton("3 Pet Simulator x", ".", function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/ScripterX768/AdminPanel/main/AdminPanel.lua))()
 end)
