@@ -3,7 +3,7 @@ getgenv().Theme = "Synapse"
 --[[
     LightTheme
     DarkTheme
-    GrapeTheme
+    GrapeTheme 
     BloodTheme 
     Ocean
     Midnight
