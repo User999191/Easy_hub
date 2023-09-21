@@ -9,7 +9,7 @@ getgenv().Theme = "Synapse"
     Midnight
     Sentinel  
     Synapse
-]]  
+]]
 local Window = Library.CreateLib("Easy Hub v999999999.1111111111111 (Tester)", getgenv().Theme) 
 local Tab = Window:NewTab("Main") 
 local Section = Tab:NewSection("Main The Easy Hub Official(PayMent)")
