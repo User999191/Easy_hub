@@ -121,5 +121,3 @@ Section:NewButton("1 Blade Ball", ".", function()
    loadstring(game:HttpGet("https://raw.githubusercontent.com/3345-c-a-t-s-u-s/SourceLua/main/Blade_Ball.lua"))()
 end)
 
-local Tab = Window:NewTab("Pet Simulator X") 
-local Section = Tab:NewSection("Test")
