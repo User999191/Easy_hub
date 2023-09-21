@@ -133,30 +133,3 @@ end)
 Section:NewButton("3 Pet Simulator x", ".", function()
    loadstring(game:HttpGet("https://raw.githubusercontent.com/ScripterX768/AdminPanel/main/AdminPanel.lua))()
 end)
-
-local Tab = Window:NewTab("Test") 
-local Section = Tab:NewSection("Test")
-
-local Tab = Window:NewTab("Test") 
-local Section = Tab:NewSection("Test")
-
-local Tab = Window:NewTab("Test") 
-local Section = Tab:NewSection("Test")
-
-local Tab = Window:NewTab("Test") 
-local Section = Tab:NewSection("Test")
-
-local Tab = Window:NewTab("Test") 
-local Section = Tab:NewSection("Test")
-
-local Tab = Window:NewTab("Test") 
-local Section = Tab:NewSection("Test")
-
-local Tab = Window:NewTab("Test") 
-local Section = Tab:NewSection("Test") 
-
-local Tab = Window:NewTab("Test") 
-local Section = Tab:NewSection("Test")
-
-local Tab = Window:NewTab("Test") 
-local Section = Tab:NewSection("Test")
