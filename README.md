@@ -1,5 +1,5 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-getgenv().Theme = "Synapse"
+getgenv().Theme = "Synapse" 
 --[[
     LightTheme
     DarkTheme
