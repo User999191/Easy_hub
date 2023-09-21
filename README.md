@@ -1,4 +1,4 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+1local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 getgenv().Theme = "Synapse" 
 --[[
     LightTheme
@@ -125,7 +125,7 @@ local Tab = Window:NewTab("Pet Simulator X")
 local Section = Tab:NewSection("Test")
 
 Section:NewButton("1 Pet simulator x", ".", function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Jopsc/MainOp_script/main/Pet_scriptPetboi"))()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/Jopsc/MainOp_script/main/Pet_scriptPetboi"))()
 end)
 Section:NewButton("2 Pet simulator x", ".", function()
    loadstring(game:HttpGet("https://raw.githubusercontent.com/PetSimBloxYT/script2/main/2023"))()
