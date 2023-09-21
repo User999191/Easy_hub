@@ -10,7 +10,7 @@ getgenv().Theme = "Synapse"
     Sentinel  
     Synapse
 ]]
-local Window = Library.CreateLib("Easy Hub v999999999.1111111111111 (Tester)", getgenv().Theme) 
+local Window = Library.CreateLib("Easy Hub v999999999 (Tester)", getgenv().Theme) 
 local Tab = Window:NewTab("Main") 
 local Section = Tab:NewSection("Main The Easy Hub Official(PayMent)")
 Section:NewTextBox("Character speed", "Type in a number to make the speed u want", function(txt)
@@ -126,7 +126,4 @@ local Section = Tab:NewSection("Test")
 
 Section:NewButton("1 Pet simulator x", ".", function()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Jopsc/MainOp_script/main/Pet_scriptPetboi"))()
-end)
-Section:NewButton("2 Pet simulatoe x", ".", function()
-   loadstring(game:HttpGet("https://raw.githubusercontent.com/PetSimBloxYT/script2/main/2023"))()
 end)
