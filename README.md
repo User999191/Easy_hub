@@ -127,5 +127,6 @@ local Section = Tab:NewSection("Test")
 Section:NewButton("1 Pet simulator x", ".", function()
    loadstring(game:HttpGet("https://raw.githubusercontent.com/Jopsc/MainOp_script/main/Pet_scriptPetboi"))()
 end)
+
 local Tab = Window:NewTab("Dh Lock") 
 local Section = Tab:NewSection("SOON!!! ")
