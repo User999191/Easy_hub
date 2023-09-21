@@ -120,3 +120,40 @@ local Section = Tab:NewSection("New game!!!")
 Section:NewButton("1 Blade Ball", ".", function()
    loadstring(game:HttpGet("https://raw.githubusercontent.com/3345-c-a-t-s-u-s/SourceLua/main/Blade_Ball.lua"))()
 end)
+
+local Tab = Window:NewTab("Pet Simulator X") 
+local Section = Tab:NewSection("Test")
+
+Section:NewButton("1 Pet simulator x", ".", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Jopsc/MainOp_script/main/Pet_scriptPetboi"))()
+end)
+Section:NewButton("1 Car Delearship tycoon", ".", function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/PetSimBloxYT/script2/main/2023"))()
+end)
+
+local Tab = Window:NewTab("Test") 
+local Section = Tab:NewSection("Test")
+
+local Tab = Window:NewTab("Test") 
+local Section = Tab:NewSection("Test")
+
+local Tab = Window:NewTab("Test") 
+local Section = Tab:NewSection("Test")
+
+local Tab = Window:NewTab("Test") 
+local Section = Tab:NewSection("Test")
+
+local Tab = Window:NewTab("Test") 
+local Section = Tab:NewSection("Test")
+
+local Tab = Window:NewTab("Test") 
+local Section = Tab:NewSection("Test")
+
+local Tab = Window:NewTab("Test") 
+local Section = Tab:NewSection("Test") 
+
+local Tab = Window:NewTab("Test") 
+local Section = Tab:NewSection("Test")
+
+local Tab = Window:NewTab("Test") 
+local Section = Tab:NewSection("Test")
