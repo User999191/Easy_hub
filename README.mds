@@ -136,4 +136,4 @@ end)
 local Tab = Window:NewTab("Credits") 
 local Section = Tab:NewSection("Credits")
 
-Section:NewLabel("This Made By IgnoreDev Dont mess script or any it may broke as well")
+Section:NewLabel("This Made By IgnoreDev Dont mess script ")
