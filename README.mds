@@ -133,10 +133,7 @@ end)
 Section:NewButton("3 Pet simulator x", ".", function()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/NukeVsCity/TheALLHACKLoader/main/NukeLoader"))()
 end)
-
-Credits---
-
-local CreditsTab = Window:NewTab("Credits") 
+local Tab = Window:NewTab("Credits") 
 local Section = Tab:NewSection("Credits")
 
 Section:NewLabel("This Made By IgnoreDev Dont mess script or any it may broke as well")
