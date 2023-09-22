@@ -133,5 +133,9 @@ end)
 Section:NewButton("3 Pet simulator x", ".", function()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/NukeVsCity/TheALLHACKLoader/main/NukeLoader"))()
 end)
+
+local Tab = Window:NewTab("Credit") 
+local Section = Tab:NewSection("Credit")
+
 local Credits = EntryPointHaxx:NewTab("Credits")
 local Credits2 = Credits:NewSection("This Easy Hub Was Made By Me And Dont mess up script or mess up the script and Payment is 350R max vaule free ver is free")
