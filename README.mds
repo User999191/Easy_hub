@@ -137,3 +137,9 @@ local Tab = Window:NewTab("Credits")
 local Section = Tab:NewSection("Credits")
 
 Section:NewLabel("This Made By IgnoreDev Dont mess script ")
+
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Lock Remake Warning";
+    Text = "join discord to get exclusive roles when purchasing";
+
+})
