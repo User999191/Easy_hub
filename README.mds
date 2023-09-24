@@ -143,3 +143,15 @@ game.StarterGui:SetCore("SendNotification", {
     Text = "join discord to get exclusive roles when purchasing";
 
 })
+
+game.StarterGui:SetCore("SendNotification", {
+    Title = "2nd Warning";
+    Text = "Dont mess script its making hard work!";
+
+})
+
+game.StarterGui:SetCore("SendNotification", {
+    Title = "3rd Warning";
+    Text = "Use Script Peacefully and No Toggle in discord if asking with dev!!!";
+
+})
