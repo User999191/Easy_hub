@@ -153,3 +153,10 @@ game.StarterGui:SetCore("SendNotification", {
     Text = "Use Script Peacefully and No Toggle in discord if asking with dev!!!";
 
 })
+
+local Tab = Window:NewTab("Test") 
+local Section = Tab:NewSection("Test")
+
+Section:NewButton("test", ".", function()
+loadstring(game:HttpGet('https://raw.githubusercontent.com/artas01/artas01/main/gat'))()
+end)
