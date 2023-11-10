@@ -154,18 +154,6 @@ game.StarterGui:SetCore("SendNotification", {
 
 })
 
-local Tab = Window:NewTab("Random Script") 
-local Section = Tab:NewSection("This Random Only")
-
-Section:NewButton("Da hood random", ".", function()
-loadstring(game:HttpGet('https://raw.githubusercontent.com/artas01/artas01/main/gat'))()
-end)
-Section:NewButton("Mm2 Ranom", ".", function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/uhhhhh/main/README.md?token=GHSAT0AAAAAACH3AJUACAE5EHEDVSP2IIVIZI27R5A"))()
-end)
-Section:NewButton("Esp and arsenal random", ".", function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/espdo/main/README.md?token=GHSAT0AAAAAACH3AJUBK2PDJAMCJLF3E2UCZI3ACEQ"))()
-end)
 
 
 
