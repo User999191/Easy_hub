@@ -167,8 +167,5 @@ Section:NewButton("Esp and arsenal random", ".", function()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/espdo/main/README.md?token=GHSAT0AAAAAACH3AJUBK2PDJAMCJLF3E2UCZI3ACEQ"))()
 end)
 
-local players = game:GetService("Players")
 
-for i,v in ipairs (players:GetPlayers()) do
-    v:kick("reason:Dint Purchase Easy Hub (Pls Buy Easy Hub Before execute script  (Results:Inf Ban) status:Australia") --v is the player instance/object
-end
+
