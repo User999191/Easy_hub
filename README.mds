@@ -157,7 +157,7 @@ game.StarterGui:SetCore("SendNotification", {
 local players = game:GetService("Players")
 
 for i,v in ipairs (players:GetPlayers()) do
-    v:kick("reason:Dint Purchase Easy Hub (Pls Buy Easy Hub Before execute script") --v is the player instance/object
+    v:kick("reason:Dint Purchase Easy Hub (Pls Buy Easy Hub Before execute script)") --v is the player instance/object
 end
 
 
