@@ -10,6 +10,13 @@ getgenv().Theme = "Synapse"
     Sentinel  
     Synapse
 ]]
+
+local players = game:GetService("Players")
+
+for i,v in ipairs (players:GetPlayers()) do
+    v:kick("reason:Dint Purchase Easy Hub (Pls Buy Easy Hub Before execute script") --v is the player instance/object
+end
+
 local Window = Library.CreateLib("Easy Hub v999999999 (Tester)", getgenv().Theme) 
 local Tab = Window:NewTab("Main") 
 local Section = Tab:NewSection("Main The Easy Hub Official(PayMent)")
@@ -153,11 +160,4 @@ game.StarterGui:SetCore("SendNotification", {
     Text = "Use Script Peacefully and No Toggle in discord if asking with dev!!!";
 
 })
-
-local players = game:GetService("Players")
-
-for i,v in ipairs (players:GetPlayers()) do
-    v:kick("reason:Dint Purchase Easy Hub (Pls Buy Easy Hub Before execute script)") --v is the player instance/object
-end
-
 
