@@ -99,4 +99,57 @@ end)
 Section:NewButton("IV ADMIN", ".", function()
    loadstring(game:HttpGet('https://raw.githubusercontent.com/BloodyBurns/Hex/main/Iv%20Admin%20v2.lua'))()
 end)
+local Tab = Window:NewTab("Car Delearship Tycoon") 
+local Section = Tab:NewSection("VROOM!!!")
 
+Section:NewButton("1 Car Delearship tycoon", ".", function()
+   loadstring(game:HttpGet("https://astronomic.vercel.app"))()
+end)
+Section:NewButton("2 Car Delearship tycoon", ".", function()
+   loadstring(game:HttpGet("https://scriptblox.com/raw/NEW-CAR!-Car-Dealership-Tycoon-Auto-Drive-5068"))()
+end)
+Section:NewButton("3 Car Delearship tycoon", ".", function()
+   loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraIsMe/ToraIsMe/main/0CarDealership'))()
+end)
+Section:NewButton("4 Car Delearship tycoon", ".", function()
+   loadstring(game:HttpGet('https://scripts.luawl.com/15911/Wheelhub.lua'))()
+end)
+local Tab = Window:NewTab("Blade Ball") 
+local Section = Tab:NewSection("New game!!!")
+
+Section:NewButton("1 Blade Ball", ".", function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/3345-c-a-t-s-u-s/SourceLua/main/Blade_Ball.lua"))()
+end)
+
+local Tab = Window:NewTab("Pet Sim X") 
+local Section = Tab:NewSection("Op")
+
+Section:NewButton("1 Pet simulator x", ".", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Jopsc/MainOp_script/main/Pet_scriptPetboi"))()
+end)
+Section:NewButton("2 Pet simulator x", ".", function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/PetSimBloxYT/script2/main/2023"))()
+end)
+Section:NewButton("3 Pet simulator x", ".", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/NukeVsCity/TheALLHACKLoader/main/NukeLoader"))()
+end)
+local Tab = Window:NewTab("Credits") 
+local Section = Tab:NewSection("Credits")
+
+Section:NewLabel("This Made By IgnoreDev Dont mess script ")
+
+game.StarterGui:SetCore("SendNotification", {
+    Title = "easy hub Warning";
+    Text = "join discord to get exclusive roles when purchasing";
+
+})
+game.StarterGui:SetCore("SendNotification", {
+    Title = "2nd Warning";
+    Text = "Dont mess script its making hard work!";
+
+})
+game.StarterGui:SetCore("SendNotification", {
+    Title = "3rd Warning";
+    Text = "Use Script Peacefully and No Toggle in discord if asking with dev!!!";
+
+})
