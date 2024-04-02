@@ -1244,12 +1244,7 @@ end
 			loadstring(Console:Get())()
 		end)
 		HA:AddButton("Clear", function()
-			Console:Set("")
-		end)
-		
-	end
-                HA:AddButton("Sets underfiy 300 ping", function()
-			Console:Set("300-----2255 sets universal")
+			Console:Set("2255 set")
 		end)
 		
 	end
