@@ -503,6 +503,10 @@ local function Predict(Velocity)
     return V3(Velocity.X,math.clamp(Velocity.Y*0.5,-5,10),Velocity.Z)
 end
 
+local function GetStickyAimPrediction(Part)
+    return Part.CFrame + Predict(Part.Velocity) * (getgenv().STICKYAIMPREDICTION)
+end
+
 local function GetAimbotPrediction(Part)
     return Part.CFrame + Predict(Part.Velocity) * (getgenv().AIMBOTPREDICTION)
 end
@@ -860,6 +864,8 @@ do
 	local Teb = Window:AddTab("Target Lock")
 	local Tib = Window:AddTab("Miscs")
 	local Tub = Window:AddTab("Debugging")
+        local Tub = Window:AddTab("Esp??????")
+
 
 	do -- Elements
 	WsgCuh:AddLabel("Configuration")
@@ -1066,7 +1072,7 @@ MaterialOptions:Add("Plastic")
 MaterialOptions:Add("Brick")
 
 local AntiFolder = Tib:AddFolder("Set Pings")
-		AntiFolder:AddLabel("Soon")
+		AntiFolder:AddLabel("SET IN 4/12/2024")
 
 local ActualMiscs = Tib:AddFolder("Others")
 ActualMiscs:AddLabel("Miscellaneous")
