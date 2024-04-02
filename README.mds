@@ -158,8 +158,6 @@ getgenv().SelectedPart = "HumanoidRootPart" --// LowerTorso, UpperTorso, Head
 getgenv().Prediction = "Normal"
 getgenv().AutoPredType = "Normal"
 getgenv().Resolver = false
-getgenv().Aimbot = "1";
-getgenv().Sticky_Aim = "1";
 local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
 
 local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
