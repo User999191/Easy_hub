@@ -914,6 +914,11 @@ local Lenabled = Tab:AddSwitch("Enable Sticky aim", function(bool)
 		end)
 		Lenabled:Set(false)
 
+local Lenabled = Tab:AddSwitch("Enabled Aimbot", function(bool)
+		getgenv().Aimbot = bool
+		end)
+		Lenabled:Set(false)
+
 	Tab:AddTextBox("Horizontal Prediction", function(text)
 	getgenv().CAMPREDICTION = text
 		end, 
