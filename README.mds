@@ -509,9 +509,7 @@ end
 local function GetCamPrediction(Part)
     return Part.CFrame + Predict(Part.Velocity) * (getgenv().CAMPREDICTION)
 end
-local function GetCamPrediction(Part)
-    return Part.CFrame + Predict(Part.Velocity) * (getgenv().Aimbot)
-end
+
 
     local pingvalue = nil;
     local split = nil;
@@ -937,7 +935,7 @@ Droeopdown:Add("Head")
 	Tab:AddTextBox("Aimbot", function(text)
 		getgenv().Aimbot = text
 		end, 
-  {
+        {
 	["clear"] = false, -- Default: true (options are optional)
 	})
 local ShakeFolder = Tab:AddFolder("Shake Configuration")
