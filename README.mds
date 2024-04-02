@@ -848,7 +848,7 @@ end))
 do
 	local Window = library:AddWindow("Celex Mobile", {
 		main_color = Color3.fromRGB(69,57,120),
-		min_size = Vector2.new(600, 600),
+		min_size = Vector2.new(650, 650),
 		toggle_key = Enum.KeyCode.RightShift,
 		can_resize = true,
 	})
@@ -913,7 +913,7 @@ Droeopdown:Add("Head")
 		Lenabled:Set(false)
 
         local Lenabled = Tab:AddSwitch("Enable Sticky aim", function(bool)
-		getgenv().Sticky_aim = "1";
+		getgenv().Sticky_aim = 1,
 		end)
 		Lenabled:Set(false)
 
