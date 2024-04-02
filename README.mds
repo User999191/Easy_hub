@@ -158,6 +158,8 @@ getgenv().SelectedPart = "HumanoidRootPart" --// LowerTorso, UpperTorso, Head
 getgenv().Prediction = "Normal"
 getgenv().AutoPredType = "Normal"
 getgenv().Resolver = false
+getgenv().Aimbot = 1
+getgenv().Sticky_Aim = 1
 local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
 
 local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
@@ -868,9 +870,10 @@ do
 	local Tab = Window:AddTab("Camera Lock")
 	local WsgCuh = Window:AddTab("Silent Aim")
 	local Teb = Window:AddTab("Target Lock")
-	local Tib = Window:AddTab("Miscs")
-	local Tub = Window:AddTab("Debugging")
-        local Tub = Window:AddTab("Esp??????")
+	local Tib = Window:AddTab("Miscs") 
+        local Tub = Window:AddTab("Esp??????") 
+	local Tub = Window:AddTab("Debugging") 
+        
 
 
 	do -- Elements
@@ -1242,6 +1245,11 @@ end
 		end)
 		HA:AddButton("Clear", function()
 			Console:Set("")
+		end)
+		
+	end
+                HA:AddButton("Sets underfiy 300 ping", function()
+			Console:Set("300-----2255 sets universal")
 		end)
 		
 	end
