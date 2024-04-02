@@ -871,7 +871,6 @@ do
 	local WsgCuh = Window:AddTab("Silent Aim")
 	local Teb = Window:AddTab("Target Lock")
 	local Tib = Window:AddTab("Miscs") 
-        local Tub = Window:AddTab("Esp??????") 
 	local Tub = Window:AddTab("Debugging") 
         
 
