@@ -19,8 +19,8 @@ getgenv().Settings = {
             ["Prediction"] = {
                 ["Horizontal"] = 0.185,
                 ["Vertical"] = 0.1,
-              ["Sticky_Aim"] = 0.1,
-              ["Aimbot"] = 0.1, ----Set To 1 or this rigged
+              ["Sticky_Aim"] = 1,
+              ["Aimbot"] = 1, ----Set To 1 or this rigged
             },
         },
         ["NOTIF"] = true,
