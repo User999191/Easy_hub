@@ -17,6 +17,8 @@ getgenv().Settings = {
         },
         ["CamPrediction"] = {
             ["Prediction"] = {
+                [Aimbot"] = true
+                ["Sticky_Aim"] = true
                 ["Horizontal"] = 0.185,
                 ["Vertical"] = 0.1,
               ["Sticky_Aim"] = 1,
@@ -911,7 +913,7 @@ Droeopdown:Add("Head")
 		Lenabled:Set(false)
 
         local Lenabled = Tab:AddSwitch("Enable Sticky aim", function(bool)
-		getgenv().Sticky_aim = bool
+		getgenv().Sticky_aim = "1";
 		end)
 		Lenabled:Set(false)
 
