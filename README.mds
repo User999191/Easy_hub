@@ -369,6 +369,15 @@ SendNotification("Target: "..Plr.Character.Humanoid.DisplayName)
   SendNotification("Cam/Target not enabled!")
         end
     end)
+
+if getgenv().Settings.FearLas.NOTIF == true then
+SendNotification("Target: "..Plr.Character.Humanoid.DisplayName)
+                end
+            end
+   else
+  SendNotification("if ur aim bad enable both them ")
+        end
+    end)
  
 local TargetStats = Instance.new("ScreenGui")
 local Background = Instance.new("Frame")
@@ -910,16 +919,22 @@ Droeopdown:Add("Head")
 		Lenabled:Set(false)
 
 local Lenabled = Tab:AddSwitch("Enable Sticky aim", function(bool)
-		getgenv().Sticky_aim = bool
+		getgenv().Sticky_aim = 1
 		end)
 		Lenabled:Set(false)
 
 local Lenabled = Tab:AddSwitch("Enabled Aimbot", function(bool)
-		getgenv().Aimbot = bool
+		getgenv().Aimbot = 1
 		end)
 		Lenabled:Set(false)
 
 	Tab:AddTextBox("Horizontal Prediction", function(text)
+	getgenv().CAMPREDICTION = text
+		end, 
+	{
+	["clear"] = false, -- Default: true (options are optional)
+	})
+        Tab:AddTextBox("Vertical Pred", function(text)
 	getgenv().CAMPREDICTION = text
 		end, 
 	{
