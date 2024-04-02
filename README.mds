@@ -17,8 +17,6 @@ getgenv().Settings = {
         },
         ["CamPrediction"] = {
             ["Prediction"] = {
-                [Aimbot"] = true,
-                ["Sticky_Aim"] = true,
                 ["Horizontal"] = 0.185,
                 ["Vertical"] = 0.1,
               ["Sticky_Aim"] = 1,
