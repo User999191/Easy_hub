@@ -935,7 +935,7 @@ Droeopdown:Add("Head")
 	["clear"] = false, -- Default: true (options are optional)
 	})
         Tab:AddTextBox("Vertical Pred", function(text)
-	getgenv().CAMPREDICTION = text
+	getgenv().VERTPREDICTION = text
 		end, 
 	{
 	["clear"] = false, -- Default: true (options are optional)
