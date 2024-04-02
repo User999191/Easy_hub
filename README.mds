@@ -12,8 +12,8 @@ getgenv().Settings = {
         ["Prediction"] = {
             ["Horizontal"] = 0.185,
             ["Vertical"] = 0.1,
-            ["Sticky_Aim"] = 0.1,
-            ["Aimbot"] = 0.1, ----Set To 1 or this rigged
+            ["Sticky_Aim"] = 1,
+            ["Aimbot"] = 1, ----Set To 1 or this rigged
         },
         ["CamPrediction"] = {
             ["Prediction"] = {
@@ -262,7 +262,7 @@ function calculateVelocity(initialPos, finalPos, timeInterval)
         end
         placemarker.Transparency = 0.75
         if getgenv().Settings.FearLas.DOT then
-        makemarker(placemarker, placemarker, Color3.fromRGB(115,100,0), 1, 0)
+        makemarker(placemarker, placemarker, Color3.fromRGB(15,100,255), 1, 0)
         end
     end)
  local Tool = Instance.new("Tool")
@@ -918,13 +918,13 @@ Droeopdown:Add("Head")
 		end)
 		Lenabled:Set(false)
 
-local Lenabled = Tab:AddSwitch("Enable Sticky aim", function(bool)
-		getgenv().Sticky_aim = 1
+        local Lenabled = Tab:AddSwitch("Enable Sticky aim", function(bool)
+		getgenv().Sticky_aim = bool
 		end)
 		Lenabled:Set(false)
 
-local Lenabled = Tab:AddSwitch("Enabled Aimbot", function(bool)
-		getgenv().Aimbot = 1
+        local Lenabled = Tab:AddSwitch("Enabled Aimbot", function(bool)
+		getgenv().Aimbot = bool
 		end)
 		Lenabled:Set(false)
 
