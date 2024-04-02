@@ -8,15 +8,19 @@ getgenv().Settings = {
     ["FearLas"] = {
         ["Enabled"] = false,
         ["DOT"] = true,
-        ["AIRSHOT"] = false,
+        ["AIRSHOT"] = true,
         ["Prediction"] = {
             ["Horizontal"] = 0.185,
             ["Vertical"] = 0.1,
+            ["Sticky_Aim"] = 0.1,
+            ["Aimbot"] = 0.1, ----Set To 1 or this rigged
         },
         ["CamPrediction"] = {
             ["Prediction"] = {
                 ["Horizontal"] = 0.185,
                 ["Vertical"] = 0.1,
+              ["Sticky_Aim"] = 0.1,
+              ["Aimbot"] = 0.1, ----Set To 1 or this rigged
             },
         },
         ["NOTIF"] = true,
@@ -25,7 +29,7 @@ getgenv().Settings = {
         ["FOV"] = inf,
         ["RESOLVER"] = false,
         ["LOCKTYPE"] = "Namecall",
-        ["TargetStats"] = false,
+        ["TargetStats"] = true,
         ["Resolver"] = {
               ["Enabled"] = false,
               ["Type"] = "None",
@@ -258,12 +262,12 @@ function calculateVelocity(initialPos, finalPos, timeInterval)
         end
         placemarker.Transparency = 0.75
         if getgenv().Settings.FearLas.DOT then
-        makemarker(placemarker, placemarker, Color3.fromRGB(115,0,0), 1, 0)
+        makemarker(placemarker, placemarker, Color3.fromRGB(115,100,0), 1, 0)
         end
     end)
  local Tool = Instance.new("Tool")
 Tool.RequiresHandle = false
-Tool.Name = "Lock Tool"
+Tool.Name = "Celex Tool"
 Tool.Parent = game.Players.LocalPlayer.Backpack
 local player = game.Players.LocalPlayer
 local function connectCharacterAdded()
@@ -1051,8 +1055,8 @@ MaterialOptions:Add("Glass")
 MaterialOptions:Add("Plastic")
 MaterialOptions:Add("Brick")
 
-local AntiFolder = Tib:AddFolder("Anti Lock")
-		AntiFolder:AddLabel("Anti Locks")
+local AntiFolder = Tib:AddFolder("Set Pings")
+		AntiFolder:AddLabel("Soon")
 
 
 local ActualMiscs = Tib:AddFolder("Others")
