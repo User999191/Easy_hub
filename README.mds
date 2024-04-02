@@ -369,15 +369,6 @@ SendNotification("Target: "..Plr.Character.Humanoid.DisplayName)
   SendNotification("Cam/Target not enabled!")
         end
     end)
-
-if getgenv().Settings.FearLas.NOTIF == true then
-SendNotification("Target: "..Plr.Character.Humanoid.DisplayName)
-                end
-            end
-   else
-  SendNotification("if ur aim bad enable both them ")
-        end
-    end)
  
 local TargetStats = Instance.new("ScreenGui")
 local Background = Instance.new("Frame")
@@ -517,6 +508,9 @@ local function GetLockPrediction(Part)
 end
 local function GetCamPrediction(Part)
     return Part.CFrame + Predict(Part.Velocity) * (getgenv().CAMPREDICTION)
+end
+local function GetCamPrediction(Part)
+    return Part.CFrame + Predict(Part.Velocity) * (getgenv().Aimbot)
 end
 
     local pingvalue = nil;
@@ -930,12 +924,6 @@ Droeopdown:Add("Head")
 
 	Tab:AddTextBox("Horizontal Prediction", function(text)
 	getgenv().CAMPREDICTION = text
-		end, 
-	{
-	["clear"] = false, -- Default: true (options are optional)
-	})
-        Tab:AddTextBox("Vertical Pred", function(text)
-	getgenv().VERTCAMPREDICTION = text
 		end, 
 	{
 	["clear"] = false, -- Default: true (options are optional)
