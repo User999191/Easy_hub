@@ -511,8 +511,8 @@ local function GetAimbotPrediction(Part)
     return Part.CFrame + Predict(Part.Velocity) * (getgenv().AIMBOTPREDICTION)
 end
 
-local function GetAimbotLockPrediction(Part)
-    return Part.CFrame + (Predict(Part.Velocity) * getgenv().AIMBOTLOCKPREDICTION)
+local function GetAimbotPrediction(Part)
+    return Part.CFrame + (Predict(Part.Velocity) * getgenv().AIMBOTPREDICTION)
 end
 
 local function GetLockPrediction(Part)
