@@ -96,7 +96,7 @@ getgenv().Settings = {
 	},
 	["Misc"] = {
 	    ["NoDelay"] = false,
-	    ["AutoReload"] = false,
+	    ["AutoReload"] = true,
 	    ["AutoAir"] = {
 	        ["Enabled"] = false,
 	        ["Interval"] = 0.5,
@@ -501,6 +501,10 @@ local Stats = game:GetService("Stats")
 local Piiing = Stats:WaitForChild("Network"):WaitForChild("ServerStatsItem"):WaitForChild("Data Ping")
 local function Predict(Velocity)
     return V3(Velocity.X,math.clamp(Velocity.Y*0.5,-5,10),Velocity.Z)
+end
+
+local function GetAimbotPrediction(Part)
+    return Part.CFrame + Predict(Part.Velocity) * (getgenv().AIMBOTPREDICTION)
 end
 
 local function GetLockPrediction(Part)
