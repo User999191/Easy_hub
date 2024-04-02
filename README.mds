@@ -911,7 +911,7 @@ Droeopdown:Add("Head")
 		Lenabled:Set(false)
 
         local Lenabled = Tab:AddSwitch("Enable Sticky aim", function(bool)
-		getgenv().Sticky_aim = bool
+		getgenv().Sticky_aim = "1";
 		end)
 		Lenabled:Set(false)
 
@@ -1063,11 +1063,6 @@ MaterialOptions:Add("Brick")
 
 local AntiFolder = Tib:AddFolder("Set Pings")
 		AntiFolder:AddLabel("Soon")
-
-
-local EspFolder = Tib:AddFolder("esp")
-		EspFolder:AddLabel("Esp")
-            ActualMiscs:AddButton("Esp", function()
 
 local ActualMiscs = Tib:AddFolder("Others")
 ActualMiscs:AddLabel("Miscellaneous")
