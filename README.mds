@@ -511,10 +511,6 @@ local function GetAimbotPrediction(Part)
     return Part.CFrame + Predict(Part.Velocity) * (getgenv().AIMBOTPREDICTION)
 end
 
-local function GetAimbotPrediction(Part)
-    return Part.CFrame + (Predict(Part.Velocity) * getgenv().AIMBOTPREDICTION)
-end
-
 local function GetLockPrediction(Part)
     return Part.CFrame + (Predict(Part.Velocity) * getgenv().PREDICTION)
 end
@@ -991,10 +987,6 @@ Dropdown:Add("Head")
 	end)
 bled:Set(false)
 
-local bled = Teb:AddSwitch("Enabled", function(bool)
-	getgenv().Aimbot = bool
-	end)
-bled:Set(false)
 		local TypeThing = Teb:AddDropdown("Aim Type", function(object)
 			getgenv().Settings.FearLas.LOCKTYPE = object
 		end)
