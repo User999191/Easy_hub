@@ -864,7 +864,6 @@ do
 	local WsgCuh = Window:AddTab("Silent Aim")
 	local Teb = Window:AddTab("Target Lock")
 	local Tib = Window:AddTab("Miscs") 
-        local Tub = Window:AddTab("Execute Script")
 	local Tub = Window:AddTab("Debugging") 
         
 
@@ -1220,12 +1219,6 @@ grm.__namecall = newcclosure(function(self, ...)
 end)
 end
 
---// Execute Script
-
-local Lenabled = Tab:AddSwitch("Inf Yield", function(bool)
-		loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
-		end)
-		Lenabled:Set(false)
 
 --// Config System
 
