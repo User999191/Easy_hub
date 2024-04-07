@@ -1073,8 +1073,21 @@ MaterialOptions:Add("Glass")
 MaterialOptions:Add("Plastic")
 MaterialOptions:Add("Brick")
 
-local AntiFolder = Tib:AddFolder("Set Pings")
+local AntiFolder = Tib:AddFolder("Anti void 50k stud")
 		AntiFolder:AddLabel("SET IN 4/12/2024")
+               AntiFolder:AddButton("Anti void", function()
+local part = Instance.new("Part")
+part.Size = Vector3.new(50000, 4, 50000) -- Adjust size as needed
+part.Position = Vector3.new(0, -50, 0) -- Adjust Y position to be below the void
+part.Anchored = true
+part.Color = Color3.new(100, 190, 70)
+
+part.Parent = game.Workspace -- Change parent to appropriate location in your game hierarchy
+end)
+
+
+
+
 
 local ActualMiscs = Tib:AddFolder("Others")
 ActualMiscs:AddLabel("Miscellaneous")
