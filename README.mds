@@ -1,7 +1,6 @@
 local library = loadstring(game:HttpGet('https://raw.githubusercontent.com/obeseinsect/roblox/main/Ui%20Libraries/Elerium.lua'))()
 
 -- Lock
-local V4 = Vector4.new
 local V3 = Vector3.new
 local V2 = Vector2.new
 local inf = math.huge
