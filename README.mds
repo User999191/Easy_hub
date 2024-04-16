@@ -205,7 +205,7 @@ function calculateVelocity(initialPos, finalPos, timeInterval)
         e.AlwaysOnTop = getgenv().Settings.FearLas.DOT
         local a = Instance.new("Frame", e)
         if getgenv().Settings.FearLas.DOT == true then
-        a.Size = UDim2.new(1, 1, 1, 1)
+        a.Size = UDim2.new(2, 1, 2, 1)
         else
         a.Size = UDim2.new(0, 0, 0, 0)
         end
@@ -229,7 +229,7 @@ function calculateVelocity(initialPos, finalPos, timeInterval)
     function noob(player)
         local character
         repeat wait() until player.Character
-        local handler = makemarker(guimain, player.Character:WaitForChild(SelectedPart), Color3.fromRGB(107, 184, 255), 0.3, 3)
+        local handler = makemarker(guimain, player.Character:WaitForChild(SelectedPart), Color3.fromRGB(107, 84, 255), 0.3, 3)
         handler.Name = player.Name
         player.CharacterAdded:connect(function(Char) handler.Adornee = Char:WaitForChild(SelectedPart) end)
  
@@ -1011,6 +1011,13 @@ PredTypeThing:Add("Yun")
 	{
 	["clear"] = false, -- Default: true (options are optional)
 	})
+          Teb:AddTextBox("Vertical Prediction", function(text)
+	getgenv().VERTICALPREDICTION = text
+		end, 
+	{
+	["clear"] = false, -- Default: true (options are optional)
+	})
+
 		local Swiitch = Teb:AddSwitch("Auto SetUp", function(bool)
 			getgenv().Settings.FearLas.AUTOPRED = bool
 		end)
