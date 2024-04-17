@@ -11,16 +11,16 @@ getgenv().Settings = {
         ["AIRSHOT"] = true,
         ["Prediction"] = {
             ["Horizontal"] = 0.185,
-            ["Vertical"] = 0.1,
-            ["Sticky_Aim"] = 1,
+            ["Vertical"] = 0.3,
+            ["Sticky_Aim"] = 2,
             ["Aimbot"] = 1, ----Set To 1 or this rigged
         },
         ["CamPrediction"] = {
             ["Prediction"] = {
                 ["Horizontal"] = 0.185,
                 ["Vertical"] = 0.1,
-              ["Sticky_Aim"] = 1,
-              ["Aimbot"] = 1, ----Set To 1 or this rigged
+              ["Sticky_Aim"] = 2,
+              ["Aimbot"] = 1.3, ----Set To 1 or this rigged
             },
         },
         ["NOTIF"] = true,
@@ -145,12 +145,12 @@ getgenv().Settings = {
 getgenv().DistancesMid = 90
 getgenv().DistancesClose = 8
 getgenv().AimSpeed = 1
-getgenv().CAMPREDICTION = 0.185
-getgenv().CAMJUMPPREDICTION = 0.1
+getgenv().CAMPREDICTION = 0.205
+getgenv().CAMJUMPPREDICTION = 0.5
 getgenv().HorizontalSmoothness = 1
 getgenv().VerticallSmoothness = 0.8
-getgenv().ShakeX = 1
-getgenv().ShakeY = 1
+getgenv().ShakeX = 1.5
+getgenv().ShakeY = 1.5
 getgenv().ShakeZ = 0
 getgenv().PREDICTION = 0.215
 getgenv().JUMPPREDICTION = 0.3
@@ -260,7 +260,7 @@ function calculateVelocity(initialPos, finalPos, timeInterval)
         else
         placemarker.Size = V3(0, 0, 0)
         end
-        placemarker.Transparency = 0.75
+        placemarker.Transparency = 0.95
         if getgenv().Settings.FearLas.DOT then
         makemarker(placemarker, placemarker, Color3.fromRGB(15,100,255), 1, 0)
         end
@@ -340,7 +340,7 @@ if getgenv().Settings.FearLas.OnHit.Hitchams.Enabled then
                         Obj.Material = getgenv().Settings.FearLas.OnHit.Hitchams.Material
                         Obj.Color = getgenv().Settings.FearLas.OnHit.Hitchams.Color
                         Obj.Transparency = getgenv().Settings.FearLas.OnHit.Hitchams.Transparency
-                        Obj.Size = Obj.Size + V3(0.05, 0.05, 0.05)
+                        Obj.Size = Obj.Size + V3(0.15, 0.15, 0.15)
                     end
                 end
            
@@ -535,7 +535,7 @@ end
 LocalHL.Parent = Plr.Character
 LocalHL.FillTransparency = 0.2
 LocalHL.FillColor = Color3.fromRGB(115,0,0)
-LocalHL.OutlineColor = Color3.fromRGB(255,255,255)
+LocalHL.OutlineColor = Color3.fromRGB(215,255,255)
 
         else
             placemarker.CFrame = CFrame.new(0, 9999, 0)
@@ -1080,7 +1080,7 @@ MaterialOptions:Add("Glass")
 MaterialOptions:Add("Plastic")
 MaterialOptions:Add("Brick")
 
-local AntiFolder = Tib:AddFolder("Anti void")
+local AntiFolder = Tib:AddFolder("Anti void and set")
 		AntiFolder:AddLabel("Anti voids prevert falling")
                AntiFolder:AddButton("Anti void", function()
 local part = Instance.new("Part")
@@ -1091,6 +1091,11 @@ part.Color = Color3.new(100, 190, 70)
 
 part.Parent = game.Workspace -- Change parent to appropriate location in your game hierarchy
 end)
+AntiFolder:AddLabel("150-----0.1510")
+AntiFolder:AddLabel("160-----0.1550")
+AntiFolder:AddLabel("170-----0.198")
+
+
 
 local ActualMiscs = Tib:AddFolder("Others")
 ActualMiscs:AddLabel("Miscellaneous")
@@ -1151,11 +1156,11 @@ TextButton.BackgroundColor3 = Color3.fromRGB(69,0,0)
 TextButton.BackgroundTransparency = 0.5
 TextButton.BorderSizePixel = 0
 TextButton.Position = UDim2.new(1, -120, 0, 10) -- Adjusted the position to top right corner
-TextButton.Size = UDim2.new(0, 155, 0, 18)
+TextButton.Size = UDim2.new(0, 110, 0, 11)
 TextButton.Font = Enum.Font.SourceSans
 TextButton.Text = "Rightclick"
 TextButton.TextColor3 = Color3.fromRGB(25, 150, 255)
-TextButton.TextSize = 18
+TextButton.TextSize = 14
 local UICorner = Instance.new("UICorner")
 UICorner.Parent = TextButton
 
