@@ -1091,9 +1091,6 @@ part.Color = Color3.new(100, 190, 70)
 
 part.Parent = game.Workspace -- Change parent to appropriate location in your game hierarchy
 end)
-AntiFolder:AddLabel("150-----0.1510")
-AntiFolder:AddLabel("160-----0.1550")
-AntiFolder:AddLabel("170-----0.198")
 
 
 
