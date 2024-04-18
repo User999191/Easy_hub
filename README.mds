@@ -10,9 +10,8 @@ getgenv().Settings = {
         ["DOT"] = true,
         ["AIRSHOT"] = true,
         ["Prediction"] = {
-            ["Horizontal"] = 0.185,
-            ["Vertical"] = 0.3,
-            ["Sticky_Aim"] = 2,
+            ["Horizontal"] = 0.155,
+            ["Vertical"] = 0.7,
             ["Aimbot"] = 1, ----Set To 1 or this rigged
         },
         ["CamPrediction"] = {
@@ -121,8 +120,8 @@ getgenv().Settings = {
 	},
     ["Visuals"] = {
         ["Ambient"] = {
-            ["Enabled"] = false,
-            ["Color"] = Color3.fromRGB(4, 0, 255),
+            ["Enabled"] = true,
+            ["Color"] = Color3.fromRGB(4, 49, 255),
         },
         ["OutDoor Ambient"] = {
             ["Enabled"] = false,
@@ -138,7 +137,7 @@ getgenv().Settings = {
             ["Enabled"] = false,
             ["Brightness"] = 0,
             ["Saturation"] = 5,
-            ["Contrast"] = 2,
+            ["Contrast"] = 2.3,
         },
     },
 }
