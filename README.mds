@@ -854,7 +854,7 @@ end))
 do
 	local Window = library:AddWindow("Celex Mobile", {
 		main_color = Color3.fromRGB(30.738, 14.798, 83.658),
-		min_size = Vector2.new(400, 400),
+		min_size = Vector2.new(465, 465),
 		toggle_key = Enum.KeyCode.RightShift,
 		can_resize = true,
 	})
@@ -1094,7 +1094,7 @@ end)
 AntiFolder:AddLabel("makes hitbox size appear")
                AntiFolder:AddButton("Hitbox show", function()
 
-	_G.HeadSize = 3.11
+	_G.HeadSize = 3.311
  
 	_G.Disabled = true
  
@@ -1105,7 +1105,7 @@ game:GetService('RunService').RenderStepped:connect(function()
 				if v.Name ~= game:GetService('Players').LocalPlayer.Name then
 					pcall(function()
 						v.Character.HumanoidRootPart.Size = Vector3.new(_G.HeadSize,_G.HeadSize,_G.HeadSize)
-						v.Character.HumanoidRootPart.Transparency = 0.4
+						v.Character.HumanoidRootPart.Transparency = 0.3
 						v.Character.HumanoidRootPart.BrickColor = BrickColor.new("Purple")
 						v.Character.HumanoidRootPart.Material = "ForceField"
 						v.Character.HumanoidRootPart.CanCollide = false
@@ -1176,8 +1176,8 @@ TextButton.Parent = ScreenGui
 TextButton.BackgroundColor3 = Color3.fromRGB(69,0,0)
 TextButton.BackgroundTransparency = 0.5
 TextButton.BorderSizePixel = 0
-TextButton.Position = UDim2.new(1, -120, 0, 35) -- Adjusted the position to top right corner
-TextButton.Size = UDim2.new(0, 110, 0, 11)
+TextButton.Position = UDim2.new(1, -120, 0, 15) -- Adjusted the position to top right corner
+TextButton.Size = UDim2.new(0, 110, 0, 17)
 TextButton.Font = Enum.Font.SourceSans
 TextButton.Text = "Rightclick"
 TextButton.TextColor3 = Color3.fromRGB(25, 150, 255)
