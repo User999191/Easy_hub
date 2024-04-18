@@ -143,16 +143,16 @@ getgenv().Settings = {
 }
 getgenv().DistancesMid = 90
 getgenv().DistancesClose = 8
-getgenv().AimSpeed = 2.3
+getgenv().AimSpeed = 2.7
 getgenv().CAMPREDICTION = 0.222
-getgenv().CAMJUMPPREDICTION = 0.9
-getgenv().HorizontalSmoothness = 1.1
-getgenv().VerticallSmoothness = 1.651
-getgenv().ShakeX = 1.7
-getgenv().ShakeY = 1.7
-getgenv().ShakeZ = 0
-getgenv().PREDICTION = 0.215
-getgenv().JUMPPREDICTION = 0.7
+getgenv().CAMJUMPPREDICTION = 1.1
+getgenv().HorizontalSmoothness = 1.433
+getgenv().VerticallSmoothness = 1.851
+getgenv().ShakeX = 2
+getgenv().ShakeY = 3.1
+getgenv().ShakeZ = 0.6
+getgenv().PREDICTION = 0.235
+getgenv().JUMPPREDICTION = 1
 getgenv().SelectedPart = "HumanoidRootPart" --// LowerTorso, UpperTorso, Head
 getgenv().Prediction = "Normal"
 getgenv().AutoPredType = "Normal"
@@ -854,7 +854,7 @@ end))
 do
 	local Window = library:AddWindow("Celex Mobile", {
 		main_color = Color3.fromRGB(30.738, 14.798, 83.658),
-		min_size = Vector2.new(450, 450),
+		min_size = Vector2.new(400, 400),
 		toggle_key = Enum.KeyCode.RightShift,
 		can_resize = true,
 	})
@@ -1091,10 +1091,10 @@ part.Color = Color3.new(100, 190, 70)
 part.Parent = game.Workspace -- Change parent to appropriate location in your game hierarchy
 end)
 
-AntiFolder:AddLabel("makes 1.9 hit box size appear")
+AntiFolder:AddLabel("makes hitbox size appear")
                AntiFolder:AddButton("Hitbox show", function()
 
-	_G.HeadSize = 2.2
+	_G.HeadSize = 3.11
  
 	_G.Disabled = true
  
@@ -1105,8 +1105,8 @@ game:GetService('RunService').RenderStepped:connect(function()
 				if v.Name ~= game:GetService('Players').LocalPlayer.Name then
 					pcall(function()
 						v.Character.HumanoidRootPart.Size = Vector3.new(_G.HeadSize,_G.HeadSize,_G.HeadSize)
-						v.Character.HumanoidRootPart.Transparency = 0.85
-						v.Character.HumanoidRootPart.BrickColor = BrickColor.new("ReallyRed")
+						v.Character.HumanoidRootPart.Transparency = 0.4
+						v.Character.HumanoidRootPart.BrickColor = BrickColor.new("Purple")
 						v.Character.HumanoidRootPart.Material = "ForceField"
 						v.Character.HumanoidRootPart.CanCollide = false
 					end)
@@ -1176,7 +1176,7 @@ TextButton.Parent = ScreenGui
 TextButton.BackgroundColor3 = Color3.fromRGB(69,0,0)
 TextButton.BackgroundTransparency = 0.5
 TextButton.BorderSizePixel = 0
-TextButton.Position = UDim2.new(1, -120, 0, 16) -- Adjusted the position to top right corner
+TextButton.Position = UDim2.new(1, -120, 0, 35) -- Adjusted the position to top right corner
 TextButton.Size = UDim2.new(0, 110, 0, 11)
 TextButton.Font = Enum.Font.SourceSans
 TextButton.Text = "Rightclick"
