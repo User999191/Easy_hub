@@ -1094,7 +1094,7 @@ end)
 AntiFolder:AddLabel("makes 1.9 hit box size appear")
                AntiFolder:AddButton("Hitbox show", function()
 
-	_G.HeadSize = 1.9
+	_G.HeadSize = 2.2
  
 	_G.Disabled = true
  
@@ -1105,7 +1105,7 @@ game:GetService('RunService').RenderStepped:connect(function()
 				if v.Name ~= game:GetService('Players').LocalPlayer.Name then
 					pcall(function()
 						v.Character.HumanoidRootPart.Size = Vector3.new(_G.HeadSize,_G.HeadSize,_G.HeadSize)
-						v.Character.HumanoidRootPart.Transparency = 0.94
+						v.Character.HumanoidRootPart.Transparency = 0.85
 						v.Character.HumanoidRootPart.BrickColor = BrickColor.new("ReallyRed")
 						v.Character.HumanoidRootPart.Material = "ForceField"
 						v.Character.HumanoidRootPart.CanCollide = false
@@ -1176,12 +1176,12 @@ TextButton.Parent = ScreenGui
 TextButton.BackgroundColor3 = Color3.fromRGB(69,0,0)
 TextButton.BackgroundTransparency = 0.5
 TextButton.BorderSizePixel = 0
-TextButton.Position = UDim2.new(1, -120, 0, 10) -- Adjusted the position to top right corner
+TextButton.Position = UDim2.new(1, -120, 0, 16) -- Adjusted the position to top right corner
 TextButton.Size = UDim2.new(0, 110, 0, 11)
 TextButton.Font = Enum.Font.SourceSans
 TextButton.Text = "Rightclick"
 TextButton.TextColor3 = Color3.fromRGB(25, 150, 255)
-TextButton.TextSize = 14
+TextButton.TextSize = 18
 local UICorner = Instance.new("UICorner")
 UICorner.Parent = TextButton
 
