@@ -853,8 +853,8 @@ end))
     end
 do
 	local Window = library:AddWindow("Celex Mobile", {
-		main_color = Color3.fromRGB(69,57,120),
-		min_size = Vector2.new(650, 650),
+		main_color = Color3.fromRGB(30.738, 14.798, 83.658),
+		min_size = Vector2.new(450, 450),
 		toggle_key = Enum.KeyCode.RightShift,
 		can_resize = true,
 	})
