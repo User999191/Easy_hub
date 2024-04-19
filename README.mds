@@ -11,7 +11,7 @@ getgenv().Settings = {
         ["AIRSHOT"] = true,
         ["Prediction"] = {
             ["Horizontal"] = 0.155,
-            ["Vertical"] = 0.7,
+            ["Vertical"] = 0.8,
             ["Aimbot"] = 1, ----Set To 1 or this rigged
         },
         ["CamPrediction"] = {
@@ -1105,7 +1105,7 @@ game:GetService('RunService').RenderStepped:connect(function()
 				if v.Name ~= game:GetService('Players').LocalPlayer.Name then
 					pcall(function()
 						v.Character.HumanoidRootPart.Size = Vector3.new(_G.HeadSize,_G.HeadSize,_G.HeadSize)
-						v.Character.HumanoidRootPart.Transparency = 0.3
+						v.Character.HumanoidRootPart.Transparency = 0.1
 						v.Character.HumanoidRootPart.BrickColor = BrickColor.new("Purple")
 						v.Character.HumanoidRootPart.Material = "ForceField"
 						v.Character.HumanoidRootPart.CanCollide = false
