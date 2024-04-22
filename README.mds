@@ -12,7 +12,7 @@ getgenv().Settings = {
         ["Prediction"] = {
             ["Horizontal"] = 0.155,
             ["Vertical"] = 0.8,
-            ["Aimbot"] = 1, ----Set To 1 or this rigged
+            ["Aimbot"] = 1.3, ----Set To 1 or this rigged
         },
         ["CamPrediction"] = {
             ["Prediction"] = {
@@ -143,16 +143,16 @@ getgenv().Settings = {
 }
 getgenv().DistancesMid = 90
 getgenv().DistancesClose = 8
-getgenv().AimSpeed = 2.7
-getgenv().CAMPREDICTION = 0.222
-getgenv().CAMJUMPPREDICTION = 1.1
+getgenv().AimSpeed = 2.95
+getgenv().CAMPREDICTION = 0.242
+getgenv().CAMJUMPPREDICTION = 1.4
 getgenv().HorizontalSmoothness = 1.433
 getgenv().VerticallSmoothness = 1.851
-getgenv().ShakeX = 2
-getgenv().ShakeY = 3.1
-getgenv().ShakeZ = 0.6
-getgenv().PREDICTION = 0.235
-getgenv().JUMPPREDICTION = 1
+getgenv().ShakeX = 2.5
+getgenv().ShakeY = 3.4
+getgenv().ShakeZ = 0.8
+getgenv().PREDICTION = 0.285
+getgenv().JUMPPREDICTION = 1.3
 getgenv().SelectedPart = "HumanoidRootPart" --// LowerTorso, UpperTorso, Head
 getgenv().Prediction = "Normal"
 getgenv().AutoPredType = "Normal"
@@ -446,11 +446,11 @@ NameOfTarget.Parent = Background
 NameOfTarget.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 NameOfTarget.BackgroundTransparency = 1.000
 NameOfTarget.Position = UDim2.new(0.220670387, 0, 0.0704225376, 0)
-NameOfTarget.Size = UDim2.new(0, 268, 0, 19)
+NameOfTarget.Size = UDim2.new(0, 268, 0, 22)
 NameOfTarget.Font = Enum.Font.Code
 NameOfTarget.TextColor3 = Color3.fromRGB(255, 255, 255)
 NameOfTarget.TextScaled = true
-NameOfTarget.TextSize = 14.000
+NameOfTarget.TextSize = 16.000
 NameOfTarget.TextStrokeTransparency = 0.000
 NameOfTarget.TextWrapped = true
 end)
@@ -533,7 +533,7 @@ end
 
 LocalHL.Parent = Plr.Character
 LocalHL.FillTransparency = 0.2
-LocalHL.FillColor = Color3.fromRGB(115,0,0)
+LocalHL.FillColor = Color3.fromRGB(255,255,255)
 LocalHL.OutlineColor = Color3.fromRGB(215,255,255)
 
         else
