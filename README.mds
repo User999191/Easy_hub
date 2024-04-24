@@ -1283,15 +1283,6 @@ end
 	Tab:Show()
 	library:FormatWindows()
 end
-while wait(3) do
-print("checks gui if UNC Success")
-    break
-end
-
-while wait(3) do
-print("total unc and percentage Lock stable will result in 4 sec")
-    break
-end
 
 print("UNC:98%)
 
