@@ -1,8 +1,3 @@
-if not game:IsLoaded() then
-    game.Loaded:Wait()
-end
-
---< Loader >--
 
     local Background = Instance.new("ScreenGui")
     local Frame = Instance.new("ImageLabel")
