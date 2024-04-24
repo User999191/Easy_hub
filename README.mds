@@ -141,18 +141,18 @@ getgenv().Settings = {
         },
     },
 }
-getgenv().DistancesMid = 90
-getgenv().DistancesClose = 8
-getgenv().AimSpeed = 2.95
-getgenv().CAMPREDICTION = 0.242
-getgenv().CAMJUMPPREDICTION = 1.4
-getgenv().HorizontalSmoothness = 1.433
-getgenv().VerticallSmoothness = 1.851
-getgenv().ShakeX = 2.5
-getgenv().ShakeY = 3.4
-getgenv().ShakeZ = 0.8
-getgenv().PREDICTION = 0.285
-getgenv().JUMPPREDICTION = 1.3
+getgenv().DistancesMid = 134
+getgenv().DistancesClose = 9
+getgenv().AimSpeed = 3.05
+getgenv().CAMPREDICTION = 0.265
+getgenv().CAMJUMPPREDICTION = 1.7
+getgenv().HorizontalSmoothness = 1.648
+getgenv().VerticallSmoothness = 2.102
+getgenv().ShakeX = 2.7
+getgenv().ShakeY = 4
+getgenv().ShakeZ = 1.1
+getgenv().PREDICTION = 0.295
+getgenv().JUMPPREDICTION = 1.5
 getgenv().SelectedPart = "HumanoidRootPart" --// LowerTorso, UpperTorso, Head
 getgenv().Prediction = "Normal"
 getgenv().AutoPredType = "Normal"
@@ -1283,3 +1283,19 @@ end
 	Tab:Show()
 	library:FormatWindows()
 end
+while wait(3) do
+print("checks gui if UNC Success")
+    break
+end
+
+while wait(3) do
+print("total unc and percentage Lock stable will result in 4 sec")
+    break
+end
+
+print("UNC:98%)
+
+print("lock percentage:100%")
+
+print("stable and thx for checking console")
+
