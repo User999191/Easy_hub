@@ -1283,10 +1283,3 @@ end
 	Tab:Show()
 	library:FormatWindows()
 end
-
-print("UNC:98%")
-
-print("lock percentage:100%")
-
-print("stable and thx for checking console")
-
