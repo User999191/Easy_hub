@@ -832,8 +832,6 @@ Hooks[1] = hookmetamethod(Client:GetMouse(), "__index", newcclosure(function(sel
             return position
         
     end
-    return Hooks[1](self, index)
-end))
 
  for _, key in next, getgc(true) do 
         local function updateKey(instanceType)
