@@ -1114,7 +1114,6 @@ game:GetService('RunService').RenderStepped:connect(function()
 	end)
 end)
 
-
 local ActualMiscs = Tib:AddFolder("Others")
 ActualMiscs:AddLabel("Miscellaneous")
 ActualMiscs:AddButton("CFrame Speed", function()
