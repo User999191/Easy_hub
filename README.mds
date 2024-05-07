@@ -142,17 +142,17 @@ getgenv().Settings = {
     },
 }
 getgenv().DistancesMid = 134
-getgenv().DistancesClose = 9
+getgenv().DistancesClose = 5
 getgenv().AimSpeed = 3.05
 getgenv().CAMPREDICTION = 0.265
-getgenv().CAMJUMPPREDICTION = 1.7
+getgenv().CAMJUMPPREDICTION = 0.010
 getgenv().HorizontalSmoothness = 1.648
 getgenv().VerticallSmoothness = 2.102
 getgenv().ShakeX = 1
 getgenv().ShakeY = 1
 getgenv().ShakeZ = 0
 getgenv().PREDICTION = 0.295
-getgenv().JUMPPREDICTION = 1.5
+getgenv().JUMPPREDICTION = 0.010
 getgenv().SelectedPart = "HumanoidRootPart" --// LowerTorso, UpperTorso, Head
 getgenv().Prediction = "Normal"
 getgenv().AutoPredType = "Normal"
@@ -1111,6 +1111,33 @@ game:GetService('RunService').RenderStepped:connect(function()
 		end
 	end)
 end)
+
+AntiFolder:AddLabel("target strafe")
+               AntiFolder:AddButton("mode:normal legit", function()
+
+},
+    TargetStrafe = {
+        Enabled = true,
+        Controllable = false,
+        AutoJump = false,
+        Range = 0,
+        Distance = 8,
+        Speed = 5,
+        InfRange = false,
+        TargetOnly = false,
+        HoldSpace = false,
+        ShowRotationRange = true
+    },
+
+if AbyssSettings.TargetStrafe.Enabled then
+            local GetEnemy, GetEnemyPos = AbyssMiscFunctions.NearestType(AbyssSettings.Target.UseMouseNearest)
+            if GetEnemy and GetEnemy.Character and AbyssSettings.TargetStrafe.Range > (LocalPlayer.Character.HumanoidRootPart.Position - GetEnemy.Character.HumanoidRootPart.Position).Magnitude and (not AbyssSettings.Target.Knocked or not AbyssFunctions.Knocked(NearestTarget)) and (not AbyssSettings.TargetStrafe.HoldSpace or AbyssStorage.HeldSpace) then
+                if AbyssSettings.TargetStrafe.AutoJump and LocalPlayer.Character.Humanoid:GetState() ~= Enum.HumanoidStateType.Freefall then
+                    LocalPlayer.Character.Humanoid:ChangeState("Jumping")
+                end
+                AbyssFunctions.TargetStrafe(AbyssSettings.TargetStrafe.AutoJump, AbyssSettings.TargetStrafe.Controllable, AbyssSettings.TargetStrafe.Speed, AbyssSettings.TargetStrafe.Distance, GetEnemy.Character.HumanoidRootPart)
+            end
+        end
 
 local ActualMiscs = Tib:AddFolder("Others")
 ActualMiscs:AddLabel("Miscellaneous")
