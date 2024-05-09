@@ -164,7 +164,7 @@ local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/
 
 function SendNotification(text)
     Notification:Notify(
-        {Title = "celex", Description = "By Las (Lion) - "..text},
+        {Title = "senselight.cc", Description = "By Las (Lion) - "..text},
         {OutlineColor = Color3.fromRGB(115,0,0),Time = 3, Type = "image"},
         {Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(115,0,0)}
     )
@@ -848,9 +848,9 @@ Hooks[1] = hookmetamethod(Client:GetMouse(), "__index", newcclosure(function(sel
         updateKey('namecallInstance')
     end
 do
-	local Window = library:AddWindow("Celex Mobile", {
+	local Window = library:AddWindow("senselight.cc", {
 		main_color = Color3.fromRGB(30.738, 14.798, 83.658),
-		min_size = Vector2.new(465, 465),
+		min_size = Vector2.new(455, 455),
 		toggle_key = Enum.KeyCode.RightShift,
 		can_resize = true,
 	})
