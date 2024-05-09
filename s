@@ -145,14 +145,14 @@ getgenv().DistancesMid = 134
 getgenv().DistancesClose = 9
 getgenv().AimSpeed = 3.3
 getgenv().CAMPREDICTION = 0.265
-getgenv().CAMJUMPPREDICTION = 1.7
+getgenv().CAMJUMPPREDICTION = 2.1
 getgenv().HorizontalSmoothness = 1.648
 getgenv().VerticallSmoothness = 2.102
 getgenv().ShakeX = 1
 getgenv().ShakeY = 1
 getgenv().ShakeZ = 0
-getgenv().PREDICTION = 0.333
-getgenv().JUMPPREDICTION = 2.1
+getgenv().PREDICTION = 0.145
+getgenv().JUMPPREDICTION = 1
 getgenv().SelectedPart = "HumanoidRootPart" --// LowerTorso, UpperTorso, Head
 getgenv().Prediction = "Normal"
 getgenv().AutoPredType = "Normal"
@@ -164,7 +164,7 @@ local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/
 
 function SendNotification(text)
     Notification:Notify(
-        {Title = "celex", Description = "By Las (Lion) - "..text},
+        {Title = "senselight.cc", Description = "By Las (Lion) - "..text},
         {OutlineColor = Color3.fromRGB(115,0,0),Time = 3, Type = "image"},
         {Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(115,0,0)}
     )
@@ -852,9 +852,9 @@ end))
         updateKey('namecallInstance')
     end
 do
-	local Window = library:AddWindow("Celex Mobile", {
+	local Window = library:AddWindow("senselight.cc v1.5", {
 		main_color = Color3.fromRGB(30.738, 14.798, 83.658),
-		min_size = Vector2.new(465, 465),
+		min_size = Vector2.new(450, 450),
 		toggle_key = Enum.KeyCode.RightShift,
 		can_resize = true,
 	})
