@@ -164,7 +164,7 @@ local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/
 
 function SendNotification(text)
     Notification:Notify(
-        {Title = "senselight.cc", Description = "By Aztro_3737isgoater creating this- "..text},
+        {Title = "senselight.cc", Description = "By Sense and jay creating this - "..text},
         {OutlineColor = Color3.fromRGB(62.1041, 69.9420, 13.2445),Time = 3, Type = "image"},
         {Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(62.1041, 69.9420, 13.2445)}
     )
