@@ -853,7 +853,7 @@ end))
     end
 do
 	local Window = library:AddWindow("senselight.cc v1.5", {
-		main_color = Color3.fromRGB(30.738, 14.798, 83.658),
+		main_color = Color3.fromRGB(62.1041, 69.9420, 13.2445),
 		min_size = Vector2.new(450, 450),
 		toggle_key = Enum.KeyCode.RightShift,
 		can_resize = true,
