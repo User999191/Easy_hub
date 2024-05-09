@@ -164,9 +164,9 @@ local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/
 
 function SendNotification(text)
     Notification:Notify(
-        {Title = "senselight.cc", Description = "By Las (Lion) - "..text},
-        {OutlineColor = Color3.fromRGB(115,0,0),Time = 3, Type = "image"},
-        {Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(115,0,0)}
+        {Title = "senselight.cc", Description = "By Aztro_3737isgoater creating this- "..text},
+        {OutlineColor = Color3.fromRGB(62.1041, 69.9420, 13.2445),Time = 3, Type = "image"},
+        {Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(62.1041, 69.9420, 13.2445)}
     )
 end
 function calculateVelocity(initialPos, finalPos, timeInterval)
@@ -266,7 +266,7 @@ function calculateVelocity(initialPos, finalPos, timeInterval)
     end)
  local Tool = Instance.new("Tool")
 Tool.RequiresHandle = false
-Tool.Name = "Celex Tool"
+Tool.Name = "Senselight.cc Tool"
 Tool.Parent = game.Players.LocalPlayer.Backpack
 local player = game.Players.LocalPlayer
 local function connectCharacterAdded()
