@@ -1079,7 +1079,7 @@ MaterialOptions:Add("Glass")
 MaterialOptions:Add("Plastic")
 MaterialOptions:Add("Brick")
 
-local AntiFolder = Tib:AddFolder("Anti void and set")
+local AntiFolder = Tib:AddFolder("Anti void and more")
 		AntiFolder:AddLabel("Anti voids prevert falling")
                AntiFolder:AddButton("Anti void", function()
 local part = Instance.new("Part")
