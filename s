@@ -1116,14 +1116,6 @@ game:GetService('RunService').RenderStepped:connect(function()
 	end)
 end)
 
-AntiFolder:AddLabel("Esp")
-               AntiFolder:AddButton("Esp", function()
-           loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Esptesting/main/README.md"))()
-end
-
-
-
-
 
 local ActualMiscs = Tib:AddFolder("Others")
 ActualMiscs:AddLabel("Miscellaneous")
