@@ -862,8 +862,7 @@ do
 	local Tab = Window:AddTab("Camera Lock")
 	local WsgCuh = Window:AddTab("Silent Aim")
 	local Teb = Window:AddTab("Target Lock")
-	local Tib = Window:AddTab("Miscs") 
-        local Esp = Window:AddTab("Esp and desync") 
+	local Tib = Window:AddTab("Miscs")  
 	local Tub = Window:AddTab("Debugging") 
         
 
@@ -1117,6 +1116,13 @@ game:GetService('RunService').RenderStepped:connect(function()
 	end)
 end)
 
+AntiFolder:AddLabel("Esp")
+               AntiFolder:AddButton("Esp", function()
+           loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Esptesting/main/README.md"))()
+end
+
+
+
 
 
 local ActualMiscs = Tib:AddFolder("Others")
@@ -1263,11 +1269,7 @@ end)
 end
 
 
-                local EspFolder = Tib:AddFolder("esp and desync")
-		EspFolder:AddLabel("Esp desync")
-               EspFolder:Addfunction("Esp", function()
-           loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Esptesting/main/README.md"))()
-     end
+                
 
 --// Config System
 
