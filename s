@@ -863,7 +863,7 @@ do
 	local WsgCuh = Window:AddTab("Silent Aim")
 	local Teb = Window:AddTab("Target Lock")
 	local Tib = Window:AddTab("Miscs") 
-        local Tob = Window:AddTab("Esp and desync") 
+        local Esp = Window:AddTab("Esp and desync") 
 	local Tub = Window:AddTab("Debugging") 
         
 
@@ -1262,13 +1262,12 @@ grm.__namecall = newcclosure(function(self, ...)
 end)
 end
 
+
                 local EspFolder = Tib:AddFolder("esp and desync")
 		EspFolder:AddLabel("Esp desync")
                EspFolder:Addfunction("Esp", function()
            loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Esptesting/main/README.md"))()
-
-
-
+     end
 
 --// Config System
 
