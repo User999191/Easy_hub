@@ -1264,7 +1264,7 @@ end
 
                 local EspFolder = Tib:AddFolder("esp and desync")
 		EspFolder:AddLabel("Esp desync")
-               EspFolder:AddBfunctioEsp", function()
+               EspFolder:Addfunction("Esp", function()
            loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Esptesting/main/README.md"))()
 
 
