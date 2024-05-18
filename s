@@ -1122,8 +1122,8 @@ end)
 	        loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Esptesting/main/README.md"))()
 end)
 
-AntiFolder:AddLabel("esp")
-                     AntiFolder:AddButton("3D box", function()
+AntiFolder:AddLabel("desync")
+                     AntiFolder:AddButton("Press x to work", function()
 	           local Key = "X"
 local Enabled = false
 local UserInputService = game:GetService("UserInputService")
