@@ -1029,6 +1029,44 @@ PredTypeThing:Add("Yun")
 		local Droopdown = Teb:AddDropdown("Aim Bone", function(object)
 		getgenv().SelectedPart = object
 		end)
+               local desynptch = Teb:AddSwitch("pp", function(bool)
+			  local Key = "X"
+local Enabled = false
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local Client = Players.LocalPlayer
+
+local MainThread = task.spawn(function()
+    while true do
+        if Enabled and Client.Character and Client.Character:FindFirstChild("HumanoidRootPart") then
+            sethiddenproperty(Client.Character.HumanoidRootPart, "NetworkIsSleeping", true)
+            task.wait()
+            sethiddenproperty(Client.Character.HumanoidRootPart, "NetworkIsSleeping", false)
+        end
+
+        task.wait()
+    end
+end)
+
+UserInputService.InputBegan:Connect(function(Input)
+    if UserInputService:GetFocusedTextBox() then
+        return
+    end
+
+    if Input.KeyCode.Name == Key then
+        Enabled = not Enabled
+
+        if Enabled then
+            setfflag("S2PhysicsSenderRate", 2)
+        else
+            setfflag("S2PhysicsSenderRate", 14)
+            sethiddenproperty(Client.Character.HumanoidRootPart, "NetworkIsSleeping", false)
+        end
+    end
+end  
+end)
+
+  
 
 Droopdown:Add("HumanoidRootPart")
 Droopdown:Add("UpperTorso")
