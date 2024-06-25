@@ -1,7 +1,7 @@
 
 getgenv().Target = true --// keep this on
 
-getgenv().Key = Enum.KeyCode.E --// keybind to lock on
+getgenv().Key = Enum.KeyCode.Q --// keybind to lock on
 getgenv().Prediction = 0.178 --// prediction of the aimlock
 getgenv().ChatMode = false --// sends a chat message of who you're locked on
 getgenv().NotifMode = true --// notifys of who you're locked on
@@ -89,7 +89,7 @@ end)
     --
     if getgenv().valiansh == true then
                         game.StarterGui:SetCore("SendNotification", {
-                   Title = "Aimlock",
+                   Title = "Senselight",
                    Text = "already loaded",
                    Duration = 5
         
@@ -114,7 +114,7 @@ end)
         	end	
                if getgenv().NotifMode then
     			game.StarterGui:SetCore("SendNotification", {
-        Title = "ugliest lock";
+        Title = "Senselight";
         Text = "Target: "..tostring(Plr.Character.Humanoid.DisplayName);
     
     })
@@ -125,13 +125,13 @@ end)
         	end	
         if getgenv().NotifMode then
                         game.StarterGui:SetCore("SendNotification", {
-                   Title = "Aimlock",
-                   Text = "unlocked",
+                   Title = "Senselight",                
+                   text = "unlocked",
                    Duration = 5
                })
            elseif getgenv().Target == false then
                         game.StarterGui:SetCore("SendNotification", {
-                   Title = "Aimlock",
+                   Title = "Senselight",
                    Text = "Target Left or Died",
                    Duration = 5
      
