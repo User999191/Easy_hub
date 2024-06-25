@@ -15,7 +15,7 @@ getgenv().Circle = true --// fov circle
 
 local Tool = Instance.new("Tool")
     Tool.RequiresHandle = false
-    Tool.Name = "Sense Aim lock tool"
+    Tool.Name = "Q"
     Tool.Parent = game.Players.LocalPlayer.Backpack
 
     local player = game.Players.LocalPlayer
