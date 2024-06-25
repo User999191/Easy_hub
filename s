@@ -6,9 +6,9 @@ getgenv().Prediction = 0.178 --// prediction of the aimlock
 getgenv().ChatMode = false --// sends a chat message of who you're locked on
 getgenv().NotifMode = true --// notifys of who you're locked on
 getgenv().PartMode = true
-getgenv().AirshotFunccc = false
+getgenv().AirshotFunccc = true
 getgenv().Partz = "HumanoidRootPart" --// what part the aimlock will hit
-getgenv().AutoPrediction = true
+getgenv().AutoPrediction = false
 getgenv().Fov = 100
 getgenv().Circle = true --// fov circle
 --
