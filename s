@@ -13,22 +13,34 @@ getgenv().Fov = 100
 getgenv().Circle = true --// fov circle
 --
 
-local Tool = Instance.new("Tool")
-    Tool.RequiresHandle = false
-    Tool.Name = "Q"
-    Tool.Parent = game.Players.LocalPlayer.Backpack
+getgenv().keytoclick = "Q"
+tool = Instance.new("Tool")
+tool.RequiresHandle = false
+tool.Name = keytoclick
+tool.Activated:connect(function()
+    local vim = game:service("VirtualInputManager")
+vim:SendKeyEvent(true, keytoclick, false, game)
+end)
+tool.Parent = game.Players.LocalPlayer.Backpack
 
-    local player = game.Players.LocalPlayer
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Senselight";
+    Text = "Thanks to saiko for let me borrow q tool locks";
 
-    local function connectCharacterAdded()
-        player.CharacterAdded:Connect(onCharacterAdded)
-    end
+})
 
-    connectCharacterAdded()
+local player = game.Players.LocalPlayer
 
-    player.CharacterRemoving:Connect(function()
-        Tool.Parent = game.Players.LocalPlayer.Backpack
-    end)
+local function connectCharacterAdded()
+    player.CharacterAdded:Connect(onCharacterAdded)
+end
+
+connectCharacterAdded()
+
+player.CharacterRemoving:Connect(function()
+    tool.Parent = game.Players.LocalPlayer.Backpack
+end)
+    
 
     _G.Types = {
         Ball = Enum.PartType.Ball,
