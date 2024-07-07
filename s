@@ -4465,10 +4465,10 @@ end)
     Tracer.Name = "Aimlock"	
     Tracer.Anchored = true		
     Tracer.CanCollide = false
-    Tracer.Transparency = 0.7
+    Tracer.Transparency = 0.5
     Tracer.Parent = game.Workspace	
-    Tracer.Shape = _G.Types.Block
-    Tracer.Size = Vector3.new(10,10,10)
+    Tracer.Shape = _G.Types.Ball
+    Tracer.Size = Vector3.new(4,4,4)
     Tracer.Color = Color3.fromRGB(255, 255, 255)
     
     --
