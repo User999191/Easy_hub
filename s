@@ -4468,7 +4468,7 @@ end)
     Tracer.Transparency = 0.5
     Tracer.Parent = game.Workspace	
     Tracer.Shape = _G.Types.Ball
-    Tracer.Size = Vector3.new(4,4,4)
+    Tracer.Size = Vector3.new(6,6,6)
     Tracer.Color = Color3.fromRGB(255, 255, 255)
     
     --
