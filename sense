@@ -55,15 +55,22 @@ getgenv().Aimbot = 0.2  -- Adjusted aimbot sensitivity
 local Tool = Instance.new("Tool")
 Tool.RequiresHandle = false
 Tool.Name = "Senselight Camlock tools"
-Tool.Parent = game.Players.LocalPlayer.Backpack
-tool.Activated:Connect(function()
-    local vim = game:service("VirtualInputManager")
-    vim:SendKeyEvent(true, keytoclick, false, game)
-end)
-tool.Parent = game.Players.LocalPlayer.Backpack
+
+-- Check if the player has it in their backpack already
+local player = game.Players.LocalPlayer
+if player then
+    Tool.Parent = player.Backpack
+end
+
+-- Function to handle tool re-parenting on character respawn
+local function onCharacterAdded(character)
+    Tool.Parent = player.Backpack
+end
+
+-- Bind character added event
+player.CharacterAdded:Connect(onCharacterAdded)
 
 -- Get local player and necessary services
-local player = game.Players.LocalPlayer
 local Players = game:GetService("Players")
 local RS = game:GetService("RunService")
 local WS = game:GetService("Workspace")
@@ -71,8 +78,7 @@ local GS = game:GetService("GuiService")
 local SG = game:GetService("StarterGui")
 
 -- Retrieve essential elements like mouse and camera
-local LP = Players.LocalPlayer
-local Mouse = LP:GetMouse()
+local Mouse = player:GetMouse()
 local Camera = WS.CurrentCamera
 local GetGuiInset = GS.GetGuiInset
 
@@ -138,7 +144,7 @@ function getClosest()
         local notKO = v.Character:FindFirstChild("BodyEffects") and not v.Character.BodyEffects["K.O"].Value
         local notGrabbed = not v.Character:FindFirstChild("GRABBING_COINSTRAINT")
 
-        if v ~= LP and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 and v.Character:FindFirstChild(getgenv().AimPart) and notKO and notGrabbed then
+        if v ~= player and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 and v.Character:FindFirstChild(getgenv().AimPart) and notKO and notGrabbed then
             local pos = Camera:WorldToViewportPoint(v.Character.PrimaryPart.Position)
             local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).magnitude
 
@@ -215,7 +221,7 @@ RS.RenderStepped:Connect(function()
 
     if AimlockState then
         if Victim then
-            if getgenv().Aimbot == 0.9 then
+            if getgenv().Aimbot == 0.99 then
                 aimDirectlyAt(Victim.Character[getgenv().AimPart].Position)
             else
                 local predictedPosition = predictPosition(Victim, getgenv().Prediction)
