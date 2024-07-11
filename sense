@@ -42,14 +42,14 @@ ImageButton.MouseButton1Click:Connect(OnButtonClick)
 local testSection = AimingTab:CreateSector("Camlock", "left")
 
 testSection:AddButton("Enable Camlock", function()
-    -- Define initial settings and variables
+-- Define initial settings and variables
 getgenv().Prediction = 0.135
 getgenv().Smoothness = 0.8
 getgenv().AimPart = "UpperTorso"
 getgenv().OldAimpart = "UpperTorso"
 getgenv().ShakeValue = 1.1
 getgenv().AutoPred = false
-getgenv().Aimbot = 0.5  -- Adjusted aimbot sensitivity
+getgenv().Aimbot = 0.2  -- Adjusted aimbot sensitivity
 
 -- Create the tool and set it up
 local Tool = Instance.new("Tool")
@@ -129,6 +129,7 @@ function getClosest()
     local shortestDistance = math.huge
 
     for i, v in pairs(game.Players:GetPlayers()) do
+        -- Ensure necessary components exist and are valid
         local notKO = v.Character:FindFirstChild("BodyEffects") and not v.Character.BodyEffects["K.O"].Value
         local notGrabbed = not v.Character:FindFirstChild("GRABBING_COINSTRAINT")
 
@@ -230,6 +231,7 @@ while true do
     end
     RS.Heartbeat:Wait()
 end
+end)
 
 testSection:AddTextbox("Prediction", nil, function(text)
 getgenv().Prediction = text
