@@ -1,64 +1,91 @@
+
 local player = game:GetService("Players").LocalPlayer
 local guiService = game:GetService("GuiService")
+local tweenService = game:GetService("TweenService")
+local runService = game:GetService("RunService")
 
 -- Create the loading UI
 local loadingUI = Instance.new("ScreenGui")
-loadingUI.Name = "LoadingUI"
 loadingUI.Parent = player.PlayerGui
 
 local loadingFrame = Instance.new("Frame")
-loadingFrame.Size = UDim2.new(0, 300, 0, 50)
-loadingFrame.Position = UDim2.new(0.5, -150, 0.5, -25) 
-loadingFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+loadingFrame.Size = UDim2.new(0, 400, 0, 200)
+loadingFrame.Position = UDim2.new(0.5, -200, 0.5, -100) -- Center the frame
 loadingFrame.BackgroundColor3 = Color3.new(0, 0, 0)
 loadingFrame.BackgroundTransparency = 0.5
 loadingFrame.Parent = loadingUI
 
-local loadingBar = Instance.new("Frame")
-loadingBar.Size = UDim2.new(0, 0, 1, 0)  -- starts with 0 width
-loadingBar.Position = UDim2.new(0, 0, 0, 0)
-loadingBar.BackgroundColor3 = Color3.new(0, 1, 0)
-loadingBar.Parent = loadingFrame
+local progressBar = Instance.new("Frame")
+progressBar.Size = UDim2.new(0, 360, 0, 20)
+progressBar.Position = UDim2.new(0, 20, 0, 60)
+progressBar.BackgroundColor3 = Color3.new(1, 1, 1)
+progressBar.Parent = loadingFrame
+
+local progressLine = Instance.new("Frame")
+progressLine.Size = UDim2.new(0, 0, 1, 0)
+progressLine.BackgroundColor3 = Color3.new(1, 0, 0)
+progressLine.Parent = progressBar
 
 local percentageLabel = Instance.new("TextLabel")
-percentageLabel.Size = UDim2.new(0, 100, 0, 20)
-percentageLabel.Position = UDim2.new(0.5, -50, 0, 30)
-percentageLabel.AnchorPoint = Vector2.new(0.5, 0)
+percentageLabel.Size = UDim2.new(0, 50, 0, 20)
+percentageLabel.Position = UDim2.new(0, 310, 0, 60)
 percentageLabel.Font = Enum.Font.SourceSans
 percentageLabel.FontSize = Enum.FontSize.Size24
 percentageLabel.TextColor3 = Color3.new(1, 1, 1)
 percentageLabel.TextStrokeTransparency = 0
 percentageLabel.Parent = loadingFrame
 
--- Animate the loading bar
-local startTime = tick()
-local endTime = startTime + 17  -- 13 seconds loading time
+-- Animate the progress line
+local tweenInfo = TweenInfo.new(16, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
+local endSize = UDim2.new(1, 0, 1, 0) -- Full width
 
-local loadingComplete = false
+local tween = tweenService:Create(progressLine, tweenInfo, {Size = endSize})
 
-local function RunAfterLoadingComplete()
-    -- Implement any actions to perform after loading completes
-end
+tween:Play()
 
-local function onRenderStepped()
-    local elapsedTime = tick() - startTime
-    local progress = elapsedTime / 17  -- 13 seconds total
-    
-    loadingBar.Size = UDim2.new(progress, 0, 1, 0)
-    percentageLabel.Text = math.floor(progress * 100) .. "%"
-    
-    if elapsedTime >= 17 and not loadingComplete then
-        loadingComplete = true
-        loadingUI:Destroy()
-        
-        -- Execute your script or function after loading completes
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Easy_hub/main/sense"))()
-        -- Example: Run a function
-        RunAfterLoadingComplete()
-        
-        -- Disconnect the RenderStepped connection after execution
-        game:GetService("RunService").RenderStepped:Disconnect()
+local function updateProgressColor(progress)
+    local color
+
+    if progress >= 0.9 then
+        color = Color3.new(0, 1, 0) -- Green at 90% and above
+    elseif progress >= 0.7 then
+        color = Color3.new(1, 0.8, 0) -- Orange at 70% to 89%
+    elseif progress >= 0.6 then
+        color = Color3.new(1, 0.5, 0) -- Orange-red at 60% to 69%
+    elseif progress >= 0.5 then
+        color = Color3.new(1, 0, 0) -- Red at 50% to 59%
+    elseif progress >= 0.3 then
+        color = Color3.new(1, 1, 0) -- Yellow at 30% to 49%
+    elseif progress >= 0.2 then
+        color = Color3.new(0, 0.5, 1) -- Blue at 20% to 29%
+    else
+        color = Color3.new(1, 0, 0) -- Default to red for any other cases
     end
+
+    progressLine.BackgroundColor3 = color
 end
 
-game:GetService("RunService").RenderStepped:Connect(onRenderStepped)
+runService.RenderStepped:Connect(function()
+    local elapsedTime = tick() - startTime
+    local progress = math.clamp(elapsedTime / 16, 0, 1) -- Clamp progress between 0 and 1
+    
+    updateProgressColor(progress)
+    percentageLabel.Text = math.floor(progress * 100) .. "%"
+end)
+
+tween.Completed:Connect(function()
+    -- Execute the script when the progress line reaches the end
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Easy_hub/main/sense"))()
+    
+    -- Remove the loading UI
+    loadingUI:Destroy()
+end)
+
+-- Update percentage label
+local startTime = tick()
+runService.RenderStepped:Connect(function()
+    local elapsedTime = tick() - startTime
+    local progress = math.clamp(elapsedTime / 16, 0, 1) -- Clamp progress between 0 and 1
+    
+    percentageLabel.Text = math.floor(progress * 100) .. "%"
+end)
