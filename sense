@@ -42,176 +42,194 @@ ImageButton.MouseButton1Click:Connect(OnButtonClick)
 local testSection = AimingTab:CreateSector("Camlock", "left")
 
 testSection:AddButton("Enable Camlock", function()
-    getgenv().Prediction = 0.135
-    getgenv().Smoothness = 0.8
-    getgenv().AimPart = "UpperTorso"
-    getgenv().OldAimpart = "UpperTorso"
-    getgenv().ShakeValue = 1.1
-    getgenv().AutoPred = false
-    getgenv().Aimbot = true
+    -- Define initial settings and variables
+getgenv().Prediction = 0.135
+getgenv().Smoothness = 0.8
+getgenv().AimPart = "UpperTorso"
+getgenv().OldAimpart = "UpperTorso"
+getgenv().ShakeValue = 1.1
+getgenv().AutoPred = false
+getgenv().Aimbot = 0.5  -- Adjusted aimbot sensitivity
 
-    local Tool = Instance.new("Tool")
-    Tool.RequiresHandle = false
-    Tool.Name = "Senselight Camlock tools"
-    Tool.Parent = game.Players.LocalPlayer.Backpack
+-- Create the tool and set it up
+local Tool = Instance.new("Tool")
+Tool.RequiresHandle = false
+Tool.Name = "Senselight Camlock tools"
+Tool.Parent = game.Players.LocalPlayer.Backpack
 
-    local player = game.Players.LocalPlayer
+-- Get local player and necessary services
+local player = game.Players.LocalPlayer
+local Players = game:GetService("Players")
+local RS = game:GetService("RunService")
+local WS = game:GetService("Workspace")
+local GS = game:GetService("GuiService")
+local SG = game:GetService("StarterGui")
 
-    local function connectCharacterAdded()
-        player.CharacterAdded:Connect(onCharacterAdded)
-    end
+-- Retrieve essential elements like mouse and camera
+local LP = Players.LocalPlayer
+local Mouse = LP:GetMouse()
+local Camera = WS.CurrentCamera
+local GetGuiInset = GS.GetGuiInset
 
-    connectCharacterAdded()
+-- Initialize aimlock state and victim tracking
+local AimlockState = true
+local Locked
+local Victim
 
-    player.CharacterRemoving:Connect(function()
-        Tool.Parent = game.Players.LocalPlayer.Backpack
-    end)
+-- Function to send notifications
+function Notify(tx)
+    SG:SetCore("SendNotification", {
+        Title = "Senselight evolved",
+        Text = tx,
+        Duration = 5
+    })
+end
 
-    local Players = game:GetService("Players")
-    local RS = game:GetService("RunService")
-    local WS = game:GetService("Workspace")
-    local GS = game:GetService("GuiService")
-    local SG = game:GetService("StarterGui")
+-- Check if script is already loaded
+if getgenv().Loaded == true then
+    Notify("Loaded")
+    return
+end
 
-    local LP = Players.LocalPlayer
-    local Mouse = LP:GetMouse()
-    local Camera = WS.CurrentCamera
-    local GetGuiInset = GS.GetGuiInset
+-- Mark script as loaded
+getgenv().Loaded = true
 
-    local AimlockState = true
-    local Locked
-    local Victim
+-- Initialize FOV circle drawing settings
+local fov = Drawing.new("Circle")
+fov.Filled = false
+fov.Transparency = 1
+fov.Thickness = 1
+fov.Color = Color3.fromRGB(255, 255, 0)
+fov.NumSides = 1000
 
-    local SelectedKey = getgenv().Key
-    local SelectedDisableKey = getgenv().DisableKey
-
-    function Notify(tx)
-        SG:SetCore("SendNotification", {
-            Title = "Senselight evolved",
-            Text = tx,
-            Duration = 5
-        })
-    end
-
-    if getgenv().Loaded == true then
-        Notify("Loaded")
-        return
-    end
-
-    getgenv().Loaded = true
-
-    local fov = Drawing.new("Circle")
-    fov.Filled = false
-    fov.Transparency = 1
-    fov.Thickness = 1
-    fov.Color = Color3.fromRGB(255, 255, 0)
-    fov.NumSides = 1000
-
-    function update()
-        if getgenv().FOV == true then
-            if fov then
-                fov.Radius = getgenv().FOVSize * 2
-                fov.Visible = getgenv().ShowFOV
-                fov.Position = Vector2.new(Mouse.X, Mouse.Y + GetGuiInset(GS).Y)
-            end
+-- Function to update FOV circle position and visibility
+function update()
+    if getgenv().FOV == true then
+        if fov then
+            fov.Radius = getgenv().FOVSize * 2
+            fov.Visible = getgenv().ShowFOV
+            fov.Position = Vector2.new(Mouse.X, Mouse.Y + GetGuiInset(GS).Y)
         end
     end
+end
 
-    function WTVP(arg)
-        return Camera:WorldToViewportPoint(arg)
-    end
+-- Helper function to convert world to viewport point
+function WTVP(arg)
+    return Camera:WorldToViewportPoint(arg)
+end
 
-    function WTSP(arg)
-        return Camera.WorldToScreenPoint(Camera, arg)
-    end
+-- Helper function to convert world to screen point
+function WTSP(arg)
+    return Camera.WorldToScreenPoint(Camera, arg)
+end
 
-    function getClosest()
-        local closestPlayer
-        local shortestDistance = math.huge
+-- Function to find closest valid target
+function getClosest()
+    local closestPlayer
+    local shortestDistance = math.huge
 
-        for i, v in pairs(game.Players:GetPlayers()) do
-            local notKO = v.Character:WaitForChild("BodyEffects")["K.O"].Value ~= true
-            local notGrabbed = v.Character:FindFirstChild("GRABBING_COINSTRAINT") == nil
+    for i, v in pairs(game.Players:GetPlayers()) do
+        local notKO = v.Character:FindFirstChild("BodyEffects") and not v.Character.BodyEffects["K.O"].Value
+        local notGrabbed = not v.Character:FindFirstChild("GRABBING_COINSTRAINT")
 
-            if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild(getgenv().AimPart) and notKO and notGrabbed then
-                local pos = Camera:WorldToViewportPoint(v.Character.PrimaryPart.Position)
-                local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).magnitude
+        if v ~= LP and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 and v.Character:FindFirstChild(getgenv().AimPart) and notKO and notGrabbed then
+            local pos = Camera:WorldToViewportPoint(v.Character.PrimaryPart.Position)
+            local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).magnitude
 
-                if (getgenv().FOV) then
-                    if (fov.Radius > magnitude and magnitude < shortestDistance) then
-                        closestPlayer = v
-                        shortestDistance = magnitude
-                    end
-                else
-                    if (magnitude < shortestDistance) then
-                        closestPlayer = v
-                        shortestDistance = magnitude
-                    end
+            if getgenv().FOV then
+                if fov.Radius > magnitude and magnitude < shortestDistance then
+                    closestPlayer = v
+                    shortestDistance = magnitude
                 end
-            end
-        end
-        return closestPlayer
-    end
-
-    Tool.Activated:Connect(function()
-        if AimlockState == true then
-            Locked = not Locked
-            if Locked then
-                Victim = getClosest()
-                Notify("Locked onto: "..tostring(Victim.Character.Humanoid.DisplayName))
             else
-                if Victim ~= nil then
-                    Victim = nil
-                    Notify("Unlocked!")
+                if magnitude < shortestDistance then
+                    closestPlayer = v
+                    shortestDistance = magnitude
                 end
+            end
+        end
+    end
+
+    return closestPlayer
+end
+
+-- Tool activation event to toggle aimlock
+Tool.Activated:Connect(function()
+    if AimlockState then
+        Locked = not Locked
+        if Locked then
+            Victim = getClosest()
+            if Victim then
+                Notify("Locked onto: " .. tostring(Victim.Character.Humanoid.DisplayName))
             end
         else
-            Notify("Aimlock is not enabled!")
+            Victim = nil
+            Notify("Unlocked!")
         end
-    end)
-
-    RS.RenderStepped:Connect(function()
-        update()
-        if AimlockState == true then
-            if Victim ~= nil then
-                local shakeOffset = Vector3.new(
-                    math.random(-getgenv().ShakeValue, getgenv().ShakeValue),
-                    math.random(-getgenv().ShakeValue, getgenv().ShakeValue),
-                    math.random(-getgenv().ShakeValue, getgenv().ShakeValue)
-                ) * 0.1
-                local LookPosition = CFrame.new(Camera.CFrame.p, Victim.Character[getgenv().AimPart].Position + (Vector3.new(Victim.Character.HumanoidRootPart.Velocity.X,Victim.Character.HumanoidRootPart.AssemblyAngularVelocity.Y*0.8,Victim.Character.HumanoidRootPart.Velocity.Z)*getgenv().Prediction))+shakeOffset
-                Camera.CFrame = Camera.CFrame:Lerp(LookPosition, getgenv().Smoothness)        
-            end
-        end
-    end)
-
-    while true do
-        if getgenv().AutoPred == true then
-            local pingvalue = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()
-            local split = string.split(pingvalue,'(')
-            local ping = tonumber(split[1])
-
-            if ping < 200 then
-                getgenv().Prediction = 0.1973432432343325
-            elseif ping < 150 then
-                getgenv().Prediction = 0.1922
-            elseif ping < 90 then
-                getgenv().Prediction = 0.16
-            elseif ping < 80 then
-                getgenv().Prediction = 0.169
-            elseif ping < 70 then
-                getgenv().Prediction = 0.1355
-            elseif ping < 50 then
-                getgenv().Prediction = 0.125
-            elseif ping < 40 then
-                getgenv().Prediction = 0.12
-            elseif ping < 30 then
-                getgenv().Prediction = 0.12
-            end
-        end
-        RS.Heartbeat:Wait()
+    else
+        Notify("Aimlock is not enabled!")
     end
 end)
+
+-- Function to predict target's future position based on velocity
+function predictPosition(target, prediction)
+    local targetPosition = target.Character[getgenv().AimPart].Position
+    local targetVelocity = target.Character.HumanoidRootPart.Velocity
+
+    return targetPosition + targetVelocity * prediction
+end
+
+-- Function to aim smoothly at predicted position
+function aimAt(targetPosition, smoothness)
+    local shakeOffset = Vector3.new(
+        math.random(-getgenv().ShakeValue, getgenv().ShakeValue),
+        math.random(-getgenv().ShakeValue, getgenv().ShakeValue),
+        math.random(-getgenv().ShakeValue, getgenv().ShakeValue)
+    ) * 0.1
+
+    local LookPosition = CFrame.new(Camera.CFrame.p, targetPosition) + shakeOffset
+    Camera.CFrame = Camera.CFrame:Lerp(LookPosition, smoothness)
+end
+
+-- Function to handle rendering and aiming logic
+RS.RenderStepped:Connect(function()
+    update()
+
+    if AimlockState and getgenv().Aimbot ~= false then
+        if Victim then
+            local predictedPosition = predictPosition(Victim, getgenv().Prediction)
+            aimAt(predictedPosition, getgenv().Smoothness)
+        end
+    end
+end)
+
+-- Continuous loop to adjust prediction based on network ping
+while true do
+    if getgenv().AutoPred == true then
+        local pingvalue = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()
+        local split = string.split(pingvalue, '(')
+        local ping = tonumber(split[1])
+
+        if ping < 200 then
+            getgenv().Prediction = 0.1973432432343325
+        elseif ping < 150 then
+            getgenv().Prediction = 0.1922
+        elseif ping < 90 then
+            getgenv().Prediction = 0.16
+        elseif ping < 80 then
+            getgenv().Prediction = 0.169
+        elseif ping < 70 then
+            getgenv().Prediction = 0.1355
+        elseif ping < 50 then
+            getgenv().Prediction = 0.125
+        elseif ping < 40 then
+            getgenv().Prediction = 0.12
+        elseif ping < 30 then
+            getgenv().Prediction = 0.12
+        end
+    end
+    RS.Heartbeat:Wait()
+end
 
 testSection:AddTextbox("Prediction", nil, function(text)
 getgenv().Prediction = text
@@ -223,6 +241,10 @@ end)
 
 testSection:AddTextbox("Shake", nil, function(text)
 getgenv().ShakeValue = text 
+end)
+
+testSection:AddTextbox("Aimbot", nil, function(text)
+getgenv().Aimbot = text
 end)
 
 local testSection = AimingTab:CreateSector("Aimlock", "left")
