@@ -43,28 +43,6 @@ local tween = tweenService:Create(progressLine, tweenInfo, {Size = endSize})
 
 tween:Play()
 
-local function updateProgressColor(progress)
-    local color
-
-    if progress >= 0.9 then
-        color = Color3.new(0, 1, 0) -- Green at 90% and above
-    elseif progress >= 0.7 then
-        color = Color3.new(1, 0.8, 0) -- Orange at 70% to 89%
-    elseif progress >= 0.6 then
-        color = Color3.new(1, 0.5, 0) -- Orange-red at 60% to 69%
-    elseif progress >= 0.5 then
-        color = Color3.new(1, 0, 0) -- Red at 50% to 59%
-    elseif progress >= 0.3 then
-        color = Color3.new(1, 1, 0) -- Yellow at 30% to 49%
-    elseif progress >= 0.2 then
-        color = Color3.new(0, 0.5, 1) -- Blue at 20% to 29%
-    else
-        color = Color3.new(1, 0, 0) -- Default to red for any other cases
-    end
-
-    progressLine.BackgroundColor3 = color
-end
-
 runService.RenderStepped:Connect(function()
     local elapsedTime = tick() - startTime
     local progress = math.clamp(elapsedTime / 16, 0, 1) -- Clamp progress between 0 and 1
