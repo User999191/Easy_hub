@@ -32,21 +32,33 @@ percentageLabel.Parent = loadingFrame
 
 -- Animate the loading bar
 local startTime = tick()
-local endTime = startTime + 13  -- 4 seconds loading time
+local endTime = startTime + 13  -- 13 seconds loading time
 
-game:GetService("RunService").RenderStepped:Connect(function()
+local loadingComplete = false
+
+local function RunAfterLoadingComplete()
+    -- Implement any actions to perform after loading completes
+end
+
+local function onRenderStepped()
     local elapsedTime = tick() - startTime
-    local progress = elapsedTime / 13  -- 4 seconds total
+    local progress = elapsedTime / 13  -- 13 seconds total
     
     loadingBar.Size = UDim2.new(progress, 0, 1, 0)
     percentageLabel.Text = math.floor(progress * 100) .. "%"
     
-    if elapsedTime >= 13 then
+    if elapsedTime >= 13 and not loadingComplete then
+        loadingComplete = true
         loadingUI:Destroy()
         
         -- Execute your script or function after loading completes
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Easy_hub/main/sense"))()      
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Easy_hub/main/sense"))()
         -- Example: Run a function
         RunAfterLoadingComplete()
+        
+        -- Disconnect the RenderStepped connection after execution
+        game:GetService("RunService").RenderStepped:Disconnect()
     end
-end)
+end
+
+game:GetService("RunService").RenderStepped:Connect(onRenderStepped)
