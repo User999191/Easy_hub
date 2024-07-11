@@ -480,7 +480,8 @@ local testSection3 = settingTab:CreateSector("fps and fullbright", "left")
 testSection3:AddButton("fps cap", function()  
 while true do
     wait()
-    game:GetService("RunService"):Set3dRenderingQuality(500)
+    game:GetService("RunService").QualityLevel = Enum.QualityLevel.Level500
+
 end
 end)
 
