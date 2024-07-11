@@ -448,22 +448,23 @@ end)
 local testSection2 = LockingTab:CreateSector("Anti stomp fog color sky color", "right")
    
 testSection2:AddButton("anti stomp", function()
-    local Players = game:GetService("Players")
-
-local function onTouched(hit)
-    local character = hit.Parent
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
-    if humanoid and humanoid.Health > 0 then
-        -- Check if the humanoid is in the air and close enough to your character
-        local distance = (character.HumanoidRootPart.Position - script.Parent.HumanoidRootPart.Position).magnitude
-        if humanoid:GetState() == Enum.HumanoidStateType.Freefall and distance < 10 then
-            -- Teleport the player to 10 million height
-            character:MoveTo(Vector3.new(0, 10000000, 0))
-        end
-    end
-end
-
-script.Parent.HumanoidRootPart.Touched:Connect(onTouched)
+if game.PlaceId == 2788229376 then repeat wait() until game.Players.LocalPlayer and game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("FULLY_LOADED_CHAR") else return end
+repeat wait() until false
+ 
+pcall(function() 
+    local corepackages = game:GetService"CorePackages" 
+    local localplayer = game:GetService"Players".LocalPlayer 
+    local run = game:GetService"RunService" run:BindToRenderStep("rrrrrrrrrrr",2000,function() 
+        pcall(function() 
+            if localplayer.Character.BodyEffects["K.O"].Value then 
+                localplayer.Character.Humanoid:UnequipTools() 
+                localplayer.Character.Humanoid:Destroy() workspace.CurrentCamera.CameraSubject = localplayer.Character 
+                wait() 
+                local prt = Instance.new("Model", corepackages); Instance.new("Part", prt).Name="Torso"; Instance.new("Part", prt).Name="Head"; Instance.new("Humanoid", prt).Name="Humanoid"; localplayer.Character=prt
+            end 
+        end)
+    end)
+end)
 end)
  
 testSection2:AddButton("senselight fog", function()
