@@ -317,7 +317,7 @@ testSection2:AddButton("crosshair spin", function()
     width = 1.5,
     length = 15,
     radius = 16,
-    color = Color3.fromRGB(1, 30, 80),
+    color = Color3.fromRGB(255, 235, 0),
 
     spin = true, -- animate the rotation
     spin_speed = 150,
@@ -349,7 +349,7 @@ local last_render = 0
 local drawings = {
     crosshair = {},
     text = {
-        Drawing.new('Text', {Size = 13, Font = 2, Outline = true, Text = 'senselight', Color = Color3.new(5,5,5)}),
+        Drawing.new('Text', {Size = 13, Font = 2, Outline = true, Text = 'senselight', Color = Color3.new(255,235,0)}),
         Drawing.new('Text', {Size = 13, Font = 2, Outline = true, Text = ".cc"}),
 	
     }
@@ -440,7 +440,11 @@ end)
 testSection2:AddTextbox("radius", nil, function(text)
 getgenv().crosshair.radius = text
 end)
- 
+
+testSection2:AddTextbox("speed", nil, function(text)
+getgenv().crosshair.spin.speed = text
+end)
+
 local testSection2 = LockingTab:CreateSector("Anti stomp fog color sky color", "right")
    
 testSection2:AddButton("anti stomp", function()
