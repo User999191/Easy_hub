@@ -192,14 +192,30 @@ function aimAt(targetPosition, smoothness)
     Camera.CFrame = Camera.CFrame:Lerp(LookPosition, smoothness)
 end
 
+-- Function to aim directly at current position without prediction
+function aimDirectlyAt(targetPosition)
+    local shakeOffset = Vector3.new(
+        math.random(-getgenv().ShakeValue, getgenv().ShakeValue),
+        math.random(-getgenv().ShakeValue, getgenv().ShakeValue),
+        math.random(-getgenv().ShakeValue, getgenv().ShakeValue)
+    ) * 0.1
+
+    local LookPosition = CFrame.new(Camera.CFrame.p, targetPosition) + shakeOffset
+    Camera.CFrame = LookPosition
+end
+
 -- Function to handle rendering and aiming logic
 RS.RenderStepped:Connect(function()
     update()
 
-    if AimlockState and getgenv().Aimbot ~= false then
+    if AimlockState then
         if Victim then
-            local predictedPosition = predictPosition(Victim, getgenv().Prediction)
-            aimAt(predictedPosition, getgenv().Smoothness)
+            if getgenv().Aimbot == 0.9 then
+                aimDirectlyAt(Victim.Character[getgenv().AimPart].Position)
+            else
+                local predictedPosition = predictPosition(Victim, getgenv().Prediction)
+                aimAt(predictedPosition, getgenv().Smoothness)
+            end
         end
     end
 end)
