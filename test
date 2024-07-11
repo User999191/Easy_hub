@@ -1,5 +1,4 @@
 local player = game:GetService("Players").LocalPlayer
-local guiService = game:GetService("GuiService")
 local tweenService = game:GetService("TweenService")
 local runService = game:GetService("RunService")
 
@@ -64,26 +63,20 @@ local function updateProgressColor(progress)
     progressLine.BackgroundColor3 = color
 end
 
-runService.RenderStepped:Connect(function()
-    local elapsedTime = tick() - startTime
-    local progress = math.clamp(elapsedTime / 16, 0, 1) -- Clamp progress between 0 and 1
-    
-    updateProgressColor(progress)
-    percentageLabel.Text = math.floor(progress * 100) .. "%"
-end)
-
 local function closeLoadingUI()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Easy_hub/main/sense"))()
     
     -- Remove the loading UI
     loadingUI:Destroy()
+
+    -- Disconnect the RenderStepped event to prevent further executions
+    updateRenderStepped:Disconnect()
 end
 
-tween.Completed:Connect(closeLoadingUI)
-
--- Update percentage label and close UI at 100%
 local startTime = tick()
-runService.RenderStepped:Connect(function()
+local updateRenderStepped -- Define the variable to hold the connection
+
+updateRenderStepped = runService.RenderStepped:Connect(function()
     local elapsedTime = tick() - startTime
     local progress = math.clamp(elapsedTime / 16, 0, 1) -- Clamp progress between 0 and 1
     
