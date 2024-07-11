@@ -1,0 +1,550 @@
+--[[
+SENSELIGHT ON TOP
+SENSELIGHT ON TOP
+SENSELIGHT ON TOP
+
+THIS SOURCE IS FAKE ONE WE DO NOT SELL SOURCE AROUND HERE LOSING 4 OR 5KB
+--]]
+
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/cat"))()
+local Window = Library:CreateWindow("Senselight v2", Vector2.new(440, 450), Enum.KeyCode.RightControl)
+local AimingTab = Window:CreateTab("Target lock")
+local LockingTab = Window:CreateTab("Misc")
+local settingTab = Window:CreateTab("settings")
+
+local Player = game.Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui") 
+ 
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "Corporations" 
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = PlayerGui 
+
+local ImageButton = Instance.new("ImageButton") 
+ImageButton.Name = "Senselight"
+ImageButton.Parent = ScreenGui
+ImageButton.BackgroundColor3 = Color3.fromRGB(255, 235, 0)
+ImageButton.BackgroundTransparency = 0.5
+ImageButton.BorderSizePixel = 0
+ImageButton.Position = UDim2.new(0, 0, 0, 55)
+ImageButton.Size = UDim2.new(0, 50, 0, 50)
+ImageButton.Image = "rbxassetid://14690289519"
+local UICorner = Instance.new("UICorner")
+UICorner.Parent = ImageButton
+
+local function OnButtonClick()
+    local vim = game:GetService("VirtualInputManager")
+    vim:SendKeyEvent(true, Enum.KeyCode.RightControl, false, game)
+end
+
+ImageButton.MouseButton1Click:Connect(OnButtonClick)
+
+local testSection = AimingTab:CreateSector("Camlock", "left")
+
+testSection:AddButton("Enable Camlock", function()
+-- Define initial settings and variables
+getgenv().Prediction = 0.135
+getgenv().Smoothness = 0.8
+getgenv().AimPart = "UpperTorso"
+getgenv().OldAimpart = "UpperTorso"
+getgenv().ShakeValue = 1.1
+getgenv().AutoPred = false
+getgenv().Aimbot = 0.2  -- Adjusted aimbot sensitivity
+
+-- Create the tool and set it up
+local Tool = Instance.new("Tool")
+Tool.RequiresHandle = false
+Tool.Name = "Senselight Camlock tools"
+
+-- Check if the player has it in their backpack already
+local player = game.Players.LocalPlayer
+if player then
+    Tool.Parent = player.Backpack
+end
+
+-- Function to handle tool re-parenting on character respawn
+local function onCharacterAdded(character)
+    Tool.Parent = player.Backpack
+end
+
+-- Bind character added event
+player.CharacterAdded:Connect(onCharacterAdded)
+
+-- Get local player and necessary services
+local Players = game:GetService("Players")
+local RS = game:GetService("RunService")
+local WS = game:GetService("Workspace")
+local GS = game:GetService("GuiService")
+local SG = game:GetService("StarterGui")
+
+-- Retrieve essential elements like mouse and camera
+local Mouse = player:GetMouse()
+local Camera = WS.CurrentCamera
+local GetGuiInset = GS.GetGuiInset
+
+-- Initialize aimlock state and victim tracking
+local AimlockState = true
+local Locked
+local Victim
+
+-- Function to send notifications
+function Notify(tx)
+    SG:SetCore("SendNotification", {
+        Title = "Senselight evolved",
+        Text = tx,
+        Duration = 5
+    })
+end
+
+-- Check if script is already loaded
+if getgenv().Loaded == true then
+    Notify("Loaded")
+    return
+end
+
+-- Mark script as loaded
+getgenv().Loaded = true
+
+-- Initialize FOV circle drawing settings
+local fov = Drawing.new("Circle")
+fov.Filled = false
+fov.Transparency = 1
+fov.Thickness = 1
+fov.Color = Color3.fromRGB(255, 255, 0)
+fov.NumSides = 1000
+
+-- Function to update FOV circle position and visibility
+function update()
+    if getgenv().FOV == true then
+        if fov then
+            fov.Radius = getgenv().FOVSize * 2
+            fov.Visible = getgenv().ShowFOV
+            fov.Position = Vector2.new(Mouse.X, Mouse.Y + GetGuiInset(GS).Y)
+        end
+    end
+end
+
+-- Helper function to convert world to viewport point
+function WTVP(arg)
+    return Camera:WorldToViewportPoint(arg)
+end
+
+-- Helper function to convert world to screen point
+function WTSP(arg)
+    return Camera.WorldToScreenPoint(Camera, arg)
+end
+
+-- Function to find closest valid target
+function getClosest()
+    local closestPlayer
+    local shortestDistance = math.huge
+
+    for i, v in pairs(game.Players:GetPlayers()) do
+        -- Ensure necessary components exist and are valid
+        local notKO = v.Character:FindFirstChild("BodyEffects") and not v.Character.BodyEffects["K.O"].Value
+        local notGrabbed = not v.Character:FindFirstChild("GRABBING_COINSTRAINT")
+
+        if v ~= player and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 and v.Character:FindFirstChild(getgenv().AimPart) and notKO and notGrabbed then
+            local pos = Camera:WorldToViewportPoint(v.Character.PrimaryPart.Position)
+            local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).magnitude
+
+            if getgenv().FOV then
+                if fov.Radius > magnitude and magnitude < shortestDistance then
+                    closestPlayer = v
+                    shortestDistance = magnitude
+                end
+            else
+                if magnitude < shortestDistance then
+                    closestPlayer = v
+                    shortestDistance = magnitude
+                end
+            end
+        end
+    end
+
+    return closestPlayer
+end
+
+-- Tool activation event to toggle aimlock
+Tool.Activated:Connect(function()
+    if AimlockState then
+        Locked = not Locked
+        if Locked then
+            Victim = getClosest()
+            if Victim then
+                Notify("Locked onto: " .. tostring(Victim.Character.Humanoid.DisplayName))
+            end
+        else
+            Victim = nil
+            Notify("Unlocked!")
+        end
+    else
+        Notify("Aimlock is not enabled!")
+    end
+end)
+
+-- Function to predict target's future position based on velocity
+function predictPosition(target, prediction)
+    local targetPosition = target.Character[getgenv().AimPart].Position
+    local targetVelocity = target.Character.HumanoidRootPart.Velocity
+
+    return targetPosition + targetVelocity * prediction
+end
+
+-- Function to aim smoothly at predicted position
+function aimAt(targetPosition, smoothness)
+    local shakeOffset = Vector3.new(
+        math.random(-getgenv().ShakeValue, getgenv().ShakeValue),
+        math.random(-getgenv().ShakeValue, getgenv().ShakeValue),
+        math.random(-getgenv().ShakeValue, getgenv().ShakeValue)
+    ) * 0.1
+
+    local LookPosition = CFrame.new(Camera.CFrame.p, targetPosition) + shakeOffset
+    Camera.CFrame = Camera.CFrame:Lerp(LookPosition, smoothness)
+end
+
+-- Function to aim directly at current position without prediction
+function aimDirectlyAt(targetPosition)
+    local shakeOffset = Vector3.new(
+        math.random(-getgenv().ShakeValue, getgenv().ShakeValue),
+        math.random(-getgenv().ShakeValue, getgenv().ShakeValue),
+        math.random(-getgenv().ShakeValue, getgenv().ShakeValue)
+    ) * 0.1
+
+    local LookPosition = CFrame.new(Camera.CFrame.p, targetPosition) + shakeOffset
+    Camera.CFrame = LookPosition
+end
+
+-- Function to handle rendering and aiming logic
+RS.RenderStepped:Connect(function()
+    update()
+
+    if AimlockState then
+        if Victim then
+            if getgenv().Aimbot == 0.99 then
+                aimDirectlyAt(Victim.Character[getgenv().AimPart].Position)
+            else
+                local predictedPosition = predictPosition(Victim, getgenv().Prediction)
+                aimAt(predictedPosition, getgenv().Smoothness)
+            end
+        end
+    end
+end)
+
+-- Continuous loop to adjust prediction based on network ping
+while true do
+    if getgenv().AutoPred == true then
+        local pingvalue = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()
+        local split = string.split(pingvalue, '(')
+        local ping = tonumber(split[1])
+
+        if ping < 200 then
+            getgenv().Prediction = 0.1973432432343325
+        elseif ping < 150 then
+            getgenv().Prediction = 0.1922
+        elseif ping < 90 then
+            getgenv().Prediction = 0.16
+        elseif ping < 80 then
+            getgenv().Prediction = 0.169
+        elseif ping < 70 then
+            getgenv().Prediction = 0.1355
+        elseif ping < 50 then
+            getgenv().Prediction = 0.125
+        elseif ping < 40 then
+            getgenv().Prediction = 0.12
+        elseif ping < 30 then
+            getgenv().Prediction = 0.12
+        end
+    end
+    RS.Heartbeat:Wait()
+end
+end)
+
+testSection:AddTextbox("Prediction", nil, function(text)
+getgenv().Prediction = text
+end)
+
+testSection:AddTextbox("Smoothness", nil, function(text)
+getgenv().Smoothness = text
+end)
+
+testSection:AddTextbox("Shake", nil, function(text)
+getgenv().ShakeValue = text 
+end)
+
+testSection:AddTextbox("Aimbot", nil, function(text)
+getgenv().Aimbot = text
+end)
+
+local testSection = AimingTab:CreateSector("Aimlock", "left")
+
+ testSection:AddTextbox("Prediction", nil, function(text)
+getgenv().Prediction = text 
+end)
+
+ 
+local testSection2 = LockingTab:CreateSector("esp", "left")
+
+
+local testSection2 = LockingTab:CreateSector("shader", "left")
+
+testSection2:AddButton("shader", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Lockinv54/main/README.md"))()      
+end)
+ 
+ local testSection2 = LockingTab:CreateSector("Anti and Crosshair", "left")
+   
+
+
+
+
+testSection2:AddTextbox("length", nil, function(text)
+getgenv().crosshair.length = text
+end)
+
+testSection2:AddTextbox("radius", nil, function(text)
+getgenv().crosshair.radius = text
+end)
+
+testSection2:AddTextbox("speed", nil, function(text)
+getgenv().crosshair.spin.speed = text
+end)
+
+local testSection2 = LockingTab:CreateSector("Anti stomp fog color sky color", "right")
+   
+testSection2:AddButton("anti stomp", function()
+if game.PlaceId == 2788229376 then repeat wait() until game.Players.LocalPlayer and game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("FULLY_LOADED_CHAR") else return end
+repeat wait() until false
+ 
+pcall(function() 
+    local corepackages = game:GetService"CorePackages" 
+    local localplayer = game:GetService"Players".LocalPlayer 
+    local run = game:GetService"RunService" run:BindToRenderStep("rrrrrrrrrrr",2000,function() 
+        pcall(function() 
+            if localplayer.Character.BodyEffects["K.O"].Value then 
+                localplayer.Character.Humanoid:UnequipTools() 
+                localplayer.Character.Humanoid:Destroy() workspace.CurrentCamera.CameraSubject = localplayer.Character 
+                wait() 
+                local prt = Instance.new("Model", corepackages); Instance.new("Part", prt).Name="Torso"; Instance.new("Part", prt).Name="Head"; Instance.new("Humanoid", prt).Name="Humanoid"; localplayer.Character=prt
+            end 
+        end)
+    end)
+end)
+end)
+ 
+testSection2:AddButton("senselight fog", function()
+    game:GetService("Lighting").FogColor = Color3.fromRGB(255, 255, 0) 
+end)
+
+testSection2:AddButton("purple", function()
+    game:GetService("Lighting").FogColor = Color3.fromRGB(128, 0, 128) 
+end)
+
+testSection2:AddButton("Pure blue", function()
+    game:GetService("Lighting").FogColor = Color3.fromRGB(0, 0, 255) 
+end)
+
+testSection2:AddButton("Dark red", function()
+    game:GetService("Lighting").FogColor = Color3.fromRGB(139, 0, 0) 
+end)
+
+testSection2:AddButton("reset fog", function()
+    game:GetService("Lighting").FogEnd = 1000 -- Replace 100 with your desired fog end distance
+game:GetService("Lighting").FogColor = Color3.fromRGB(0, 0, 0) 
+end)
+
+local testSection3 = settingTab:CreateSector("Settings", "left")  
+
+
+testSection3:AddToggle("enable anti void", false, function(enabled)
+local part = Instance.new("Part")
+part.Size = Vector3.new(50, 1, 50)
+part.Anchored = true
+part.Transparency = 0.9
+part.Reflectance = 0
+part.Parent = game.Workspace
+
+-- create a function to follow the user
+local function followUser()
+local character = game.Players.LocalPlayer.Character
+if character then
+local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+if humanoidRootPart then
+part.CFrame = humanoidRootPart.CFrame * CFrame.new(0, -4.8, 0)
+end
+end
+end
+
+-- create a function to void
+local function void()
+part.Transparency = 1
+wait(0.05)
+part.Transparency = 0.5
+end
+
+-- listen for the user's movement
+game.Players.LocalPlayer.CharacterAdded:Connect(function(character)
+while true do
+followUser()
+void()
+wait(0.05)
+end
+end)
+end)
+
+testSection3:AddButton("Rejoin", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Lockinv2/main/README.md"))()  
+end)
+
+local testSection3 = settingTab:CreateSector("fps and fullbright", "left")
+
+testSection3:AddButton("fps cap", function()  
+while true do
+    wait()
+    game:GetService("RunService").QualityLevel = Enum.QualityLevel.Level500
+
+end
+end)
+
+testSection3:AddTextbox("fps", nil, function(text)
+getgenv().setfpscap = text
+end)
+
+testSection3:AddButton("Fullbright", function()  
+-- Reference to the Lighting service
+local lighting = game:GetService("Lighting")
+
+-- Function to set full bright effect
+local function setFullBright()
+    -- Adjust lighting properties
+    lighting.GlobalShadows = false -- Disable global shadows for brighter appearance
+    lighting.OutdoorAmbient = Color3.fromRGB(255, 255, 255) -- Set outdoor ambient to white for maximum brightness
+    lighting.Brightness = 2.2 -- Increase overall brightness (adjust as needed)
+    lighting.FogEnd = 10000000 -- Increase fog end distance to reduce fog effect
+    lighting.TimeOfDay = 12 -- Set time of day to noon for maximum light intensity
+end
+
+setFullBright()
+end) 
+
+
+testSection3:AddButton("Watermark *simple one*", function()
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Create ScreenGui for the watermar
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "WatermarkGui"
+screenGui.Parent = playerGui
+
+-- Create TextLabel for the game name
+local gameNameLabel = Instance.new("TextLabel")
+gameNameLabel.Name = "GameName"
+gameNameLabel.Size = UDim2.new(0, 200, 0, 50)
+gameNameLabel.Position = UDim2.new(1, -220, 1, -70)
+gameNameLabel.AnchorPoint = Vector2.new(1, 1)
+gameNameLabel.BackgroundTransparency = 1
+gameNameLabel.Text = "Active: 🟢"
+gameNameLabel.Font = Enum.Font.GothamBold -- Replace with your preferred font
+gameNameLabel.TextSize = 24
+gameNameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+gameNameLabel.TextStrokeTransparency = 0.5
+gameNameLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+gameNameLabel.ZIndex = 2  -- Ensure it's above other GUI elements
+
+-- Create TextLabel for the FPS
+local fpsLabel = Instance.new("TextLabel")
+fpsLabel.Name = "FPSLabel"
+fpsLabel.Size = UDim2.new(0, 200, 0, 50)
+fpsLabel.Position = UDim2.new(1, -220, 1, -40)  -- Adjust position as needed
+fpsLabel.AnchorPoint = Vector2.new(1, 1)
+fpsLabel.BackgroundTransparency = 1
+fpsLabel.Text = "FPS: 500"  -- Initial text, showing FPS
+fpsLabel.Font = Enum.Font.GothamBold -- Replace with your preferred font
+fpsLabel.TextSize = 20
+fpsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+fpsLabel.TextStrokeTransparency = 0.5
+fpsLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+fpsLabel.ZIndex = 2  -- Ensure it's above other GUI elements
+
+-- Parent TextLabels to the ScreenGui
+gameNameLabel.Parent = screenGui
+fpsLabel.Parent = screenGui
+end)
+
+local testSection3 = settingTab:CreateSector("spy chat", "left")
+testSection3:AddButton("spy chat", function()
+--This script reveals ALL hidden messages in the default chat
+--chat "/spy" to toggle!
+enabled = true
+--if true will check your messages too
+spyOnMyself = true
+--if true will chat the logs publicly (fun, risky)
+public = false
+--if true will use /me to stand out
+publicItalics = true
+--customize private logs
+privateProperties = {
+	Color = Color3.fromRGB(0,255,255); 
+	Font = Enum.Font.SourceSansBold;
+	TextSize = 18;
+}
+--////////////////////////////////////////////////////////////////
+local StarterGui = game:GetService("StarterGui")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local saymsg = game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest")
+local getmsg = game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("OnMessageDoneFiltering")
+local instance = (_G.chatSpyInstance or 0) + 1
+_G.chatSpyInstance = instance
+
+local function onChatted(p,msg)
+	if _G.chatSpyInstance == instance then
+		if p==player and msg:lower():sub(1,4)=="/spy" then
+			enabled = not enabled
+			wait(0.3)
+			privateProperties.Text = "{SPY "..(enabled and "EN" or "DIS").."ABLED}"
+			StarterGui:SetCore("ChatMakeSystemMessage",privateProperties)
+		elseif enabled and (spyOnMyself==true or p~=player) then
+			msg = msg:gsub("[\n\r]",''):gsub("\t",' '):gsub("[ ]+",' ')
+			local hidden = true
+			local conn = getmsg.OnClientEvent:Connect(function(packet,channel)
+				if packet.SpeakerUserId==p.UserId and packet.Message==msg:sub(#msg-#packet.Message+1) and (channel=="All" or (channel=="Team" and public==false and Players[packet.FromSpeaker].Team==player.Team)) then
+					hidden = false
+				end
+			end)
+			wait(1)
+			conn:Disconnect()
+			if hidden and enabled then
+				if public then
+					saymsg:FireServer((publicItalics and "/me " or '').."{SPY} [".. p.Name .."]: "..msg,"All")
+				else
+					privateProperties.Text = "{SPY} [".. p.Name .."]: "..msg
+					StarterGui:SetCore("ChatMakeSystemMessage",privateProperties)
+				end
+			end
+		end
+	end
+end
+
+for _,p in ipairs(Players:GetPlayers()) do
+	p.Chatted:Connect(function(msg) onChatted(p,msg) end)
+end
+Players.PlayerAdded:Connect(function(p)
+	p.Chatted:Connect(function(msg) onChatted(p,msg) end)
+end)
+privateProperties.Text = "{SPY "..(enabled and "EN" or "DIS").."ABLED}"
+StarterGui:SetCore("ChatMakeSystemMessage",privateProperties)
+local chatFrame = player.PlayerGui.Chat.Frame
+chatFrame.ChatChannelParentFrame.Visible = true
+chatFrame.ChatBarParentFrame.Position = chatFrame.ChatChannelParentFrame.Position+UDim2.new(UDim.new(),chatFrame.ChatChannelParentFrame.Size.Y)
+end)
+
+testSection3:AddButton("fov", function()
+local camera = workspace.CurrentCamera
+camera.FieldOfView = 120
+end)
+
+
+AimingTab:CreateConfigSystem("right")
+AimingTab:CreateConfigSystem("left")
