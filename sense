@@ -480,7 +480,7 @@ local testSection3 = settingTab:CreateSector("fps and fullbright", "left")
 testSection3:AddButton("fps cap", function()  
 while true do
     wait()
-    setfpscap(500) -- change 60 to your desired FPS cap
+    game:GetService("RunService"):Set3dRenderingQuality(500)
 end
 end)
 
@@ -537,27 +537,13 @@ fpsLabel.Size = UDim2.new(0, 200, 0, 50)
 fpsLabel.Position = UDim2.new(1, -220, 1, -40)  -- Adjust position as needed
 fpsLabel.AnchorPoint = Vector2.new(1, 1)
 fpsLabel.BackgroundTransparency = 1
-fpsLabel.Text = "FPS: %0"  -- Initial text, showing FPS
+fpsLabel.Text = "FPS: 500"  -- Initial text, showing FPS
 fpsLabel.Font = Enum.Font.GothamBold -- Replace with your preferred font
 fpsLabel.TextSize = 20
 fpsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 fpsLabel.TextStrokeTransparency = 0.5
 fpsLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
 fpsLabel.ZIndex = 2  -- Ensure it's above other GUI elements
-
-local gameNameLabel = Instance.new("TextLabel")
-gameNameLabel.Name = "GameName"
-gameNameLabel.Size = UDim2.new(0, 200, 0, 50)
-gameNameLabel.Position = UDim2.new(1, -220, 1, -70)
-gameNameLabel.AnchorPoint = Vector2.new(1, 1)
-gameNameLabel.BackgroundTransparency = 1
-gameNameLabel.Text = "Anti void:Enable *Auto*"
-gameNameLabel.Font = Enum.Font.GothamBold -- Replace with your preferred font
-gameNameLabel.TextSize = 24
-gameNameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-gameNameLabel.TextStrokeTransparency = 0.5
-gameNameLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-gameNameLabel.ZIndex = 2  -- Ensure it's above other GUI elements
 
 -- Parent TextLabels to the ScreenGui
 gameNameLabel.Parent = screenGui
