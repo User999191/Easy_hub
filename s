@@ -1,240 +1,226 @@
--- Settings and key binds
-getgenv().Target = true
-getgenv().Key = Enum.KeyCode.Q
-getgenv().Prediction = 0.178
-getgenv().ChatMode = false
-getgenv().NotifMode = true
+getgenv().Target = true --// keep this on
+
+getgenv().Key = Enum.KeyCode.Q --// keybind to lock on
+getgenv().Prediction = 0.178 --// prediction of the aimlock
+getgenv().ChatMode = false --// sends a chat message of who you're locked on
+getgenv().NotifMode = true --// notifys of who you're locked on
 getgenv().PartMode = true
 getgenv().AirshotFunccc = true
-getgenv().Partz = "HumanoidRootPart"
+getgenv().Partz = "HumanoidRootPart" --// what part the aimlock will hit
 getgenv().AutoPrediction = false
 getgenv().Fov = 100
-getgenv().Circle = true
-getgenv().keytoclick = "Q"
+getgenv().Circle = true --// fov circle
+--
 
--- Key bind tool creation
-local tool = Instance.new("Tool")
+getgenv().keytoclick = "Q"
+tool = Instance.new("Tool")
 tool.RequiresHandle = false
-tool.Name = getgenv().keytoclick
-tool.Activated:Connect(function()
-    local vim = game:GetService("VirtualInputManager")
-    vim:SendKeyEvent(true, getgenv().keytoclick, false, game)
+tool.Name = keytoclick
+tool.Activated:connect(function()
+    local vim = game:service("VirtualInputManager")
+vim:SendKeyEvent(true, keytoclick, false, game)
 end)
 tool.Parent = game.Players.LocalPlayer.Backpack
 
--- Notification about the tool
 game.StarterGui:SetCore("SendNotification", {
-    Title = "Senselight",
-    Text = "Thanks to saiko for let me borrow q tool locks",
+    Title = "Senselight";
+    Text = "Detecting solara...";
+
 })
 
--- Character connection functions
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Senselight";
+    Text = "No any Solara user...";
+
+})
+
 local player = game.Players.LocalPlayer
-local function onCharacterAdded()
-    -- Additional character added logic can be added here if needed
+
+local function connectCharacterAdded()
+    player.CharacterAdded:Connect(onCharacterAdded)
 end
 
-player.CharacterAdded:Connect(onCharacterAdded)
+connectCharacterAdded()
 
 player.CharacterRemoving:Connect(function()
     tool.Parent = game.Players.LocalPlayer.Backpack
 end)
+    
 
--- Part types enumeration
-_G.Types = {
-    Ball = Enum.PartType.Ball,
-    Block = Enum.PartType.Block,
-    Cylinder = Enum.PartType.Cylinder
-}
-
--- Aimlock visuals setup
-local Tracer = Instance.new("Part", game.Workspace)
-Tracer.Name = "Aimlock"
-Tracer.Anchored = true
-Tracer.CanCollide = false
-Tracer.Transparency = 0.5
-Tracer.Shape = _G.Types.Ball
-Tracer.Size = Vector3.new(8, 8, 8)
-Tracer.Color = Color3.fromRGB(255, 255, 255)
-
--- Mouse and drawing setup
-local plr = game.Players.LocalPlayer
+    _G.Types = {
+        Ball = Enum.PartType.Ball,
+        Block = Enum.PartType.Block, 
+        Cylinder = Enum.PartType.Cylinder
+    }
+    
+    --variables                 
+    	local Tracer = Instance.new("Part", game.Workspace)
+    Tracer.Name = "Aimlock"	
+    Tracer.Anchored = true		
+    Tracer.CanCollide = false
+    Tracer.Transparency = 0.7
+    Tracer.Parent = game.Workspace	
+    Tracer.Shape = _G.Types.Block
+    Tracer.Size = Vector3.new(10,10,10)
+    Tracer.Color = Color3.fromRGB(255, 255, 255)
+    
+    --
+    local plr = game.Players.LocalPlayer
 local mouse = plr:GetMouse()
-local RunServ = game:GetService("RunService")
+local Runserv = game:GetService("RunService")
 
-local circle = Drawing.new("Circle")
-circle.Color = Color3.fromRGB(255, 255, 255)
+circle = Drawing.new("Circle")
+circle.Color = Color3.fromRGB(255,255,255)
 circle.Thickness = 0
-circle.NumSides = 100
+circle.NumSides = 732
 circle.Radius = getgenv().Fov
+circle.Thickness = 0
 circle.Transparency = 0
 circle.Visible = getgenv().Circle
 circle.Filled = false
 
-local espBox = Drawing.new("Quad")
-espBox.Thickness = 1
-espBox.Transparency = 1
-espBox.Visible = false
-
-RunServ.RenderStepped:Connect(function()
-    circle.Position = Vector2.new(mouse.X, mouse.Y + 35)
-
-    if getgenv().AirshotFunccc then
-        local Plr = game.Players.LocalPlayer
-        if Plr.Character then
-            if Plr.Character.Humanoid:GetState() == Enum.HumanoidStateType.Jumping and Plr.Character.Humanoid.FloorMaterial == Enum.Material.Air then
+Runserv.RenderStepped:Connect(function()
+    circle.Position = Vector2.new(mouse.X,mouse.Y+35)
+    if getgenv().AirshotFunccc == true then
+            if Plr ~= nil then else return; end
+            if Plr.Character.Humanoid.Jump == true and Plr.Character.Humanoid.FloorMaterial == Enum.Material.Air then
                 getgenv().Partz = "RightFoot"
             else
-                Plr.Character.Humanoid.StateChanged:Connect(function(old, new)
+                Plr.Character:WaitForChild("Humanoid").StateChanged:Connect(function(old,new)
                     if new == Enum.HumanoidStateType.Freefall then
-                        getgenv().Partz = "RightFoot"
+                    getgenv().Partz = "RightFoot"
                     else
                         getgenv().Partz = "HumanoidRootPart"
                     end
                 end)
             end
-        end
-    end
-end)
-
--- Main GUI folder
-local guimain = Instance.new("Folder", game.CoreGui)
-
--- Notification if already loaded
-if getgenv().valiansh == true then
-    game.StarterGui:SetCore("SendNotification", {
-        Title = "Senselight",
-        Text = "Already loaded",
-        Duration = 5
-    })
-    return
 end
-
-getgenv().valiansh = true
-
--- User input handling
-local UserInputService = game:GetService("UserInputService")
-UserInputService.InputBegan:Connect(function(input, isProcessed)
-    if not isProcessed and input.KeyCode == getgenv().Key then
-        if getgenv().Target then
-            Locking = not Locking
-
-            if Locking then
-                local Plr = getClosestPlayerToCursor()
-                if Plr then
-                    if getgenv().ChatMode then
-                        local A_1 = "Target: " .. tostring(Plr.Name)
-                        local A_2 = "All"
-                        local Event = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest
-                        Event:FireServer(A_1, A_2)
-                    end
-                    if getgenv().NotifMode then
+end)
+    
+    	local guimain = Instance.new("Folder", game.CoreGui)
+    	local CC = game:GetService"Workspace".CurrentCamera
+    local LocalMouse = game.Players.LocalPlayer:GetMouse()
+    	local Locking = false
+    
+    	
+    --
+    if getgenv().valiansh == true then
                         game.StarterGui:SetCore("SendNotification", {
-                            Title = "Senselight",
-                            Text = "Target: " .. tostring(Plr.Name),
-                        })
-                    end
+                   Title = "Senselight",
+                   Text = "already loaded",
+                   Duration = 5
+        
+                   })
+        return
+    end
+    
+    getgenv().valiansh = true
+    
+        local UserInputService = game:GetService("UserInputService")
 
-                    espBox.Visible = true
-                    espBox.Color = Color3.fromRGB(255, 0, 0)
-                end
-            else
-                espBox.Visible = false
+    UserInputService.InputBegan:Connect(function(keygo,ok)
+           if (not ok) then
+           if (keygo.KeyCode == getgenv().Key) then
+               if getgenv().Target == true then
+               Locking = not Locking
+               
+               if Locking then
+               Plr =  getClosestPlayerToCursor()
                 if getgenv().ChatMode then
-                    local A_1 = "Unlocked!"
-                    local A_2 = "All"
-                    local Event = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest
-                    Event:FireServer(A_1, A_2)
-                end
-                if getgenv().NotifMode then
-                    game.StarterGui:SetCore("SendNotification", {
-                        Title = "Senselight",
-                        Text = "Unlocked",
-                        Duration = 5
-                    })
-                elseif not getgenv().Target then
-                    game.StarterGui:SetCore("SendNotification", {
-                        Title = "Senselight",
-                        Text = "Target Left or Died",
-                        Duration = 5
-                    })
-                end
-            end
-        end
+        local A_1 = "Target: "..tostring(Plr.Character.Humanoid.DisplayName) local A_2 = "All" local Event = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest Event:FireServer(A_1, A_2) 
+        	end	
+               if getgenv().NotifMode then
+    			game.StarterGui:SetCore("SendNotification", {
+        Title = "Senselight";
+        Text = "Target: "..tostring(Plr.Character.Humanoid.DisplayName);
+    
+    })
     end
-end)
-
--- Function to find closest player to cursor
-function getClosestPlayerToCursor()
-    local closestPlayer
-    local shortestDistance = circle.Radius
-
-    for i, v in pairs(game.Players:GetPlayers()) do
-        if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 then
-            local pos, onScreen = game:GetService("Workspace").CurrentCamera:WorldToScreenPoint(v.Character.PrimaryPart.Position)
-            if onScreen then
-                local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(mouse.X, mouse.Y)).magnitude
-                if magnitude < shortestDistance then
-                    closestPlayer = v
-                    shortestDistance = magnitude
-                end
-            end
-        end
-    end
-
-    if closestPlayer then
-        local pos, onScreen = game:GetService("Workspace").CurrentCamera:WorldToViewportPoint(closestPlayer.Character.PrimaryPart.Position)
-        if onScreen then
-            espBox.PointA = Vector2.new(pos.X - 50, pos.Y - 50)
-            espBox.PointB = Vector2.new(pos.X + 50, pos.Y - 50)
-            espBox.PointC = Vector2.new(pos.X + 50, pos.Y + 50)
-            espBox.PointD = Vector2.new(pos.X - 50, pos.Y + 50)
-        end
-    end
-
-    return closestPlayer
+    elseif not Locking then
+         if getgenv().ChatMode then
+        local A_1 = "Unlocked!" local A_2 = "All" local Event = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest Event:FireServer(A_1, A_2) 
+        	end	
+        if getgenv().NotifMode then
+                        game.StarterGui:SetCore("SendNotification", {
+                   Title = "Senselight",                
+                   text = "unlocked",
+                   Duration = 5
+               })
+           elseif getgenv().Target == false then
+                        game.StarterGui:SetCore("SendNotification", {
+                   Title = "Senselight",
+                   Text = "Target Left or Died",
+                   Duration = 5
+     
+                   })
+               
+               end
+                  
+ 
+ end     end   
 end
+end
+end)
+	
+	function getClosestPlayerToCursor()
+		local closestPlayer
+		local shortestDistance = circle.Radius
 
--- Part mode execution
+		for i, v in pairs(game.Players:GetPlayers()) do
+			if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild("LowerTorso") then
+				local pos = CC:WorldToViewportPoint(v.Character.PrimaryPart.Position)
+				local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(LocalMouse.X, LocalMouse.Y)).magnitude
+				if magnitude < shortestDistance then
+					closestPlayer = v
+					shortestDistance = magnitude
+				end
+			end
+		end
+		return closestPlayer
+	end
+--
 if getgenv().PartMode then
-    RunServ.Stepped:Connect(function()
-        if Locking then
-            local Plr = getClosestPlayerToCursor()
-            if Plr and Plr.Character and Plr.Character:FindFirstChild(getgenv().Partz) then
-                Tracer.CFrame = CFrame.new(Plr.Character[getgenv().Partz].Position + (Plr.Character[getgenv().Partz].Velocity * getgenv().Prediction))
-            else
-                Tracer.CFrame = CFrame.new(0, 9999, 0)
-            end
-       
-                end
-            end
-        end
-    end)
+	game:GetService"RunService".Stepped:connect(function()
+		if Locking and Plr.Character and Plr.Character:FindFirstChild("LowerTorso") then
+			Tracer.CFrame = CFrame.new(Plr.Character.LowerTorso.Position+(Plr.Character.LowerTorso.Velocity*Prediction))
+		else
+			Tracer.CFrame = CFrame.new(0, 9999, 0)
+		end
+	end)
 end
 
--- Remote event interception for predictive aiming
-local rawmetatable = getrawmetatable(game)
-local old = rawmetatable.__namecall
-setreadonly(rawmetatable, false)
-rawmetatable.__namecall = newcclosure(function(...)
-    local args = {...}
-    if Locking and getnamecallmethod() == "FireServer" and args[2] == "UpdateMousePos" then
-        local Plr = getClosestPlayerToCursor()  -- Update Plr here to ensure it's the closest player
-        if Plr and Plr.Character and Plr.Character:FindFirstChild(getgenv().Partz) then
-            args[3] = Plr.Character[getgenv().Partz].Position + (Plr.Character[getgenv().Partz].Velocity * getgenv().Prediction)
-        else
-            args[3] = Vector3.new(0, 0, 0)  -- Default position if Plr is nil or doesn't have the specified part
+  if Camlock.Resolver == true and Plr.Character ~= nil and enabled and Camlock.Enable then
+    while true do
+        heartbeat:Wait()
+        if target == true then
+            local character = game.Players[targetplr].Character.HumanoidRootPart
+            local lastPosition = character.Position
+            task.wait()
+            local currentPosition = character.Position
+            local velocity = (currentPosition - lastPosition) * 0
+            character.AssemblyLinearVelocity = velocity
+            character.Velocity = velocity
         end
-        return old(unpack(args))
     end
-    return old(...)
-end)
-
--- Auto prediction based on ping
-while wait() do
-    if getgenv().AutoPrediction then
+end  
+    
+    --
+	local rawmetatable = getrawmetatable(game)
+	local old = rawmetatable.__namecall
+	setreadonly(rawmetatable, false)
+	rawmetatable.__namecall = newcclosure(function(...)
+		local args = {...}
+		if Locking and getnamecallmethod() == "FireServer" and args[2] == "UpdateMousePos" then
+			args[3] = Plr.Character[getgenv().Partz].Position+(Plr.Character[getgenv().Partz].Velocity*Prediction)
+			return old(unpack(args))
+		end
+		return old(...)
+	end)
+---
+	while wait() do
+	if getgenv().AutoPrediction == true then
         local pingvalue = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()
-        local split = string.split(pingvalue, '(')
+        local split = string.split(pingvalue,'(')
         local ping = tonumber(split[1])
         if ping < 130 then
             getgenv().Prediction = 0.151
@@ -249,7 +235,7 @@ while wait() do
         elseif ping < 80 then
             getgenv().Prediction = 0.128
         elseif ping < 70 then
-            getgenv().Prediction = 0.123
+            getgenv().Prediction = 0.1230
         elseif ping < 60 then
             getgenv().Prediction = 0.1229
         elseif ping < 50 then
@@ -257,5 +243,5 @@ while wait() do
         elseif ping < 40 then
             getgenv().Prediction = 0.1256
         end
+	end
     end
-end
