@@ -5,12 +5,14 @@ local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 local GuiService = game:GetService("GuiService")
 local Mouse = LocalPlayer:GetMouse()
+local UserInputService = game:GetService("UserInputService")
+local StarterGui = game:GetService("StarterGui")
 
 local Settings = {
     AimLock = {
         Enabled = false,
         Aimlockkey = "q",
-        Prediction = 0.194,
+        Prediction = 0.19284,
         Aimpart = 'HumanoidRootPart',
         Notifications = true
     },
@@ -22,12 +24,12 @@ local Settings = {
     },
     CamLock = {
         Enabled = false,
-        Key = "q",
-        Prediction = 0.5
+        Key = "c",
+        Prediction = 0
     },
     AirshotFunccc = {
         Enabled = true,
-        Prediction = 0.09
+        Prediction = 0.1
     }
 }
 
@@ -116,6 +118,32 @@ local function FindClosestPlayer()
     return ClosestPlayer, ClosestDistance
 end
 
+-- Create Drawing objects for aimlock
+local aimlockDot = Drawing.new("Circle")
+aimlockDot.Radius = 10
+aimlockDot.Color = Color3.fromRGB(255, 255, 0)
+aimlockDot.Thickness = 1
+aimlockDot.Filled = true
+aimlockDot.Visible = false
+
+-- Handle Key Input
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed and input.KeyCode == Enum.KeyCode[Settings.AimLock.Aimlockkey:upper()] then
+        Settings.AimLock.Enabled = not Settings.AimLock.Enabled
+        if Settings.AimLock.Enabled then
+            local targetPlayer = FindClosestPlayer()
+            if targetPlayer then
+                local targetName = targetPlayer.Name
+                StarterGui:SetCore("SendNotification", {
+                    Title = "Senselight.cc",
+                    Text = "Target: " .. targetName,
+                    Duration = 2
+                })
+            end
+        end
+    end
+end)
+
 -- Update logic for AimLock and CamLock
 RunService.Heartbeat:Connect(function()
     local Plr = Settings.AimLock.Enabled and FindClosestPlayer() or nil
@@ -129,7 +157,10 @@ RunService.Heartbeat:Connect(function()
         end
 
         local Vector = Workspace.CurrentCamera:WorldToViewportPoint(predictedPosition)
-        -- Drawing logic should be added here
+        aimlockDot.Position = Vector2.new(Vector.X, Vector.Y)
+        aimlockDot.Visible = true
+    else
+        aimlockDot.Visible = false
     end
 
     if Settings.CamLock.Enabled and Plr and Plr ~= LocalPlayer then
