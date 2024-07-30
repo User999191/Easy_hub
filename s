@@ -26,7 +26,7 @@ local Settings = {
     CamLock = {
         Enabled = false,
         Key = "q",
-        CamlockPrediction = 0.1
+        CamlockPrediction = 0
     },
     AirshotFunccc = {
         Enabled = true,
@@ -121,7 +121,7 @@ end
 
 -- Create Drawing objects for aimlock
 local aimlockDot = Drawing.new("Circle")
-aimlockDot.Radius = 6
+aimlockDot.Radius = 10
 aimlockDot.Color = Color3.fromRGB(255, 255, 0)
 aimlockDot.Thickness = 1
 aimlockDot.Filled = true
@@ -137,7 +137,7 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
                 if targetPlayer then
                     local targetName = targetPlayer.Name
                     StarterGui:SetCore("SendNotification", {
-                        Title = "Senselight.cc",
+                        Title = "AimLock Activated",
                         Text = "Target: " .. targetName,
                         Duration = 2
                     })
@@ -168,30 +168,35 @@ RunService.Heartbeat:Connect(function()
     local Plr = Settings.AimLock.Enabled and FindClosestPlayer() or nil
 
     if Settings.AimLock.Enabled and Plr then
-        local targetPart = Plr.Character[Settings.AimLock.Aimpart]
-        local predictedPosition = targetPart.Position + (targetPart.Velocity * Settings.AimLock.Prediction)
+        local targetPart = Plr.Character:FindFirstChild(Settings.AimLock.Aimpart)
+        if targetPart then
+            -- Calculate the predicted position
+            local predictedPosition = targetPart.Position + (targetPart.Velocity * Settings.AimLock.Prediction)
 
-        if Settings.AirshotFunccc.Enabled and Plr.Character.Humanoid:GetState() == Enum.HumanoidStateType.Freefall then
-            predictedPosition = targetPart.Position + (targetPart.Velocity * Settings.AirshotFunccc.Prediction)
-        end
+            if Settings.AirshotFunccc.Enabled and Plr.Character.Humanoid:GetState() == Enum.HumanoidStateType.Freefall then
+                predictedPosition = targetPart.Position + (targetPart.Velocity * Settings.AirshotFunccc.AirShotPrediction)
+            end
 
-        -- Resolver logic
-        if Settings.AimLock.Resolver and targetPart then
-            local resolverPosition = targetPart.Position
-            aimlockDot.Position = Workspace.CurrentCamera:WorldToViewportPoint(resolverPosition)
-        else
-            local Vector = Workspace.CurrentCamera:WorldToViewportPoint(predictedPosition)
+            -- Use resolver position or predicted position
+            local aimPosition = Settings.AimLock.Resolver and targetPart.Position or predictedPosition
+
+            -- Update aimlockDot position
+            local Vector = Workspace.CurrentCamera:WorldToViewportPoint(aimPosition)
             aimlockDot.Position = Vector2.new(Vector.X, Vector.Y)
+            aimlockDot.Visible = not touchStarted
+        else
+            aimlockDot.Visible = false
         end
-
-        aimlockDot.Visible = not touchStarted -- Hide the dot while touching the screen
     else
         aimlockDot.Visible = false
     end
 
     if Settings.CamLock.Enabled and Plr and Plr ~= LocalPlayer then
-        local predictedPosition = Plr.Character[Settings.AimLock.Aimpart].Position + (Plr.Character[Settings.AimLock.Aimpart].Velocity * Settings.CamLock.CamlockPrediction)
-        Workspace.CurrentCamera.CFrame = CFrame.new(Workspace.CurrentCamera.CFrame.Position, predictedPosition)
+        local targetPart = Plr.Character:FindFirstChild(Settings.AimLock.Aimpart)
+        if targetPart then
+            local predictedPosition = targetPart.Position + (targetPart.Velocity * Settings.CamLock.CamlockPrediction)
+            Workspace.CurrentCamera.CFrame = CFrame.new(Workspace.CurrentCamera.CFrame.Position, predictedPosition)
+        end
     end
 end)
 
@@ -202,11 +207,11 @@ setreadonly(mt, false)
 mt.__namecall = newcclosure(function(...)
     local args = {...}
     if Settings.AimLock.Enabled and getnamecallmethod() == "FireServer" and args[2] == "UpdateMousePos" then
-        local targetPart = FindClosestPlayer().Character[Settings.AimLock.Aimpart]
+        local targetPart = FindClosestPlayer().Character:FindFirstChild(Settings.AimLock.Aimpart)
         local predictedPosition = targetPart.Position + (targetPart.Velocity * Settings.AimLock.Prediction)
 
         if Settings.AirshotFunccc.Enabled and targetPart.Parent.Humanoid:GetState() == Enum.HumanoidStateType.Freefall then
-            predictedPosition = targetPart.Position + (targetPart.Velocity * Settings.AirshotFunccc.Prediction)
+            predictedPosition = targetPart.Position + (targetPart.Velocity * Settings.AirshotFunccc.AirShotPrediction)
         end
 
         args[3] = predictedPosition
