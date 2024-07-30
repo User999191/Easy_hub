@@ -15,7 +15,7 @@ local Settings = {
         Prediction = 0.19284,
         Aimpart = 'HumanoidRootPart',
         Notifications = true,
-        Resolver = true -- Added resolver setting
+        Resolver = true
     },
     Settings = {
         Thickness = 2.85,
@@ -26,7 +26,7 @@ local Settings = {
     CamLock = {
         Enabled = false,
         Key = "q",
-        CamlockPrediction = 0
+        CamlockPrediction = 0.1
     },
     AirshotFunccc = {
         Enabled = true,
@@ -41,8 +41,8 @@ screenGui.Parent = PlayerGui
 
 local button = Instance.new("TextButton")
 button.Name = "ToggleCamLockButton"
-button.Size = UDim2.new(0, 200, 0, 50)
-button.Position = UDim2.new(0.5, -100, 0.5, -25)
+button.Size = UDim2.new(0, 100, 0, 40)  -- Smaller size
+button.Position = UDim2.new(0.5, -50, 0, 10)  -- Top middle position
 button.Text = "CamLock: Off"
 button.TextScaled = true
 button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -121,7 +121,7 @@ end
 
 -- Create Drawing objects for aimlock
 local aimlockDot = Drawing.new("Circle")
-aimlockDot.Radius = 10
+aimlockDot.Radius = 6
 aimlockDot.Color = Color3.fromRGB(255, 255, 0)
 aimlockDot.Thickness = 1
 aimlockDot.Filled = true
@@ -129,19 +129,37 @@ aimlockDot.Visible = false
 
 -- Handle Key Input
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if not gameProcessed and input.KeyCode == Enum.KeyCode[Settings.AimLock.Aimlockkey:upper()] then
-        Settings.AimLock.Enabled = not Settings.AimLock.Enabled
-        if Settings.AimLock.Enabled then
-            local targetPlayer = FindClosestPlayer()
-            if targetPlayer then
-                local targetName = targetPlayer.Name
-                StarterGui:SetCore("SendNotification", {
-                    Title = "AimLock Activated",
-                    Text = "Target: " .. targetName,
-                    Duration = 2
-                })
+    if not gameProcessed then
+        if input.KeyCode == Enum.KeyCode[Settings.AimLock.Aimlockkey:upper()] then
+            Settings.AimLock.Enabled = not Settings.AimLock.Enabled
+            if Settings.AimLock.Enabled then
+                local targetPlayer = FindClosestPlayer()
+                if targetPlayer then
+                    local targetName = targetPlayer.Name
+                    StarterGui:SetCore("SendNotification", {
+                        Title = "Senselight.cc",
+                        Text = "Target: " .. targetName,
+                        Duration = 2
+                    })
+                end
             end
+        elseif input.KeyCode == Enum.KeyCode[Settings.CamLock.Key:upper()] then
+            toggleCamLock() -- Toggle CamLock when the CamLock key is pressed
         end
+    end
+end)
+
+-- Handle Touch Input
+local touchStarted = false
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if input.UserInputType == Enum.UserInputType.Touch then
+        touchStarted = true
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch then
+        touchStarted = false
     end
 end)
 
@@ -166,13 +184,13 @@ RunService.Heartbeat:Connect(function()
             aimlockDot.Position = Vector2.new(Vector.X, Vector.Y)
         end
 
-        aimlockDot.Visible = true
+        aimlockDot.Visible = not touchStarted -- Hide the dot while touching the screen
     else
         aimlockDot.Visible = false
     end
 
     if Settings.CamLock.Enabled and Plr and Plr ~= LocalPlayer then
-        local predictedPosition = Plr.Character[Settings.AimLock.Aimpart].Position + (Plr.Character[Settings.AimLock.Aimpart].Velocity * Settings.CamLock.Prediction)
+        local predictedPosition = Plr.Character[Settings.AimLock.Aimpart].Position + (Plr.Character[Settings.AimLock.Aimpart].Velocity * Settings.CamLock.CamlockPrediction)
         Workspace.CurrentCamera.CFrame = CFrame.new(Workspace.CurrentCamera.CFrame.Position, predictedPosition)
     end
 end)
