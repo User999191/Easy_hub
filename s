@@ -14,7 +14,8 @@ local Settings = {
         Aimlockkey = "q",
         Prediction = 0.19284,
         Aimpart = 'HumanoidRootPart',
-        Notifications = true
+        Notifications = true,
+        Resolver = true -- Added resolver setting
     },
     Settings = {
         Thickness = 2.85,
@@ -135,7 +136,7 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
             if targetPlayer then
                 local targetName = targetPlayer.Name
                 StarterGui:SetCore("SendNotification", {
-                    Title = "Senselight.cc",
+                    Title = "AimLock Activated",
                     Text = "Target: " .. targetName,
                     Duration = 2
                 })
@@ -156,8 +157,15 @@ RunService.Heartbeat:Connect(function()
             predictedPosition = targetPart.Position + (targetPart.Velocity * Settings.AirshotFunccc.Prediction)
         end
 
-        local Vector = Workspace.CurrentCamera:WorldToViewportPoint(predictedPosition)
-        aimlockDot.Position = Vector2.new(Vector.X, Vector.Y)
+        -- Resolver logic
+        if Settings.AimLock.Resolver and targetPart then
+            local resolverPosition = targetPart.Position
+            aimlockDot.Position = Workspace.CurrentCamera:WorldToViewportPoint(resolverPosition)
+        else
+            local Vector = Workspace.CurrentCamera:WorldToViewportPoint(predictedPosition)
+            aimlockDot.Position = Vector2.new(Vector.X, Vector.Y)
+        end
+
         aimlockDot.Visible = true
     else
         aimlockDot.Visible = false
