@@ -25,12 +25,12 @@ local Settings = {
     },
     CamLock = {
         Enabled = false,
-        Key = "c",
-        Prediction = 0
+        Key = "q",
+        CamlockPrediction = 0
     },
     AirshotFunccc = {
         Enabled = true,
-        Prediction = 0.1
+        AirShotPrediction = 0.1
     }
 }
 
