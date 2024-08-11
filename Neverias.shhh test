@@ -41,21 +41,19 @@ local Settings = {
     }
 }
 
--- Create ScreenGui
+-- Create ScreenGui and UI elements
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "Nerverias.shhh test"
 screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
--- Create Main Frame with scrolling functionality
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
 mainFrame.Size = UDim2.new(0, 450, 0, 450)
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -250) -- Centering
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -250)
 mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 mainFrame.BorderSizePixel = 0
 mainFrame.Parent = screenGui
 
--- Create a ScrollingFrame inside the MainFrame
 local scrollingFrame = Instance.new("ScrollingFrame")
 scrollingFrame.Name = "ScrollingFrame"
 scrollingFrame.Size = UDim2.new(1, -20, 1, -60)
@@ -69,7 +67,6 @@ scrollingFrame.Parent = mainFrame
 local buttonSpacing = 50
 local modes = { "Legit", "Smooth", "Vertical" }
 
--- Create Title
 local title = Instance.new("TextLabel")
 title.Name = "Title"
 title.Size = UDim2.new(1, 0, 0, 40)
@@ -80,7 +77,6 @@ title.TextScaled = true
 title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 title.Parent = scrollingFrame
 
--- Create Mode Label
 local modeLabel = Instance.new("TextLabel")
 modeLabel.Name = "ModeLabel"
 modeLabel.Size = UDim2.new(0, 200, 0, 30)
@@ -190,121 +186,24 @@ noCrashButton.MouseButton1Click:Connect(function()
     local playerPing = player.PlayerGui:FindFirstChild("Ping")
     
     if playerPing and playerPing.Text and tonumber(playerPing.Text) > 250 then
-        local reducedPing = math.max(190, tonumber(playerPing.Text) - 60) -- Adjust ping to be less than 250
+        local reducedPing = math.random(50, 150)
         playerPing.Text = tostring(reducedPing)
-        showNotification("Ping Adjusted", "Ping has been adjusted to " .. reducedPing .. " ms.", 2)
+        print("Ping reduced to " .. reducedPing)
+    else
+        print("Ping already low.")
     end
 end)
 
--- Apply Mode Settings Function
-local function ApplyModeSettings(mode)
-    if mode == "Legit" then
-        Settings.AimLock.Prediction = 0.3
-        Settings.AimLock.ChanceHitPrediction = 0.7
-        Settings.AimLock.HighChanceThreshold = 0.8
-        Settings.AimLock.HitChance = 0.5
-    elseif mode == "Smooth" then
-        Settings.AimLock.Prediction = 0.1
-        Settings.AimLock.ChanceHitPrediction = 0.5
-        Settings.AimLock.HighChanceThreshold = 0.7
-        Settings.AimLock.HitChance = 0.6
-    elseif mode == "Vertical" then
-        Settings.AimLock.Prediction = 0.2
-        Settings.AimLock.ChanceHitPrediction = 0.6
-        Settings.AimLock.HighChanceThreshold = 0.7
-        Settings.AimLock.HitChance = 0.7
-    end
-
-    -- Update TextBoxes
-    for name, textBox in pairs(textBoxes) do
-        textBox.Text = tostring(Settings.AimLock[name] or Settings.Airshot[name])
-    end
-end
-
--- Initial Application of Mode Settings
-ApplyModeSettings(Settings.AimLock.Mode)
-
--- Add Notification Function
-local function showNotification(title, text, duration)
-    local notification = Instance.new("Frame")
-    notification.Size = UDim2.new(0, 200, 0, 50)
-    notification.Position = UDim2.new(0.5, -100, 0, 10)
-    notification.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    notification.BorderSizePixel = 0
-    notification.Parent = screenGui
-
-    local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(1, 0, 0, 20)
-    titleLabel.Text = title
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titleLabel.TextScaled = true
-    titleLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    titleLabel.Parent = notification
-
-    local textLabel = Instance.new("TextLabel")
-    textLabel.Size = UDim2.new(1, 0, 0, 30)
-    textLabel.Position = UDim2.new(0, 0, 0.25, 0)
-    textLabel.Text = text
-    textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    textLabel.TextScaled = true
-    textLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    textLabel.Parent = notification
-
-    Debris:AddItem(notification, duration)
-end
-
--- Add Key Binding for AimLock
-UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
-    if gameProcessedEvent then return end
-    if input.KeyCode == Settings.AimLock.AimLockKey then
-        Settings.AimLock.Enabled = not Settings.AimLock.Enabled
-        print("AimLock is now " .. (Settings.AimLock.Enabled and "enabled" or "disabled"))
-    end
-end)
-
--- Update function to handle aimlock
-local function updateAimLock()
-    if Settings.AimLock.Enabled then
-        local target = getClosestTarget()
-        if target then
-            AimAtTarget(target)
-        end
-    end
-end
-
--- Call updateAimLock function regularly
-RunService.Heartbeat:Connect(function()
-    updateAimLock()
-end)
-
--- Function to get the closest target (placeholder example)
-local function getClosestTarget()
-    local closestTarget = nil
-    local shortestDistance = math.huge
-
-    for _, player in pairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild(Settings.AimLock.AimPart) then
-            local targetPart = player.Character[Settings.AimLock.AimPart]
-            local distance = (Camera.CFrame.Position - targetPart.Position).magnitude
-
-            if distance < shortestDistance then
-                shortestDistance = distance
-                closestTarget = player
-            end
-        end
-    end
-
-    return closestTarget
-end
-
--- AimAtTarget Function
+-- Functions for AimLock and shooting
 local function AimAtTarget(target)
     if target and target.Character and target.Character:FindFirstChild(Settings.AimLock.AimPart) then
         local targetPart = target.Character[Settings.AimLock.AimPart]
         local predictedPosition
 
+        -- Calculate airshot prediction if enabled
         local airshotPrediction = Settings.Airshot.Enabled and CalculateAirshotPrediction(Settings.AimLock.ChanceHitPrediction) or Settings.AimLock.Prediction
 
+        -- Predict the target's position based on movement and prediction settings
         if target.Character.Humanoid:GetState() == Enum.HumanoidStateType.Freefall then
             local randomness = 0
             if Settings.AimLock.Mode == "Legit" then
@@ -316,10 +215,14 @@ local function AimAtTarget(target)
             predictedPosition = targetPart.Position + (targetPart.Velocity * airshotPrediction)
         end
 
-        Camera.CFrame = CFrame.new(Camera.CFrame.Position, predictedPosition)
+        -- Smoothly transition the camera towards the predicted position
+        local targetCFrame = CFrame.new(Camera.CFrame.Position, predictedPosition)
+        Camera.CFrame = Camera.CFrame:Lerp(targetCFrame, 0.1) -- Smooth transition
+
+        -- Create bullet trace
         createLineTrace(Camera.CFrame.Position, predictedPosition)
 
-        -- Simulate shooting based on chance hit
+        -- Simulate shooting based on hit chance
         if ChanceHit() then
             print("Hit at:", predictedPosition)
             -- Add actual shooting logic here
@@ -329,7 +232,20 @@ local function AimAtTarget(target)
     end
 end
 
--- Placeholder functions for CalculateAirshotPrediction and ChanceHit
+local function createLineTrace(startPosition, endPosition)
+    if Settings.BulletTrace.Enabled then
+        local trace = Instance.new("Part")
+        trace.Size = Vector3.new(Settings.BulletTrace.Thickness, Settings.BulletTrace.Thickness, (startPosition - endPosition).magnitude)
+        trace.CFrame = CFrame.new(startPosition, endPosition) * CFrame.new(0, 0, -trace.Size.Z / 2)
+        trace.BrickColor = BrickColor.new(Settings.BulletTrace.Color)
+        trace.Anchored = true
+        trace.CanCollide = false
+        trace.Material = Enum.Material.SmoothPlastic
+        trace.Parent = Workspace
+        Debris:AddItem(trace, 0.1) -- Remove trace after 0.1 seconds
+    end
+end
+
 local function CalculateAirshotPrediction(chanceHitPrediction)
     return Settings.Airshot.BasePrediction * Settings.Airshot.AirshotAccuracyFactor
 end
@@ -337,3 +253,59 @@ end
 local function ChanceHit()
     return math.random() < Settings.AimLock.HitChance
 end
+
+-- Key input listener for AimLock
+UserInputService.InputBegan:Connect(function(input, processed)
+    if not processed then
+        if input.KeyCode == Settings.AimLock.AimLockKey then
+            Settings.AimLock.Enabled = not Settings.AimLock.Enabled
+            print("AimLock " .. (Settings.AimLock.Enabled and "Enabled" or "Disabled"))
+            if Settings.AimLock.Enabled then
+                -- Automatically aim at the closest target
+                local closestTarget = nil
+                local shortestDistance = math.huge
+
+                for _, player in ipairs(Players:GetPlayers()) do
+                    if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild(Settings.AimLock.AimPart) then
+                        local targetPart = player.Character[Settings.AimLock.AimPart]
+                        local distance = (Camera.CFrame.Position - targetPart.Position).magnitude
+
+                        if distance < shortestDistance then
+                            closestTarget = player
+                            shortestDistance = distance
+                        end
+                    end
+                end
+
+                if closestTarget then
+                    AimAtTarget(closestTarget)
+                end
+            end
+        end
+    end
+end)
+
+-- RunService render step
+RunService.RenderStepped:Connect(function()
+    if Settings.AimLock.Enabled then
+        -- Automatically aim at the closest target
+        local closestTarget = nil
+        local shortestDistance = math.huge
+
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild(Settings.AimLock.AimPart) then
+                local targetPart = player.Character[Settings.AimLock.AimPart]
+                local distance = (Camera.CFrame.Position - targetPart.Position).magnitude
+
+                if distance < shortestDistance then
+                    closestTarget = player
+                    shortestDistance = distance
+                end
+            end
+        end
+
+        if closestTarget then
+            AimAtTarget(closestTarget)
+        end
+    end
+end)
