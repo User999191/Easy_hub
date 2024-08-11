@@ -253,13 +253,56 @@ local function showNotification(title, text, duration)
     Debris:AddItem(notification, duration)
 end
 
--- Function to aim at the target with prediction and settings according to the mode
+-- Add Key Binding for AimLock
+UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+    if gameProcessedEvent then return end
+    if input.KeyCode == Settings.AimLock.AimLockKey then
+        Settings.AimLock.Enabled = not Settings.AimLock.Enabled
+        print("AimLock is now " .. (Settings.AimLock.Enabled and "enabled" or "disabled"))
+    end
+end)
+
+-- Update function to handle aimlock
+local function updateAimLock()
+    if Settings.AimLock.Enabled then
+        local target = getClosestTarget()
+        if target then
+            AimAtTarget(target)
+        end
+    end
+end
+
+-- Call updateAimLock function regularly
+RunService.Heartbeat:Connect(function()
+    updateAimLock()
+end)
+
+-- Function to get the closest target (placeholder example)
+local function getClosestTarget()
+    local closestTarget = nil
+    local shortestDistance = math.huge
+
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild(Settings.AimLock.AimPart) then
+            local targetPart = player.Character[Settings.AimLock.AimPart]
+            local distance = (Camera.CFrame.Position - targetPart.Position).magnitude
+
+            if distance < shortestDistance then
+                shortestDistance = distance
+                closestTarget = player
+            end
+        end
+    end
+
+    return closestTarget
+end
+
+-- AimAtTarget Function
 local function AimAtTarget(target)
     if target and target.Character and target.Character:FindFirstChild(Settings.AimLock.AimPart) then
         local targetPart = target.Character[Settings.AimLock.AimPart]
         local predictedPosition
 
-        -- Determine the prediction based on airshot settings
         local airshotPrediction = Settings.Airshot.Enabled and CalculateAirshotPrediction(Settings.AimLock.ChanceHitPrediction) or Settings.AimLock.Prediction
 
         if target.Character.Humanoid:GetState() == Enum.HumanoidStateType.Freefall then
@@ -273,9 +316,8 @@ local function AimAtTarget(target)
             predictedPosition = targetPart.Position + (targetPart.Velocity * airshotPrediction)
         end
 
-        -- Update the camera CFrame to lock onto the predicted position
         Camera.CFrame = CFrame.new(Camera.CFrame.Position, predictedPosition)
-        createLineTrace(Camera.CFrame.Position, predictedPosition) -- Optional, if bullet trace should follow
+        createLineTrace(Camera.CFrame.Position, predictedPosition)
 
         -- Simulate shooting based on chance hit
         if ChanceHit() then
@@ -285,4 +327,13 @@ local function AimAtTarget(target)
             print("Missed shot at:", predictedPosition)
         end
     end
+end
+
+-- Placeholder functions for CalculateAirshotPrediction and ChanceHit
+local function CalculateAirshotPrediction(chanceHitPrediction)
+    return Settings.Airshot.BasePrediction * Settings.Airshot.AirshotAccuracyFactor
+end
+
+local function ChanceHit()
+    return math.random() < Settings.AimLock.HitChance
 end
