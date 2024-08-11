@@ -79,6 +79,17 @@ title.TextScaled = true
 title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 title.Parent = scrollingFrame
 
+-- Create Mode Label
+local modeLabel = Instance.new("TextLabel")
+modeLabel.Name = "ModeLabel"
+modeLabel.Size = UDim2.new(0, 200, 0, 30)
+modeLabel.Position = UDim2.new(0, 25, 0, buttonSpacing * (#modes + 1))
+modeLabel.Text = "Mode: " .. Settings.AimLock.Mode
+modeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+modeLabel.TextScaled = true
+modeLabel.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+modeLabel.Parent = scrollingFrame
+
 -- Create Mode Buttons
 local modes = { "Legit", "Smooth", "Vertical" }
 local buttonSpacing = 50
@@ -100,17 +111,6 @@ for i, mode in ipairs(modes) do
         ApplyModeSettings(Settings.AimLock.Mode)
     end)
 end
-
--- Create Mode Label
-local modeLabel = Instance.new("TextLabel")
-modeLabel.Name = "ModeLabel"
-modeLabel.Size = UDim2.new(0, 200, 0, 30)
-modeLabel.Position = UDim2.new(0, 25, 0, buttonSpacing * (#modes + 1))
-modeLabel.Text = "Mode: " .. Settings.AimLock.Mode
-modeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-modeLabel.TextScaled = true
-modeLabel.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-modeLabel.Parent = scrollingFrame
 
 -- Create TextBoxes and Labels for Settings
 local settingsLabels = {
@@ -225,6 +225,7 @@ end
 
 -- Initial Application of Mode Settings
 ApplyModeSettings(Settings.AimLock.Mode)
+
 
 -- Add Notification Function
 local function showNotification(title, text, duration)
