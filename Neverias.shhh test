@@ -43,13 +43,13 @@ local Settings = {
 
 -- Create ScreenGui
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "Nerverias.shhh test"
+screenGui.Name = "Nerverias.shhh"
 screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
 -- Create Main Frame with scrolling functionality
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 450, 0, 500)
+mainFrame.Size = UDim2.new(0, 530, 0, 530)
 mainFrame.Position = UDim2.new(0.5, -150, 0.5, -250)
 mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 mainFrame.BorderSizePixel = 0
@@ -73,13 +73,13 @@ local title = Instance.new("TextLabel")
 title.Name = "Title"
 title.Size = UDim2.new(1, 0, 0, 40)
 title.Position = UDim2.new(0, 0, 0, 0)
-title.Text = "Nerverias.shhh test"
+title.Text = "Nerverias.shhh"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.TextScaled = true
 title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 title.Parent = scrollingFrame
 
----- Create Mode Buttons
+-- Create Mode Buttons
 local modes = { "Legit", "Smooth", "Vertical" }
 local buttonSpacing = 50
 
@@ -96,8 +96,8 @@ for i, mode in ipairs(modes) do
 
     modeButton.MouseButton1Click:Connect(function()
         Settings.AimLock.Mode = mode
-        ApplyModeSettings(Settings.AimLock.Mode)
         modeLabel.Text = "Mode: " .. Settings.AimLock.Mode
+        ApplyModeSettings(Settings.AimLock.Mode)
     end)
 end
 
@@ -198,6 +198,7 @@ noCrashButton.MouseButton1Click:Connect(function()
     end
 end)
 
+-- Apply Mode Settings Function
 local function ApplyModeSettings(mode)
     if mode == "Legit" then
         Settings.AimLock.Prediction = 0.3
@@ -216,12 +217,11 @@ local function ApplyModeSettings(mode)
         Settings.AimLock.HitChance = 0.7
     end
 
-    -- Update TextBoxes with the new settings
+    -- Update TextBoxes
     for name, textBox in pairs(textBoxes) do
         textBox.Text = tostring(Settings.AimLock[name] or Settings.Airshot[name])
     end
 end
-
 
 -- Initial Application of Mode Settings
 ApplyModeSettings(Settings.AimLock.Mode)
