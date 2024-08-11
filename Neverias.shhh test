@@ -16,8 +16,8 @@ watermarkGui.Parent = PlayerGui
 
 local watermarkFrame = Instance.new("Frame")
 watermarkFrame.Name = "WatermarkFrame"
-watermarkFrame.Size = UDim2.new(0, 300, 0, 100) -- Adjust size as needed
-watermarkFrame.Position = UDim2.new(0.5, -150, 0.02, 0)
+watermarkFrame.Size = UDim2.new(0, 200, 0, 100) -- Adjust size as needed
+watermarkFrame.Position = UDim2.new(-150, 0.5, 0.02, 0)
 watermarkFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 watermarkFrame.BackgroundTransparency = 0.5
 watermarkFrame.BorderSizePixel = 0
@@ -169,7 +169,7 @@ screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 -- Create Main Frame with scrolling functionality
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 300, 0, 500)
+mainFrame.Size = UDim2.new(0, 450, 0, 450)
 mainFrame.Position = UDim2.new(0.5, -150, 0.5, -250) -- Centering
 mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 mainFrame.BorderSizePixel = 0
