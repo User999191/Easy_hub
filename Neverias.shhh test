@@ -20,7 +20,8 @@ local Settings = {
         ChanceHitPrediction = 0.8,
         HighChanceThreshold = 0.9,
         HitChance = 0.7,
-        Mode = "Legit" -- Default mode u can choose mode as legit ,smoothness ,vertical
+        Mode = "Legit" -- Default mode
+    },
     BulletTrace = {
         Enabled = true,
         Color = Color3.fromRGB(255, 0, 0),
@@ -42,7 +43,7 @@ local Settings = {
 
 -- Create ScreenGui
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "V12UI"
+screenGui.Name = "Nerverias.shhh test"
 screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
 -- Create Main Frame with scrolling functionality
@@ -72,7 +73,7 @@ local title = Instance.new("TextLabel")
 title.Name = "Title"
 title.Size = UDim2.new(1, 0, 0, 40)
 title.Position = UDim2.new(0, 0, 0, 0)
-title.Text = "Nerverias.shhh Test"
+title.Text = "Nerverias.shhh test"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.TextScaled = true
 title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
@@ -113,42 +114,32 @@ modeLabel.Parent = scrollingFrame
 
 -- Create TextBoxes and Labels for Settings
 local settingsLabels = {
-    { Name = "HitChance", Position = UDim2.new(0, 25, 0, buttonSpacing * (#modes + 2)), Text = "Hit Chance: " },
-    { Name = "HighChanceThreshold", Position = UDim2.new(0, 25, 0, buttonSpacing * (#modes + 3)), Text = "High Chance Threshold: " },
-    { Name = "ChanceHitPrediction", Position = UDim2.new(0, 25, 0, buttonSpacing * (#modes + 4)), Text = "Chance Hit Prediction: " },
-    { Name = "AirshotPrediction", Position = UDim2.new(0, 25, 0, buttonSpacing * (#modes + 5)), Text = "Airshot Prediction: " },
-    { Name = "BasePrediction", Position = UDim2.new(0, 25, 0, buttonSpacing * (#modes + 6)), Text = "Base Prediction: " },
-    { Name = "AirshotAccuracyFactor", Position = UDim2.new(0, 25, 0, buttonSpacing * (#modes + 7)), Text = "Airshot Accuracy Factor: " }
+    { Name = "HitChance", Text = "Hit Chance: " },
+    { Name = "HighChanceThreshold", Text = "High Chance Threshold: " },
+    { Name = "ChanceHitPrediction", Text = "Chance Hit Prediction: " },
+    { Name = "AirshotPrediction", Text = "Airshot Prediction: " },
+    { Name = "BasePrediction", Text = "Base Prediction: " },
+    { Name = "AirshotAccuracyFactor", Text = "Airshot Accuracy Factor: " }
 }
 
-for _, labelInfo in ipairs(settingsLabels) do
+local textBoxes = {}
+
+for i, labelInfo in ipairs(settingsLabels) do
     local label = Instance.new("TextLabel")
     label.Name = labelInfo.Name .. "Label"
     label.Size = UDim2.new(0, 200, 0, 30)
-    label.Position = labelInfo.Position
+    label.Position = UDim2.new(0, 25, 0, buttonSpacing * (#modes + 2 + i - 1))
     label.Text = labelInfo.Text .. tostring(Settings.AimLock[labelInfo.Name] or Settings.Airshot[labelInfo.Name] or "Not Set")
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
     label.TextScaled = true
     label.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     label.Parent = scrollingFrame
-end
 
--- Create TextBoxes for user input
-local textBoxes = {
-    { Name = "HitChance", Position = UDim2.new(0, 200, 0, buttonSpacing * (#modes + 2)), Text = tostring(Settings.AimLock.HitChance) },
-    { Name = "HighChanceThreshold", Position = UDim2.new(0, 200, 0, buttonSpacing * (#modes + 3)), Text = tostring(Settings.AimLock.HighChanceThreshold) },
-    { Name = "ChanceHitPrediction", Position = UDim2.new(0, 200, 0, buttonSpacing * (#modes + 4)), Text = tostring(Settings.AimLock.ChanceHitPrediction) },
-    { Name = "AirshotPrediction", Position = UDim2.new(0, 200, 0, buttonSpacing * (#modes + 5)), Text = tostring(Settings.Airshot.BasePrediction) },
-    { Name = "BasePrediction", Position = UDim2.new(0, 200, 0, buttonSpacing * (#modes + 6)), Text = tostring(Settings.Airshot.BasePrediction) },
-    { Name = "AirshotAccuracyFactor", Position = UDim2.new(0, 200, 0, buttonSpacing * (#modes + 7)), Text = tostring(Settings.Airshot.AirshotAccuracyFactor) }
-}
-
-for _, boxInfo in ipairs(textBoxes) do
     local textBox = Instance.new("TextBox")
-    textBox.Name = boxInfo.Name .. "TextBox"
+    textBox.Name = labelInfo.Name .. "TextBox"
     textBox.Size = UDim2.new(0, 80, 0, 30)
-    textBox.Position = boxInfo.Position
-    textBox.Text = boxInfo.Text
+    textBox.Position = UDim2.new(0, 200, 0, buttonSpacing * (#modes + 2 + i - 1))
+    textBox.Text = tostring(Settings.AimLock[labelInfo.Name] or Settings.Airshot[labelInfo.Name])
     textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
     textBox.TextScaled = true
     textBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
@@ -158,12 +149,14 @@ for _, boxInfo in ipairs(textBoxes) do
         if property == "Text" then
             local value = tonumber(textBox.Text)
             if value then
-                Settings.AimLock[boxInfo.Name] = value
-                Settings.Airshot[boxInfo.Name] = value
-                labelInfo.Text = boxInfo.Text .. tostring(value)
+                Settings.AimLock[labelInfo.Name] = value
+                Settings.Airshot[labelInfo.Name] = value
+                label.Text = labelInfo.Text .. tostring(value)
             end
         end
     end)
+
+    textBoxes[labelInfo.Name] = textBox
 end
 
 -- Create Toggle Button
@@ -225,12 +218,9 @@ local function ApplyModeSettings(mode)
     end
 
     -- Update TextBoxes
-    textBoxes[1].TextBox.Text = tostring(Settings.AimLock.HitChance)
-    textBoxes[2].TextBox.Text = tostring(Settings.AimLock.HighChanceThreshold)
-    textBoxes[3].TextBox.Text = tostring(Settings.AimLock.ChanceHitPrediction)
-    textBoxes[4].TextBox.Text = tostring(Settings.Airshot.BasePrediction)
-    textBoxes[5].TextBox.Text = tostring(Settings.Airshot.BasePrediction)
-    textBoxes[6].TextBox.Text = tostring(Settings.Airshot.AirshotAccuracyFactor)
+    for name, textBox in pairs(textBoxes) do
+        textBox.Text = tostring(Settings.AimLock[name] or Settings.Airshot[name])
+    end
 end
 
 -- Initial Application of Mode Settings
