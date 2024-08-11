@@ -8,107 +8,97 @@ screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 -- Create the Main Frame
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0.4, 0, 0.6, 0) -- Adjust size as needed
+mainFrame.Size = UDim2.new(0.4, 0, 0.6, 0)
 mainFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
-mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Dark background color
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 mainFrame.BorderSizePixel = 0
 mainFrame.Parent = screenGui
 
 -- Create the Title
 local titleLabel = Instance.new("TextLabel")
 titleLabel.Name = "TitleLabel"
-titleLabel.Size = UDim2.new(1, 0, 0.2, 0) -- Adjust size as needed
+titleLabel.Size = UDim2.new(1, 0, 0.2, 0)
 titleLabel.Position = UDim2.new(0, 0, 0, 0)
 titleLabel.Text = "Xylo Xploiter"
-titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text color
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 titleLabel.TextScaled = true
 titleLabel.BackgroundTransparency = 1
 titleLabel.Parent = mainFrame
 
--- Create a Button
-local executeButton = Instance.new("TextButton")
-executeButton.Name = "ExecuteButton"
-executeButton.Size = UDim2.new(0.8, 0, 0.1, 0) -- Adjust size as needed
-executeButton.Position = UDim2.new(0.1, 0, 0.3, 0)
-executeButton.Text = "Rose"
-executeButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text color
-executeButton.BackgroundColor3 = Color3.fromRGB(50, 150, 50) -- Green background color
-executeButton.BorderSizePixel = 0
-executeButton.Parent = mainFrame
+-- Function to create buttons
+local function createButton(name, text, position, url)
+    local button = Instance.new("TextButton")
+    button.Name = name
+    button.Size = UDim2.new(0.8, 0, 0.1, 0)
+    button.Position = position
+    button.Text = text
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.BackgroundColor3 = Color3.fromRGB(50, 150, 50)
+    button.BorderSizePixel = 0
+    button.Parent = mainFrame
 
--- Function to execute the script
-local function executeScript()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Easy_hub/main/Rose%20esp"))()
-    print("Script executed!")
+    -- Function to execute the script
+    local function executeScript()
+        loadstring(game:HttpGet(url))()
+        print(text .. " script executed!")
+    end
+
+    button.MouseButton1Click:Connect(executeScript)
 end
 
-local executeButton = Instance.new("TextButton")
-executeButton.Name = "ExecuteButton"
-executeButton.Size = UDim2.new(0.8, 0, 0.1, 0) -- Adjust size as needed
-executeButton.Position = UDim2.new(0.1, 0, 0.3, 0)
-executeButton.Text = "Lisa esp"
-executeButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text color
-executeButton.BackgroundColor3 = Color3.fromRGB(50, 150, 50) -- Green background color
-executeButton.BorderSizePixel = 0
-executeButton.Parent = mainFrame
+-- Create buttons
+createButton("RoseButton", "Rose", UDim2.new(0.1, 0, 0.3, 0), "https://raw.githubusercontent.com/H20CalibreYT/SystemBroken/main/script")
+createButton("LisaButton", "Lisa esp", UDim2.new(0.1, 0, 0.45, 0), "https://raw.githubusercontent.com/User999191/Easy_hub/main/Lisa%20esp")
+createButton("AutoCollectButton", "Auto Collect", UDim2.new(0.1, 0, 0.6, 0), "")
 
--- Function to execute the script
-local function executeScript()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Easy_hub/main/Lisa%20esp"))()
-    print("Script executed!")
-end
-
-local executeButton = Instance.new("TextButton")
-executeButton.Name = "ExecuteButton"
-executeButton.Size = UDim2.new(0.8, 0, 0.1, 0) -- Adjust size as needed
-executeButton.Position = UDim2.new(0.1, 0, 0.3, 0)
-executeButton.Text = "auto collect"
-executeButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text color
-executeButton.BackgroundColor3 = Color3.fromRGB(50, 150, 50) -- Green background color
-executeButton.BorderSizePixel = 0
-executeButton.Parent = mainFrame
-
--- Function to execute the script
-local function executeScript()
+-- Function to execute the auto collect script
+local function autoCollectScript()
     local CollectionService = game:GetService("CollectionService")
 
--- Function to handle part touch
-local function onTouch(other)
-    local character = other.Parent
-    if character and character:FindFirstChild("Humanoid") then
-        -- Check if the touched part has the "Collectible" tag
-        if CollectionService:HasTag(other, "Collectible") then
-            print(character.Name .. " collected a part!")
-
-            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
-
-            -- Destroy the part after collection
-            other:Destroy()
+    local function onTouch(other)
+        local character = other.Parent
+        if character and character:FindFirstChild("Humanoid") then
+            if CollectionService:HasTag(other, "Collectible") then
+                print(character.Name .. " collected a part!")
+                other:Destroy()
+            end
         end
     end
-end
 
--- Function to set up Touched event connection for a part
-local function setupPart(part)
-    if part:IsA("BasePart") and CollectionService:HasTag(part, "Collectible") then
-        part.Touched:Connect(onTouch)
+    local function setupPart(part)
+        if part:IsA("BasePart") and CollectionService:HasTag(part, "Collectible") then
+            part.Touched:Connect(onTouch)
+        end
     end
+
+    for _, part in pairs(workspace:GetDescendants()) do
+        setupPart(part)
+    end
+
+    workspace.DescendantAdded:Connect(function(descendant)
+        setupPart(descendant)
+    end)
+
+    print("Auto collect script executed!")
 end
 
--- Connect Touched event for parts already in the workspace
-for _, part in pairs(workspace:GetDescendants()) do
-    setupPart(part)
+-- Connect the auto collect button to the function
+mainFrame:FindFirstChild("AutoCollectButton").MouseButton1Click:Connect(autoCollectScript)
+
+-- Create the Toggle UI Button
+local toggleButton = Instance.new("TextButton")
+toggleButton.Name = "ToggleButton"
+toggleButton.Size = UDim2.new(0.2, 0, 0.1, 0)
+toggleButton.Position = UDim2.new(0.4, 0, 0.05, 0)
+toggleButton.Text = "Toggle UI"
+toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleButton.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
+toggleButton.BorderSizePixel = 0
+toggleButton.Parent = screenGui
+
+-- Function to toggle the UI visibility
+local function toggleUI()
+    mainFrame.Visible = not mainFrame.Visible
 end
 
--- Set up a listener for new parts added to the workspace
-workspace.DescendantAdded:Connect(function(descendant)
-    setupPart(descendant)
-end)
-    print("Script executed!")
-end
-
-
-
-
--- Connect the button click to the function
-executeButton.MouseButton1Click:Connect(executeScript)
+toggleButton.MouseButton1Click:Connect(toggleUI)
