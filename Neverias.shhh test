@@ -289,37 +289,30 @@ local function AimAtTarget(target)
     end
 end
 
--- Function to make the Frame draggable
-local function makeDraggable(frame)
-    local dragging = false
-    local dragInput, mousePos, framePos
+-- create a window
+local window = gui.Window("Draggable Window", 100, 100, 300, 200)
 
-    local function updateInput(input)
-        local delta = input.Position - mousePos
-        frame.Position = UDim2.new(frame.Position.X.Scale, frame.Position.X.Offset + delta.X, frame.Position.Y.Scale, frame.Position.Y.Offset + delta.Y)
-        mousePos = input.Position
+-- initialize drag state
+local dragging = false
+local offset_x, offset_y = 0, 0
+
+-- function to handle mouse clicks on the window
+function window.MouseButton(x, y, button, state)
+    if button == 1 and state == "down" then
+        -- calculate offset to window position
+        offset_x = x - window.X
+        offset_y = y - window.Y
+        dragging = true
+    elseif button == 1 and state == "up" then
+        dragging = false
     end
-
-    frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            mousePos = input.Position
-            framePos = frame.Position
-
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
-        end
-    end)
-
-    frame.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
-            updateInput(input)
-        end
-    end)
 end
 
--- Ensure the mainFrame is draggable
-makeDraggable(mainFrame)
+-- function to handle mouse movements while dragging
+function window.MouseMove(x, y)
+    if dragging then
+        -- set window position based on mouse position
+        window.X = x - offset_x
+        window.Y = y - offset_y
+    end
+end
