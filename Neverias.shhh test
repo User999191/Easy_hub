@@ -83,7 +83,7 @@ title.Parent = scrollingFrame
 local modeLabel = Instance.new("TextLabel")
 modeLabel.Name = "ModeLabel"
 modeLabel.Size = UDim2.new(0, 200, 0, 30)
-modeLabel.Position = UDim2.new(0, 25, 0, buttonSpacing * (#modes + 1))
+modeLabel.Position = UDim2.new(0, 25, 0, 50)
 modeLabel.Text = "Mode: " .. Settings.AimLock.Mode
 modeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 modeLabel.TextScaled = true
@@ -98,7 +98,7 @@ for i, mode in ipairs(modes) do
     local modeButton = Instance.new("TextButton")
     modeButton.Name = mode .. "Button"
     modeButton.Size = UDim2.new(0, 100, 0, 40)
-    modeButton.Position = UDim2.new(0, 25, 0, buttonSpacing * i)
+    modeButton.Position = UDim2.new(0, 25, 0, buttonSpacing * i + 50)
     modeButton.Text = mode
     modeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     modeButton.TextScaled = true
@@ -194,9 +194,25 @@ noCrashButton.MouseButton1Click:Connect(function()
     if playerPing and playerPing.Text and tonumber(playerPing.Text) > 250 then
         local reducedPing = math.max(190, tonumber(playerPing.Text) - 60) -- Adjust ping to be less than 250
         playerPing.Text = tostring(reducedPing)
-        showNotification("Ping Adjusted", "Ping has been adjusted to " .. reducedPing .. " ms.", 2)
+        showNotification("Ping Adjusted", "Your ping has been reduced to " .. reducedPing, 2)
     end
 end)
+
+-- Function to create bullet trace lines
+local function createLineTrace(startPosition, endPosition)
+    if not Settings.BulletTrace.Enabled then return end
+
+    local line = Instance.new("Part")
+    line.Size = Vector3.new(Settings.BulletTrace.Thickness, Settings.BulletTrace.Thickness, (startPosition - endPosition).magnitude)
+    line.Anchored = true
+    line.CanCollide = false
+    line.BrickColor = BrickColor.new(Settings.BulletTrace.Color)
+    line.Material = Enum.Material.SmoothPlastic
+    line.CFrame = CFrame.new((startPosition + endPosition) / 2, endPosition)
+    line.Parent = workspace
+
+    Debris:AddItem(line, 1) -- Adjust lifetime as needed
+end
 
 -- Apply Mode Settings Function
 local function ApplyModeSettings(mode)
@@ -225,7 +241,6 @@ end
 
 -- Initial Application of Mode Settings
 ApplyModeSettings(Settings.AimLock.Mode)
-
 
 -- Add Notification Function
 local function showNotification(title, text, duration)
@@ -256,7 +271,6 @@ local function showNotification(title, text, duration)
     Debris:AddItem(notification, duration)
 end
 
--- Additional Functions for AimLock, BulletTrace, Airshot, and Dot will follow
 -- Function to aim at the target with prediction and settings according to the mode
 local function AimAtTarget(target)
     if target and target.Character and target.Character:FindFirstChild(Settings.AimLock.AimPart) then
@@ -289,30 +303,54 @@ local function AimAtTarget(target)
     end
 end
 
--- create a window
-local window = gui.Window("Draggable Window", 100, 100, 300, 200)
+-- Create draggable window
+local draggableFrame = Instance.new("Frame")
+draggableFrame.Name = "DraggableFrame"
+draggableFrame.Size = UDim2.new(0, 300, 0, 200)
+draggableFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+draggableFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+draggableFrame.BorderSizePixel = 0
+draggableFrame.Parent = screenGui
 
--- initialize drag state
 local dragging = false
 local offset_x, offset_y = 0, 0
 
--- function to handle mouse clicks on the window
-function window.MouseButton(x, y, button, state)
-    if button == 1 and state == "down" then
-        -- calculate offset to window position
-        offset_x = x - window.X
-        offset_y = y - window.Y
+draggableFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
         dragging = true
-    elseif button == 1 and state == "up" then
+        offset_x = input.Position.X - draggableFrame.Position.X.Offset
+        offset_y = input.Position.Y - draggableFrame.Position.Y.Offset
+    end
+end)
+
+draggableFrame.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
         dragging = false
     end
-end
+end)
 
--- function to handle mouse movements while dragging
-function window.MouseMove(x, y)
+RunService.RenderStepped:Connect(function()
     if dragging then
-        -- set window position based on mouse position
-        window.X = x - offset_x
-        window.Y = y - offset_y
+        draggableFrame.Position = UDim2.new(0, UserInputService:GetMouseLocation().X - offset_x, 0, UserInputService:GetMouseLocation().Y - offset_y)
     end
-end
+
+    -- Update Watermark with FPS, Ping, and Walk Speed
+    local fps = math.floor(1 / RunService.RenderStepped:Wait().DeltaTime)
+    local ping = LocalPlayer.NetworkPing
+    local walkSpeed = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") and LocalPlayer.Character.Humanoid.WalkSpeed or 0
+
+    watermark.Text = string.format("FPS: %d | Ping: %d ms | Walk Speed: %d", fps, ping, walkSpeed)
+end)
+
+-- Create Watermark
+local watermark = Instance.new("TextLabel")
+watermark.Name = "Watermark"
+watermark.Size = UDim2.new(0, 300, 0, 30)
+watermark.Position = UDim2.new(0, 10, 0, 10)
+watermark.TextColor3 = Color3.fromRGB(255, 255, 255)
+watermark.TextScaled = true
+watermark.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+watermark.Text = "FPS: 0 | Ping: 0 ms | Walk Speed: 0"
+watermark.Parent = screenGui
+
+-- Additional functions like CalculateAirshotPrediction and ChanceHit should be defined as needed
