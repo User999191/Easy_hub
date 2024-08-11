@@ -58,6 +58,57 @@ local function executeScript()
     print("Script executed!")
 end
 
+local executeButton = Instance.new("TextButton")
+executeButton.Name = "ExecuteButton"
+executeButton.Size = UDim2.new(0.8, 0, 0.1, 0) -- Adjust size as needed
+executeButton.Position = UDim2.new(0.1, 0, 0.3, 0)
+executeButton.Text = "auto collect"
+executeButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text color
+executeButton.BackgroundColor3 = Color3.fromRGB(50, 150, 50) -- Green background color
+executeButton.BorderSizePixel = 0
+executeButton.Parent = mainFrame
+
+-- Function to execute the script
+local function executeScript()
+    local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Collectible") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Connect Touched event for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+    print("Script executed!")
+end
+
+
+
 
 -- Connect the button click to the function
 executeButton.MouseButton1Click:Connect(executeScript)
