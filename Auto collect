@@ -1,0 +1,699 @@
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose1G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose2G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose3G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose4G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose5G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose6G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose7G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose8G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose9G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose10G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose11G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose12G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose13G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose14G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose15G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose16G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose17G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose18G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose19G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
+
+local CollectionService = game:GetService("CollectionService")
+
+-- Function to handle part touch
+local function onTouch(other)
+    local character = other.Parent
+    if character and character:FindFirstChild("Humanoid") then
+        -- Check if the touched part has the "Collectible" tag
+        if CollectionService:HasTag(other, "Collectible") then
+            print(character.Name .. " collected a part!")
+
+            -- Optionally: Add logic to handle the collection (e.g., update score, inventory, etc.)
+
+            -- Destroy the part after collection
+            other:Destroy()
+        end
+    end
+end
+
+-- Function to set up Touched event connection for a part
+local function setupPart(part)
+    if part:IsA("BasePart") and CollectionService:HasTag(part, "Rose20G") then
+        part.Touched:Connect(onTouch)
+    end
+end
+
+-- Initial setup for parts already in the workspace
+for _, part in pairs(workspace:GetDescendants()) do
+    setupPart(part)
+end
+
+-- Set up a listener for new parts added to the workspace
+workspace.DescendantAdded:Connect(function(descendant)
+    setupPart(descendant)
+end)
