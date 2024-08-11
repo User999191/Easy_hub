@@ -8,6 +8,8 @@ local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local Humanoid = Character:WaitForChild("Humanoid")
+local Camera = Workspace.CurrentCamera
+local Mouse = LocalPlayer:GetMouse()
 
 -- Create Watermark UI
 local watermarkGui = Instance.new("ScreenGui")
@@ -123,10 +125,6 @@ end
 
 UserInputService.InputBegan:Connect(onDragStart)
 UserInputService.InputChanged:Connect(onDragMove)
-
-local LocalPlayer = Players.LocalPlayer
-local Camera = Workspace.CurrentCamera
-local Mouse = LocalPlayer:GetMouse()
 
 -- Settings for AimLock, BulletTrace, Airshot, and Dot
 local Settings = {
