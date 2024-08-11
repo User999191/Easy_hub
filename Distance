@@ -1,0 +1,47 @@
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+local camera = Workspace.CurrentCamera
+
+-- List of part names to track
+local partNames = {"Rose1G", "rose2G," "rose3G," "rose1G," "rose4G," "rose5G," "rose6G," "rose7G," "rose8G," "rose9G," "rose10G," "rose11G," "rose12G," "rose13G," "rose14G," "rose15G," "rose16G," "rose17G," "rose18G," "rose19G," "rose20G,"}  -- Replace with your part names
+
+-- Function to create and update distance labels
+local function updateDistanceLabel(part, distanceLabel)
+    local screenPosition, onScreen = camera:WorldToScreenPoint(part.Position)
+    
+    if onScreen then
+        distanceLabel.Text = string.format("Distance: %.2f studs", (camera.CFrame.Position - part.Position).magnitude)
+        distanceLabel.Position = UDim2.new(0, screenPosition.X, 0, screenPosition.Y)
+        distanceLabel.Visible = true
+    else
+        distanceLabel.Visible = false
+    end
+end
+
+-- Create distance labels for specified parts
+local function createDistanceLabels()
+    local function updateLabels()
+        for _, part in ipairs(Workspace:GetDescendants()) do
+            if part:IsA("BasePart") and table.find(partNames, part.Name) then
+                local distanceLabel = part:FindFirstChild("DistanceLabel")
+                if not distanceLabel then
+                    distanceLabel = Instance.new("TextLabel")
+                    distanceLabel.Name = "DistanceLabel"
+                    distanceLabel.Size = UDim2.new(0, 100, 0, 50)
+                    distanceLabel.BackgroundTransparency = 1
+                    distanceLabel.TextColor3 = Color3.new(1, 1, 1)
+                    distanceLabel.TextStrokeTransparency = 0.5
+                    distanceLabel.Parent = player.PlayerGui
+                end
+                updateDistanceLabel(part, distanceLabel)
+            end
+        end
+    end
+
+    RunService.RenderStepped:Connect(updateLabels)
+end
+
+createDistanceLabels()
