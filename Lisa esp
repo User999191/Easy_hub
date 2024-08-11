@@ -1,0 +1,25 @@
+-- LocalScript or Script
+
+-- Function to highlight all parts of the monster
+local function highlightAllMonsterParts(monsterModelName)
+    local monsterModel = workspace:FindFirstChild(monsterModelName)
+    
+    if monsterModel then
+        for _, part in pairs(monsterModel:GetChildren()) do
+            if part:IsA("BasePart") then
+                -- Create a highlight effect
+                local highlight = Instance.new("Highlight")
+                highlight.Adornee = part
+                highlight.FillColor = Color3.fromRGB(255, 0, 0) -- Red color
+                highlight.FillTransparency = 0.5 -- Transparency of the highlight
+                highlight.OutlineColor = Color3.fromRGB(255, 255, 255) -- White outline
+                highlight.Parent = part
+            end
+        end
+    else
+        warn(monsterModelName .. " not found in workspace")
+    end
+end
+
+-- Highlight all parts of the monster
+highlightAllMonsterParts("Lisa") -- Replace with your monster model's name
