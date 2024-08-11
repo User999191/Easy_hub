@@ -50,7 +50,7 @@ screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
 mainFrame.Size = UDim2.new(0, 300, 0, 500)
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -250)
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -250) -- Centering
 mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 mainFrame.BorderSizePixel = 0
 mainFrame.Parent = screenGui
@@ -65,8 +65,9 @@ scrollingFrame.BorderSizePixel = 0
 scrollingFrame.ScrollBarThickness = 8
 scrollingFrame.Parent = mainFrame
 
--- Create UI elements inside ScrollingFrame
-local uiElements = {}
+-- Define buttonSpacing and modes
+local buttonSpacing = 50
+local modes = { "Legit", "Smooth", "Vertical" }
 
 -- Create Title
 local title = Instance.new("TextLabel")
@@ -83,7 +84,7 @@ title.Parent = scrollingFrame
 local modeLabel = Instance.new("TextLabel")
 modeLabel.Name = "ModeLabel"
 modeLabel.Size = UDim2.new(0, 200, 0, 30)
-modeLabel.Position = UDim2.new(0, 25, 0, 50)
+modeLabel.Position = UDim2.new(0, 25, 0, buttonSpacing * (#modes + 1))
 modeLabel.Text = "Mode: " .. Settings.AimLock.Mode
 modeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 modeLabel.TextScaled = true
@@ -91,14 +92,11 @@ modeLabel.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 modeLabel.Parent = scrollingFrame
 
 -- Create Mode Buttons
-local modes = { "Legit", "Smooth", "Vertical" }
-local buttonSpacing = 50
-
 for i, mode in ipairs(modes) do
     local modeButton = Instance.new("TextButton")
     modeButton.Name = mode .. "Button"
     modeButton.Size = UDim2.new(0, 100, 0, 40)
-    modeButton.Position = UDim2.new(0, 25, 0, buttonSpacing * i + 50)
+    modeButton.Position = UDim2.new(0, 25, 0, buttonSpacing * i)
     modeButton.Text = mode
     modeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     modeButton.TextScaled = true
@@ -194,25 +192,9 @@ noCrashButton.MouseButton1Click:Connect(function()
     if playerPing and playerPing.Text and tonumber(playerPing.Text) > 250 then
         local reducedPing = math.max(190, tonumber(playerPing.Text) - 60) -- Adjust ping to be less than 250
         playerPing.Text = tostring(reducedPing)
-        showNotification("Ping Adjusted", "Your ping has been reduced to " .. reducedPing, 2)
+        showNotification("Ping Adjusted", "Ping has been adjusted to " .. reducedPing .. " ms.", 2)
     end
 end)
-
--- Function to create bullet trace lines
-local function createLineTrace(startPosition, endPosition)
-    if not Settings.BulletTrace.Enabled then return end
-
-    local line = Instance.new("Part")
-    line.Size = Vector3.new(Settings.BulletTrace.Thickness, Settings.BulletTrace.Thickness, (startPosition - endPosition).magnitude)
-    line.Anchored = true
-    line.CanCollide = false
-    line.BrickColor = BrickColor.new(Settings.BulletTrace.Color)
-    line.Material = Enum.Material.SmoothPlastic
-    line.CFrame = CFrame.new((startPosition + endPosition) / 2, endPosition)
-    line.Parent = workspace
-
-    Debris:AddItem(line, 1) -- Adjust lifetime as needed
-end
 
 -- Apply Mode Settings Function
 local function ApplyModeSettings(mode)
@@ -271,6 +253,17 @@ local function showNotification(title, text, duration)
     Debris:AddItem(notification, duration)
 end
 
+-- Update Watermark Function
+local function updateWatermark()
+    -- Add FPS and Ping update logic here
+end
+
+-- Call updateWatermark regularly
+RunService.Heartbeat:Connect(function()
+    updateWatermark()
+end)
+
+-- Additional Functions for AimLock, BulletTrace, Airshot, and Dot will follow
 -- Function to aim at the target with prediction and settings according to the mode
 local function AimAtTarget(target)
     if target and target.Character and target.Character:FindFirstChild(Settings.AimLock.AimPart) then
@@ -302,55 +295,3 @@ local function AimAtTarget(target)
         end
     end
 end
-
--- Create draggable window
-local draggableFrame = Instance.new("Frame")
-draggableFrame.Name = "DraggableFrame"
-draggableFrame.Size = UDim2.new(0, 300, 0, 200)
-draggableFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
-draggableFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-draggableFrame.BorderSizePixel = 0
-draggableFrame.Parent = screenGui
-
-local dragging = false
-local offset_x, offset_y = 0, 0
-
-draggableFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        offset_x = input.Position.X - draggableFrame.Position.X.Offset
-        offset_y = input.Position.Y - draggableFrame.Position.Y.Offset
-    end
-end)
-
-draggableFrame.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = false
-    end
-end)
-
-RunService.RenderStepped:Connect(function()
-    if dragging then
-        draggableFrame.Position = UDim2.new(0, UserInputService:GetMouseLocation().X - offset_x, 0, UserInputService:GetMouseLocation().Y - offset_y)
-    end
-
-    -- Update Watermark with FPS, Ping, and Walk Speed
-    local fps = math.floor(1 / RunService.RenderStepped:Wait().DeltaTime)
-    local ping = LocalPlayer.NetworkPing
-    local walkSpeed = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") and LocalPlayer.Character.Humanoid.WalkSpeed or 0
-
-    watermark.Text = string.format("FPS: %d | Ping: %d ms | Walk Speed: %d", fps, ping, walkSpeed)
-end)
-
--- Create Watermark
-local watermark = Instance.new("TextLabel")
-watermark.Name = "Watermark"
-watermark.Size = UDim2.new(0, 300, 0, 30)
-watermark.Position = UDim2.new(0, 10, 0, 10)
-watermark.TextColor3 = Color3.fromRGB(255, 255, 255)
-watermark.TextScaled = true
-watermark.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-watermark.Text = "FPS: 0 | Ping: 0 ms | Walk Speed: 0"
-watermark.Parent = screenGui
-
--- Additional functions like CalculateAirshotPrediction and ChanceHit should be defined as needed
