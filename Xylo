@@ -1,0 +1,63 @@
+-- LocalScript in StarterGui
+
+-- Create the ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "Xylo Xploiter"
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Create the Main Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0.4, 0, 0.6, 0) -- Adjust size as needed
+mainFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Dark background color
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = screenGui
+
+-- Create the Title
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Name = "TitleLabel"
+titleLabel.Size = UDim2.new(1, 0, 0.2, 0) -- Adjust size as needed
+titleLabel.Position = UDim2.new(0, 0, 0, 0)
+titleLabel.Text = "Xylo Xploiter"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text color
+titleLabel.TextScaled = true
+titleLabel.BackgroundTransparency = 1
+titleLabel.Parent = mainFrame
+
+-- Create a Button
+local executeButton = Instance.new("TextButton")
+executeButton.Name = "ExecuteButton"
+executeButton.Size = UDim2.new(0.8, 0, 0.1, 0) -- Adjust size as needed
+executeButton.Position = UDim2.new(0.1, 0, 0.3, 0)
+executeButton.Text = "Rose"
+executeButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text color
+executeButton.BackgroundColor3 = Color3.fromRGB(50, 150, 50) -- Green background color
+executeButton.BorderSizePixel = 0
+executeButton.Parent = mainFrame
+
+-- Function to execute the script
+local function executeScript()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Easy_hub/main/Rose%20esp"))()
+    print("Script executed!")
+end
+
+local executeButton = Instance.new("TextButton")
+executeButton.Name = "ExecuteButton"
+executeButton.Size = UDim2.new(0.8, 0, 0.1, 0) -- Adjust size as needed
+executeButton.Position = UDim2.new(0.1, 0, 0.3, 0)
+executeButton.Text = "Lisa esp"
+executeButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text color
+executeButton.BackgroundColor3 = Color3.fromRGB(50, 150, 50) -- Green background color
+executeButton.BorderSizePixel = 0
+executeButton.Parent = mainFrame
+
+-- Function to execute the script
+local function executeScript()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Easy_hub/main/Lisa%20esp"))()
+    print("Script executed!")
+end
+
+
+-- Connect the button click to the function
+executeButton.MouseButton1Click:Connect(executeScript)
