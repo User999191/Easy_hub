@@ -49,7 +49,9 @@ end
 -- Create buttons
 createButton("RoseButton", "Rose", UDim2.new(0.1, 0, 0.3, 0), "https://raw.githubusercontent.com/H20CalibreYT/SystemBroken/main/script")
 createButton("LisaButton", "Lisa esp", UDim2.new(0.1, 0, 0.45, 0), "https://raw.githubusercontent.com/User999191/Easy_hub/main/Lisa%20esp")
-createButton("AutoCollectButton", "Auto Collect", UDim2.new(0.1, 0, 0.6, 0), "")
+createButton("RoseDistance", "Rose Distance", UDim2.new(0.1, 0, 0.6, 0), "https://raw.githubusercontent.com/User999191/Easy_hub/main/Distance")
+createButton("AutoCollectButton", "Auto collect", UDim2.new(0.1, 0, 0.6, 0), "https://raw.githubusercontent.com/User999191/Easy_hub/main/Auto%20collect")
+createButton("PlayerEsp", "Player Esp", UDim2.new(0.1, 0, 0.6, 0), "")
 
 -- Function to execute the auto collect script
 local function autoCollectScript()
