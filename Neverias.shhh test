@@ -253,23 +253,13 @@ local function showNotification(title, text, duration)
     Debris:AddItem(notification, duration)
 end
 
--- Update Watermark Function
-local function updateWatermark()
-    -- Add FPS and Ping update logic here
-end
-
--- Call updateWatermark regularly
-RunService.Heartbeat:Connect(function()
-    updateWatermark()
-end)
-
--- Additional Functions for AimLock, BulletTrace, Airshot, and Dot will follow
 -- Function to aim at the target with prediction and settings according to the mode
 local function AimAtTarget(target)
     if target and target.Character and target.Character:FindFirstChild(Settings.AimLock.AimPart) then
         local targetPart = target.Character[Settings.AimLock.AimPart]
         local predictedPosition
 
+        -- Determine the prediction based on airshot settings
         local airshotPrediction = Settings.Airshot.Enabled and CalculateAirshotPrediction(Settings.AimLock.ChanceHitPrediction) or Settings.AimLock.Prediction
 
         if target.Character.Humanoid:GetState() == Enum.HumanoidStateType.Freefall then
@@ -283,8 +273,9 @@ local function AimAtTarget(target)
             predictedPosition = targetPart.Position + (targetPart.Velocity * airshotPrediction)
         end
 
+        -- Update the camera CFrame to lock onto the predicted position
         Camera.CFrame = CFrame.new(Camera.CFrame.Position, predictedPosition)
-        createLineTrace(Camera.CFrame.Position, predictedPosition)
+        createLineTrace(Camera.CFrame.Position, predictedPosition) -- Optional, if bullet trace should follow
 
         -- Simulate shooting based on chance hit
         if ChanceHit() then
@@ -295,4 +286,3 @@ local function AimAtTarget(target)
         end
     end
 end
-
