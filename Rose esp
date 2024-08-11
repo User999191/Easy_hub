@@ -1,0 +1,41 @@
+-- LocalScript or Script
+
+-- Function to highlight parts based on user input
+local function highlightMatchingParts(partName)
+    for _, part in pairs(workspace:GetDescendants()) do
+        if part:IsA("BasePart") and part.Name == partName then
+            -- Create a highlight effect
+            local highlight = Instance.new("Highlight")
+            highlight.Adornee = part
+            highlight.FillColor = Color3.fromRGB(255, 255, 0) -- Yellow color
+            highlight.FillTransparency = 0.5 -- Transparency of the highlight
+            highlight.OutlineColor = Color3.fromRGB(255, 255, 255) -- White outline
+            highlight.Parent = part
+        end
+    end
+end
+
+-- Prompt the user to input a part name
+local partName = "Rose1G"
+local partName = "Rose2G"
+local partName = "Rose3G"
+local partName = "Rose4G"
+local partName = "Rose5G"
+local partName = "Rose6G"
+local partName = "Rose7G"
+local partName = "Rose8G"
+local partName = "Rose9G"
+local partName = "Rose10G"
+local partName = "Rose11G"
+local partName = "Rose12G"
+local partName = "Rose13G"
+local partName = "Rose14G"
+local partName = "Rose15G"
+local partName = "Rose16G"
+local partName = "Rose17G"
+local partName = "Rose18G"
+local partName = "Rose19G"
+local partName = "Rose20G"
+
+-- Highlight all parts that match the input
+highlightMatchingParts(partName)
