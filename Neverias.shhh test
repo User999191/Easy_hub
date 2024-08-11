@@ -1,8 +1,128 @@
+-- Services
 local Players = game:GetService("Players")
-local Workspace = game:GetService("Workspace")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
-local Debris = game:GetService("Debris")
+local TextService = game:GetService("TextService")
+
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local Humanoid = Character:WaitForChild("Humanoid")
+
+-- Create Watermark UI
+local watermarkGui = Instance.new("ScreenGui")
+watermarkGui.Name = "WatermarkGui"
+watermarkGui.Parent = PlayerGui
+
+local watermarkFrame = Instance.new("Frame")
+watermarkFrame.Name = "WatermarkFrame"
+watermarkFrame.Size = UDim2.new(0, 300, 0, 100) -- Adjust size as needed
+watermarkFrame.Position = UDim2.new(0.5, -150, 0.02, 0)
+watermarkFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+watermarkFrame.BackgroundTransparency = 0.5
+watermarkFrame.BorderSizePixel = 0
+watermarkFrame.Parent = watermarkGui
+
+local watermarkTitle = Instance.new("TextLabel")
+watermarkTitle.Name = "WatermarkTitle"
+watermarkTitle.Size = UDim2.new(1, 0, 0, 30)
+watermarkTitle.Text = "Watermark v5"
+watermarkTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+watermarkTitle.TextScaled = true
+watermarkTitle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+watermarkTitle.BackgroundTransparency = 0.5
+watermarkTitle.BorderSizePixel = 0
+watermarkTitle.Parent = watermarkFrame
+
+local fpsLabel = Instance.new("TextLabel")
+fpsLabel.Name = "FPSLabel"
+fpsLabel.Size = UDim2.new(1, 0, 0, 20)
+fpsLabel.Position = UDim2.new(0, 0, 0.2, 0)
+fpsLabel.Text = "FPS: "
+fpsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+fpsLabel.TextScaled = true
+fpsLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+fpsLabel.BackgroundTransparency = 0.5
+fpsLabel.BorderSizePixel = 0
+fpsLabel.Parent = watermarkFrame
+
+local pingLabel = Instance.new("TextLabel")
+pingLabel.Name = "PingLabel"
+pingLabel.Size = UDim2.new(1, 0, 0, 20)
+pingLabel.Position = UDim2.new(0, 0, 0.4, 0)
+pingLabel.Text = "Ping: "
+pingLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+pingLabel.TextScaled = true
+pingLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+pingLabel.BackgroundTransparency = 0.5
+pingLabel.BorderSizePixel = 0
+pingLabel.Parent = watermarkFrame
+
+local walkSpeedLabel = Instance.new("TextLabel")
+walkSpeedLabel.Name = "WalkSpeedLabel"
+walkSpeedLabel.Size = UDim2.new(1, 0, 0, 20)
+walkSpeedLabel.Position = UDim2.new(0, 0, 0.6, 0)
+walkSpeedLabel.Text = "WalkSpeed: "
+walkSpeedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+walkSpeedLabel.TextScaled = true
+walkSpeedLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+walkSpeedLabel.BackgroundTransparency = 0.5
+walkSpeedLabel.BorderSizePixel = 0
+walkSpeedLabel.Parent = watermarkFrame
+
+-- Function to update watermark values
+local function updateWatermark()
+    -- Update FPS
+    local fps = math.floor(1 / RunService.RenderStepped:Wait())
+    fpsLabel.Text = "FPS: " .. tostring(fps)
+
+    -- Update Ping (Note: Requires a custom method or third-party service for actual ping data)
+    local ping = "N/A" -- Replace this with actual ping detection if possible
+    pingLabel.Text = "Ping: " .. tostring(ping)
+
+    -- Update WalkSpeed
+    if LocalPlayer and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        walkSpeedLabel.Text = "WalkSpeed: " .. tostring(LocalPlayer.Character.Humanoid.WalkSpeed)
+    end
+end
+
+-- Connect the update function to RenderStepped
+RunService.RenderStepped:Connect(function()
+    updateWatermark()
+end)
+
+-- Make UI movable (optional, as previously provided)
+local dragging = false
+local dragStart = Vector2.new()
+local startPos = UDim2.new()
+
+local function onDragStart(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = watermarkFrame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end
+
+local function onDragMove(input)
+    if dragging then
+        local delta = input.Position - dragStart
+        watermarkFrame.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+    end
+end
+
+UserInputService.InputBegan:Connect(onDragStart)
+UserInputService.InputChanged:Connect(onDragMove)
 
 local LocalPlayer = Players.LocalPlayer
 local Camera = Workspace.CurrentCamera
@@ -295,3 +415,4 @@ local function AimAtTarget(target)
         end
     end
 end
+
