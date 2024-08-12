@@ -37,6 +37,12 @@ local Settings = {
         Enabled = true,
         DotColor = Color3.fromRGB(255, 0, 0),
         DotRadius = 5
+    },
+    Highlight = {
+        Enabled = false,
+        Color = Color3.fromRGB(255, 0, 0),
+        OutlineColor = Color3.fromRGB(0, 0, 0),
+        OutlineThickness = 2
     }
 }
 
@@ -48,7 +54,7 @@ screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 -- Create Main Frame with scrolling functionality
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 450, 0, 450)
+mainFrame.Size = UDim2.new(0, 530, 0, 530)
 mainFrame.Position = UDim2.new(0.5, -150, 0.5, -225)
 mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 mainFrame.BorderSizePixel = 0
@@ -148,10 +154,16 @@ toggleButton.Parent = screenGui
 -- Function to toggle UI visibility
 local function toggleUI()
     if mainFrame.Visible then
-        mainFrame.Visible = false
+        local tween = createTween(mainFrame, {Size = UDim2.new(0, 450, 0, 0)}, 0.5)
+        tween:Play()
+        tween.Completed:Connect(function()
+            mainFrame.Visible = false
+        end)
         toggleButton.Text = "Show"
     else
         mainFrame.Visible = true
+        local tween = createTween(mainFrame, {Size = UDim2.new(0, 450, 0, 450)}, 0.5)
+        tween:Play()
         toggleButton.Text = "Hide"
     end
 end
@@ -179,168 +191,116 @@ offButton.TextScaled = true
 offButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
 offButton.Parent = scrollingFrame
 
--- Function to handle On/Off button clicks
-local function handleButtonClick(buttonName)
-    if buttonName == "On" then
-        -- Add logic for when On button is clicked
-        print("On button clicked")
-    elseif buttonName == "Off" then
-        -- Add logic for when Off button is clicked
-        print("Off button clicked")
+-- State to track aimlock
+local aimlockEnabled = false
+
+-- Function to send notification
+local function sendNotification(message)
+    local notification = Instance.new("TextLabel")
+    notification.Size = UDim2.new(0, 200, 0, 50)
+    notification.Position = UDim2.new(0.5, -100, 0.5, -25)
+    notification.Text = message
+    notification.TextColor3 = Color3.fromRGB(255, 255, 255)
+    notification.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    notification.BackgroundTransparency = 0.5
+    notification.Parent = screenGui
+    Debris:AddItem(notification, Settings.AimLock.NotificationDuration)
+end
+
+-- Function to toggle aimlock
+local function toggleAimlock()
+    aimlockEnabled = not aimlockEnabled
+    if aimlockEnabled then
+        sendNotification("Aimlock Enabled")
+    else
+        sendNotification("Aimlock Disabled")
     end
 end
 
+-- Keybind for toggling aimlock
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed and input.KeyCode == Settings.AimLock.AimLockKey then
+        toggleAimlock()
+    end
+end)
+
+-- Function to highlight all parts except the local player's character
+local function toggleHighlight()
+    local highlightEnabled = false
+    local highlightGroup = {}
+
+    for _, part in ipairs(Workspace:FindPartsInRegion3(workspace.CurrentCamera.CFrame:ToWorldSpace(CFrame.new(0, 0, -500)).ToRegion3(), nil, math.huge)) do
+        if part:IsA("BasePart") and part.Parent ~= LocalPlayer.Character then
+            if highlightEnabled then
+                local highlight = Instance.new("Highlight")
+                highlight.Adornee = part
+                highlight.FillColor = Settings.Highlight.Color
+                highlight.OutlineColor = Settings.Highlight.OutlineColor
+                highlight.OutlineThickness = Settings.Highlight.OutlineThickness
+                highlight.Parent = part
+                table.insert(highlightGroup, highlight)
+            else
+                for _, highlight in ipairs(highlightGroup) do
+                    highlight:Destroy()
+                end
+                highlightGroup = {}
+            end
+        end
+    end
+
+    return highlightEnabled
+end
+
+-- Toggle Highlight Button Logic
+local isHighlighting = false
 onButton.MouseButton1Click:Connect(function()
-    handleButtonClick("On")
+    isHighlighting = not isHighlighting
+    toggleHighlight()
 end)
 
 offButton.MouseButton1Click:Connect(function()
-    handleButtonClick("Off")
+    isHighlighting = false
+    toggleHighlight()
 end)
 
--- Existing AimLock and Prediction Code
-local LockedTarget
-local targetDot = Drawing.new("Circle")
+-- Function to perform aimlock
+local function performAimlock()
+    if aimlockEnabled then
+        local closestPlayer, shortestDistance = nil, math.huge
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild(Settings.AimLock.AimPart) then
+                local aimPart = player.Character[Settings.AimLock.AimPart]
+                local screenPosition, onScreen = Camera:WorldToScreenPoint(aimPart.Position)
+                if onScreen then
+                    local distance = (Vector2.new(screenPosition.X, screenPosition.Y) - Mouse.Position).Magnitude
+                    if distance < shortestDistance then
+                        closestPlayer = player
+                        shortestDistance = distance
+                    end
+                end
+            end
+        end
 
-targetDot.Radius = Settings.DotSettings.DotRadius
-targetDot.Color = Settings.DotSettings.DotColor
-targetDot.Thickness = 1
-targetDot.Filled = true
-targetDot.Visible = false
-
--- Function to find the closest player
-local function FindClosestPlayer()
-    local closestPlayer = nil
-    local closestDistance = math.huge
-
-    for _, player in pairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            local rootPart = player.Character.HumanoidRootPart
-            local screenPosition, isOnScreen = Camera:WorldToViewportPoint(rootPart.Position)
-            
-            if isOnScreen then
-                local distance = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(screenPosition.X, screenPosition.Y)).Magnitude
-                if distance < closestDistance then
-                    closestDistance = distance
-                    closestPlayer = player
+        if closestPlayer then
+            local aimPart = closestPlayer.Character:FindFirstChild(Settings.AimLock.AimPart)
+            if aimPart then
+                Camera.CFrame = CFrame.new(Camera.CFrame.Position, aimPart.Position)
+                if Settings.BulletTrace.Enabled then
+                    local line = Instance.new("Beam")
+                    line.Name = "BulletTrace"
+                    line.Color = ColorSequence.new(Settings.BulletTrace.Color)
+                    line.Thickness = Settings.BulletTrace.Thickness
+                    line.Parent = Camera
+                    line.Attachment0 = Instance.new("Attachment", Camera)
+                    line.Attachment1 = Instance.new("Attachment", aimPart)
+                    Debris:AddItem(line, 0.1)
                 end
             end
         end
     end
-
-    return closestPlayer
 end
 
--- Function to create a line trace
-local function createLineTrace(startPos, endPos)
-    if Settings.BulletTrace.Enabled then
-        local direction = (endPos - startPos).Unit
-        local currentPos = startPos
-
-        for i = 1, Settings.BulletTrace.LineCount do
-            local lineEnd = currentPos + direction * Settings.BulletTrace.LineLength
-            local line = Drawing.new("Line")
-            line.From = Camera:WorldToViewportPoint(currentPos)
-            line.To = Camera:WorldToViewportPoint(lineEnd)
-            line.Color = Settings.BulletTrace.Color
-            line.Thickness = Settings.BulletTrace.Thickness
-            line.Visible = true
-
-            Debris:AddItem(line, 0.5)
-            currentPos = lineEnd
-        end
-    end
-end
-
--- Function to calculate airshot prediction dynamically
-local function CalculateAirshotPrediction(chance)
-    local basePrediction = Settings.Airshot.BasePrediction
-    local predictionMultiplier = Settings.Airshot.AirshotAccuracyFactor
-    
-    if chance >= Settings.AimLock.HighChanceThreshold then
-        return basePrediction * predictionMultiplier
-    else
-        return basePrediction
-    end
-end
-
--- Function to determine if a shot will hit based on chance
-local function ChanceHit()
-    return math.random() <= Settings.AimLock.HitChance
-end
-
-local previousTargetPosition
-
-local function AimAtTarget(target)
-    if target and target.Character and target.Character:FindFirstChild(Settings.AimLock.AimPart) then
-        local targetPart = target.Character[Settings.AimLock.AimPart]
-        local currentTargetPosition = targetPart.Position
-
-        if previousTargetPosition ~= currentTargetPosition then
-            previousTargetPosition = currentTargetPosition
-
-            local predictedPosition
-            local airshotPrediction = Settings.Airshot.Enabled and CalculateAirshotPrediction(Settings.AimLock.ChanceHitPrediction) or Settings.AimLock.Prediction
-
-            if target.Character.Humanoid:GetState() == Enum.HumanoidStateType.Freefall then
-                predictedPosition = targetPart.Position + (targetPart.Velocity * airshotPrediction)
-            else
-                predictedPosition = targetPart.Position + (targetPart.Velocity * Settings.AimLock.Prediction)
-            end
-
-            Camera.CFrame = CFrame.new(Camera.CFrame.Position, predictedPosition)
-            createLineTrace(Camera.CFrame.Position, predictedPosition)
-        end
-
-        if ChanceHit() then
-            print("Hit at:", previousTargetPosition)
-        else
-            print("Missed shot at:", previousTargetPosition)
-        end
-    end
-end
-
--- Handle key input for toggling aimlock and displaying dot
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if not gameProcessed and input.KeyCode == Settings.AimLock.AimLockKey then
-        Settings.AimLock.Enabled = not Settings.AimLock.Enabled
-
-        if Settings.AimLock.Enabled then
-            LockedTarget = FindClosestPlayer()
-            if LockedTarget then
-                local targetName = LockedTarget.Name
-                LocalPlayer:SendNotification({
-                    Title = "AimLock Activated",
-                    Text = "Target: " .. targetName,
-                    Duration = Settings.AimLock.NotificationDuration
-                })
-                targetDot.Visible = true
-            else
-                targetDot.Visible = false
-            end
-        else
-            LockedTarget = nil
-            targetDot.Visible = false
-        end
-    end
-end)
-
--- Update aimlock each frame and dot position
-RunService.Heartbeat:Connect(function()
-    if Settings.AimLock.Enabled and LockedTarget then
-        AimAtTarget(LockedTarget)
-
-        if LockedTarget and LockedTarget.Character and LockedTarget.Character:FindFirstChild(Settings.AimLock.AimPart) then
-            local targetPart = LockedTarget.Character[Settings.AimLock.AimPart]
-            local screenPosition, isOnScreen = Camera:WorldToViewportPoint(targetPart.Position)
-
-            if isOnScreen then
-                targetDot.Position = Vector2.new(screenPosition.X, screenPosition.Y)
-            end
-        else
-            targetDot.Visible = false
-        end
-    else
-        targetDot.Visible = false
-    end
+-- Perform aimlock in RenderStepped
+RunService.RenderStepped:Connect(function()
+    performAimlock()
 end)
