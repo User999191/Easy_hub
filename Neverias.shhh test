@@ -269,29 +269,33 @@ local function ChanceHit()
     return math.random() <= Settings.AimLock.HitChance
 end
 
--- Function to aim at the target with prediction
+local previousTargetPosition
+
 local function AimAtTarget(target)
     if target and target.Character and target.Character:FindFirstChild(Settings.AimLock.AimPart) then
         local targetPart = target.Character[Settings.AimLock.AimPart]
-        local predictedPosition
+        local currentTargetPosition = targetPart.Position
 
-        local airshotPrediction = Settings.Airshot.Enabled and CalculateAirshotPrediction(Settings.AimLock.ChanceHitPrediction) or Settings.AimLock.Prediction
+        if previousTargetPosition ~= currentTargetPosition then
+            previousTargetPosition = currentTargetPosition
 
-        if target.Character.Humanoid:GetState() == Enum.HumanoidStateType.Freefall then
-            local randomness = math.random() * 0.5
-            predictedPosition = targetPart.Position + (targetPart.Velocity * (airshotPrediction + randomness))
-        else
-            predictedPosition = targetPart.Position + (targetPart.Velocity * Settings.AimLock.Prediction)
+            local predictedPosition
+            local airshotPrediction = Settings.Airshot.Enabled and CalculateAirshotPrediction(Settings.AimLock.ChanceHitPrediction) or Settings.AimLock.Prediction
+
+            if target.Character.Humanoid:GetState() == Enum.HumanoidStateType.Freefall then
+                predictedPosition = targetPart.Position + (targetPart.Velocity * airshotPrediction)
+            else
+                predictedPosition = targetPart.Position + (targetPart.Velocity * Settings.AimLock.Prediction)
+            end
+
+            Camera.CFrame = CFrame.new(Camera.CFrame.Position, predictedPosition)
+            createLineTrace(Camera.CFrame.Position, predictedPosition)
         end
 
-        Camera.CFrame = CFrame.new(Camera.CFrame.Position, predictedPosition)
-        createLineTrace(Camera.CFrame.Position, predictedPosition)
-
         if ChanceHit() then
-            print("Hit at:", predictedPosition)
-            -- Add actual shooting logic here
+            print("Hit at:", previousTargetPosition)
         else
-            print("Missed shot at:", predictedPosition)
+            print("Missed shot at:", previousTargetPosition)
         end
     end
 end
