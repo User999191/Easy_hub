@@ -39,10 +39,12 @@ local Settings = {
         DotColor = Color3.fromRGB(255, 0, 0),
         DotRadius = 5
     },
+    NoLag = {
+        Enabled = false
+    },
     Ping = {
         Current = 300,
-        Minimum = 50,
-        UpdateRate = 1
+        Minimum = 50
     }
 }
 
@@ -54,8 +56,8 @@ screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 -- Create Main Frame with scrolling functionality
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 450, 0, 500)
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -250)
+mainFrame.Size = UDim2.new(0, 450, 0, 450)
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -225)
 mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 mainFrame.BorderSizePixel = 0
 mainFrame.Parent = screenGui
@@ -91,8 +93,7 @@ local settingsLabels = {
     { Name = "ChanceHitPrediction", Position = UDim2.new(0, 25, 0, 150), Text = "Chance Hit Prediction: " },
     { Name = "AirshotPrediction", Position = UDim2.new(0, 25, 0, 200), Text = "Airshot Prediction: " },
     { Name = "BasePrediction", Position = UDim2.new(0, 25, 0, 250), Text = "Base Prediction: " },
-    { Name = "AirshotAccuracyFactor", Position = UDim2.new(0, 25, 0, 300), Text = "Airshot Accuracy Factor: " },
-    { Name = "Smoothness", Position = UDim2.new(0, 25, 0, 350), Text = "Smoothness: " }
+    { Name = "AirshotAccuracyFactor", Position = UDim2.new(0, 25, 0, 300), Text = "Airshot Accuracy Factor: " }
 }
 
 for _, labelInfo in ipairs(settingsLabels) do
@@ -114,8 +115,7 @@ local textBoxes = {
     { Name = "ChanceHitPrediction", Position = UDim2.new(0, 200, 0, 150), Text = tostring(Settings.AimLock.ChanceHitPrediction) },
     { Name = "AirshotPrediction", Position = UDim2.new(0, 200, 0, 200), Text = tostring(Settings.Airshot.BasePrediction) },
     { Name = "BasePrediction", Position = UDim2.new(0, 200, 0, 250), Text = tostring(Settings.Airshot.BasePrediction) },
-    { Name = "AirshotAccuracyFactor", Position = UDim2.new(0, 200, 0, 300), Text = tostring(Settings.Airshot.AirshotAccuracyFactor) },
-    { Name = "Smoothness", Position = UDim2.new(0, 200, 0, 350), Text = tostring(Settings.AimLock.Smoothness) }
+    { Name = "AirshotAccuracyFactor", Position = UDim2.new(0, 200, 0, 300), Text = tostring(Settings.Airshot.AirshotAccuracyFactor) }
 }
 
 for _, boxInfo in ipairs(textBoxes) do
@@ -166,11 +166,11 @@ end
 
 toggleButton.MouseButton1Click:Connect(toggleUI)
 
--- Create On and Off Buttons
+-- Create On, Off, and No Lag Buttons
 local onButton = Instance.new("TextButton")
 onButton.Name = "OnButton"
 onButton.Size = UDim2.new(0, 120, 0, 40)
-onButton.Position = UDim2.new(0, 25, 0, 400)
+onButton.Position = UDim2.new(0, 25, 0, 350)
 onButton.Text = "On"
 onButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 onButton.TextScaled = true
@@ -180,25 +180,24 @@ onButton.Parent = scrollingFrame
 local offButton = Instance.new("TextButton")
 offButton.Name = "OffButton"
 offButton.Size = UDim2.new(0, 120, 0, 40)
-offButton.Position = UDim2.new(0, 150, 0, 400)
+offButton.Position = UDim2.new(0, 150, 0, 350)
 offButton.Text = "Off"
 offButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 offButton.TextScaled = true
 offButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
 offButton.Parent = scrollingFrame
 
--- Create No Crash V2 Button
-local noCrashButton = Instance.new("TextButton")
-noCrashButton.Name = "NoCrashButton"
-noCrashButton.Size = UDim2.new(0, 150, 0, 40)
-noCrashButton.Position = UDim2.new(0, 25, 0, 450)
-noCrashButton.Text = "No Crash V2"
-noCrashButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-noCrashButton.TextScaled = true
-noCrashButton.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
-noCrashButton.Parent = scrollingFrame
+local noLagButton = Instance.new("TextButton")
+noLagButton.Name = "NoLagButton"
+noLagButton.Size = UDim2.new(0, 120, 0, 40)
+noLagButton.Position = UDim2.new(0, 275, 0, 350)
+noLagButton.Text = "No Lag V2"
+noLagButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+noLagButton.TextScaled = true
+noLagButton.BackgroundColor3 = Color3.fromRGB(0, 0, 200)
+noLagButton.Parent = scrollingFrame
 
--- Function to handle On/Off button clicks
+-- Function to handle On/Off and No Lag button clicks
 local function handleButtonClick(buttonName)
     if buttonName == "On" then
         -- Add logic for when On button is clicked
@@ -206,11 +205,17 @@ local function handleButtonClick(buttonName)
     elseif buttonName == "Off" then
         -- Add logic for when Off button is clicked
         print("Off button clicked")
-    elseif buttonName == "NoCrash" then
-        -- Add logic for No Crash V2 button
-        print("No Crash V2 activated")
-        -- Placeholder logic for No Crash V2
-        -- Add actual No Crash V2 functionality here
+    elseif buttonName == "NoLag" then
+        Settings.NoLag.Enabled = not Settings.NoLag.Enabled
+        noLagButton.Text = Settings.NoLag.Enabled and "Lag Off" or "No Lag V2"
+        if Settings.NoLag.Enabled then
+            -- Logic to disable lag
+            collectgarbage("collect") -- Force garbage collection
+            print("Lag reduced, memory freed.")
+        else
+            -- Logic to enable lag
+            print("Lag mode enabled.")
+        end
     end
 end
 
@@ -222,37 +227,8 @@ offButton.MouseButton1Click:Connect(function()
     handleButtonClick("Off")
 end)
 
-noCrashButton.MouseButton1Click:Connect(function()
-    handleButtonClick("NoCrash")
-end)
-
--- Simulate Ping Decrease (Update display value only)
-local function updatePingDisplay()
-    -- Reduce the ping value gradually for simulation
-    local decreaseRate = 1
-    if Settings.Ping.Current > Settings.Ping.Minimum then
-        Settings.Ping.Current = math.max(Settings.Ping.Current - decreaseRate, Settings.Ping.Minimum)
-        local pingLabel = scrollingFrame:FindFirstChild("PingLabel")
-        if pingLabel then
-            pingLabel.Text = "Ping: " .. tostring(Settings.Ping.Current)
-        end
-    end
-end
-
--- Create Ping Display
-local pingLabel = Instance.new("TextLabel")
-pingLabel.Name = "PingLabel"
-pingLabel.Size = UDim2.new(0, 150, 0, 30)
-pingLabel.Position = UDim2.new(0, 25, 0, 500)
-pingLabel.Text = "Ping: " .. tostring(Settings.Ping.Current)
-pingLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-pingLabel.TextScaled = true
-pingLabel.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-pingLabel.Parent = scrollingFrame
-
--- Update ping display periodically
-RunService.Heartbeat:Connect(function()
-    updatePingDisplay()
+noLagButton.MouseButton1Click:Connect(function()
+    handleButtonClick("NoLag")
 end)
 
 -- Existing AimLock and Prediction Code
@@ -341,9 +317,7 @@ local function AimAtTarget(target)
             predictedPosition = targetPart.Position + (targetPart.Velocity * Settings.AimLock.Prediction)
         end
 
-        -- Smoothly interpolate the camera position
-        local smoothness = Settings.AimLock.Smoothness
-        Camera.CFrame = Camera.CFrame:Lerp(CFrame.new(Camera.CFrame.Position, predictedPosition), smoothness)
+        Camera.CFrame = CFrame.new(Camera.CFrame.Position, predictedPosition)
         createLineTrace(Camera.CFrame.Position, predictedPosition)
 
         if ChanceHit() then
@@ -382,6 +356,12 @@ end)
 
 -- Update aimlock each frame and dot position
 RunService.Heartbeat:Connect(function()
+    if Settings.NoLag.Enabled then
+        -- Disable non-essential features to reduce lag
+        Settings.AimLock.Enabled = false
+        targetDot.Visible = false
+    end
+    
     if Settings.AimLock.Enabled and LockedTarget then
         AimAtTarget(LockedTarget)
 
@@ -397,5 +377,10 @@ RunService.Heartbeat:Connect(function()
         end
     else
         targetDot.Visible = false
+    end
+
+    -- Force garbage collection to free up memory
+    if Settings.NoLag.Enabled then
+        collectgarbage("collect")
     end
 end)
