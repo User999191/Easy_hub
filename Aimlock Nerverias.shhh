@@ -1,0 +1,216 @@
+-- Services
+local players = game:GetService("Players")
+local userInputService = game:GetService("UserInputService")
+local runService = game:GetService("RunService")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local starterGui = game:GetService("StarterGui")
+
+-- Variables
+local localPlayer = players.LocalPlayer
+local mouse = localPlayer:GetMouse()
+local camera = workspace.CurrentCamera
+local target = nil
+
+-- Aimlock Settings
+local aimlockSettings = {
+    key = Enum.KeyCode.C, -- Change this to your preferred key
+    prediction = 0.1220, -- Base prediction factor
+    enabled = false
+}
+
+-- Box Settings
+local boxSettings = {
+    size = Vector3.new(10, 10, 10), -- Box dimensions
+    color = Color3.new(1, 0, 0), -- Box color (red)
+    transparency = 0.5, -- Box transparency
+}
+
+-- Data to send to the server
+local data = {
+    "Argument1",
+    "Argument2"
+}
+
+-- Function to create a marker (example implementation)
+local function makemarker(guimain, aimpart, color, transparency, size)
+    local marker = Instance.new("BillboardGui")
+    marker.Parent = guimain
+    marker.Size = UDim2.new(size, 0, size, 0)
+    marker.Adornee = aimpart
+    marker.AlwaysOnTop = true
+
+    local frame = Instance.new("Frame")
+    frame.Parent = marker
+    frame.BackgroundColor3 = color
+    frame.BackgroundTransparency = transparency
+    frame.Size = UDim2.new(1, 0, 1, 0)
+
+    return marker
+end
+
+-- Secure prediction function
+local function predictPosition(target)
+    if not target or not target:FindFirstChild("HumanoidRootPart") then
+        return nil
+    end
+
+    local humanoidRootPart = target.HumanoidRootPart
+    local velocity = humanoidRootPart.Velocity
+    local acceleration = humanoidRootPart.AssemblyLinearVelocity - velocity
+    local basePrediction = aimlockSettings.prediction
+
+    -- Adjust prediction based on velocity and acceleration
+    local predictedPosition = humanoidRootPart.Position + (velocity * basePrediction) + (0.5 * acceleration * basePrediction^2)
+
+    return predictedPosition
+end
+
+-- Function to get the closest player within the box
+local function getClosestPlayerInBox()
+    local closestPlayer = nil
+    local shortestDistance = math.huge
+
+    for _, player in ipairs(players:GetPlayers()) do
+        if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local targetPosition = player.Character.HumanoidRootPart.Position
+            local screenPoint, onScreen = camera:WorldToScreenPoint(targetPosition)
+            local distance = (Vector2.new(screenPoint.X, screenPoint.Y) - Vector2.new(mouse.X, mouse.Y)).magnitude
+
+            if onScreen and distance < shortestDistance then
+                local relativePosition = camera.CFrame:PointToObjectSpace(targetPosition)
+                if math.abs(relativePosition.X) < boxSettings.size.X and math.abs(relativePosition.Y) < boxSettings.size.Y and math.abs(relativePosition.Z) < boxSettings.size.Z then
+                    closestPlayer = player
+                    shortestDistance = distance
+                end
+            end
+        end
+    end
+
+    return closestPlayer
+end
+
+-- Function to create and display the aimlock box
+local function createAimlockBox()
+    local box = Instance.new("Part")
+    box.Size = boxSettings.size
+    box.Transparency = boxSettings.transparency
+    box.Color = boxSettings.color
+    box.Anchored = true
+    box.CanCollide = false
+    box.Parent = workspace
+    return box
+end
+
+-- Function to update the aimlock box position
+local function updateAimlockBox(box, target)
+    if target and target:FindFirstChild("HumanoidRootPart") then
+        box.Position = target.HumanoidRootPart.Position
+    else
+        box.Position = Vector3.new(0, 9999, 0) -- Default position if no target
+    end
+end
+
+-- Function to notify with the target's name
+local function notifyTargetName(target)
+    if target then
+        starterGui:SetCore("SendNotification", {
+            Title = "Target Locked",
+            Text = "Target: " .. target.Name,
+            Duration = 2
+        })
+    end
+end
+
+-- Function to handle new players and existing data
+local function noob(player)
+    local character
+    repeat
+        wait()
+    until player.Character
+    local guimain = player.PlayerGui -- Replace with the appropriate GUI reference if needed
+    local aimpart = player.Character:WaitForChild("HumanoidRootPart") -- Assuming `configs.main.aimpart` is HumanoidRootPart
+    local handler = makemarker(guimain, aimpart, Color3.fromRGB(107, 184, 255), 0.10, 8)
+    handler.Name = player.Name
+    player.CharacterAdded:Connect(function(Char)
+        handler.Adornee = Char:WaitForChild("HumanoidRootPart")
+    end)
+end
+
+-- Initialize existing players
+for _, player in ipairs(players:GetPlayers()) do
+    if player ~= localPlayer then
+        noob(player)
+    end
+end
+
+-- Handle new players joining the game
+players.PlayerAdded:Connect(function(player)
+    noob(player)
+end)
+
+-- Function to disable teleportation bypass
+local function disableTeleportBypass()
+    local teleportService = game:GetService("TeleportService")
+    -- Logic to disable teleportation bypass (e.g., modify teleportation behavior or settings)
+    -- This is an example and may need to be adapted based on your specific needs
+end
+
+-- Function to lock onto the target without camera locking
+local function aimlock()
+    local aimlockBox = createAimlockBox()
+
+    runService.Stepped:Connect(function()
+        if aimlockSettings.enabled and target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+            local predictedPosition = predictPosition(target)
+
+            if predictedPosition then
+                -- Update aimlock box position based on prediction
+                aimlockBox.CFrame = CFrame.new(
+                    target.Character[aimlockSettings.prediction].Position +
+                    (target.Character.UpperTorso.Velocity * aimlockSettings.prediction)
+                )
+
+                -- Update HumanoidRootPart properties
+                target.Character.HumanoidRootPart.Size = Vector3.new(10, 10, 10)
+                target.Character.HumanoidRootPart.CanCollide = false
+
+                -- FireServer logic to keep the aimlock stable
+                local remoteEvent = replicatedStorage:WaitForChild("RemoteEventName") -- Replace with the actual RemoteEvent name
+                remoteEvent:FireServer(target, data)
+
+                -- Update aimlock box position
+                updateAimlockBox(aimlockBox, target)
+            end
+        else
+            -- Hide the box if aimlock is disabled
+            aimlockBox.CFrame = CFrame.new(0, 9999, 0)
+        end
+    end)
+end
+
+-- Function to handle tool activation (e.g., 'Q' tool)
+local function onToolActivated()
+    if target then
+        notifyTargetName(target) -- Notify with the target's name
+    end
+end
+
+-- Toggle aimlock on key press
+userInputService.InputBegan:Connect(function(input)
+    if input.KeyCode == aimlockSettings.key then
+        aimlockSettings.enabled = not aimlockSettings.enabled
+        if aimlockSettings.enabled then
+            target = getClosestPlayerInBox()
+        else
+            target = nil
+        end
+    elseif input.KeyCode == Enum.KeyCode.Q then
+        onToolActivated()
+    end
+end)
+
+-- Call the function to disable teleportation bypass if needed
+disableTeleportBypass()
+
+aimlock()
+return target -- Return the current target for potential external use
