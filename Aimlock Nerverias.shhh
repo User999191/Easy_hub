@@ -546,5 +546,4 @@ while true do
         -- Wait to ensure safe zone is reached
         wait(3) -- Adjust as needed
     end
-end
-*
+end)
