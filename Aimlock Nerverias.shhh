@@ -2,9 +2,10 @@
 local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/laagginq/ui-libraries/main/shit-lib/src.lua"))()
 
 -- UI Setup
-local win = lib:Create("Nerverias.shhh [Beta]","Game Name")
-local a = win:tab("Camlock Settings",true)
-local b = win:tab("Other Settings",false)
+local win = lib:Create("Nerverias.shhh [Beta]","Da hood,Southwest Florida")
+local a = win:tab("Camlock",true)
+local b = win:tab("Aimlock",false)
+local c = win:tab("Fly & Speed",false)
 
 a:label("Camlock")
 
