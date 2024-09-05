@@ -1,0 +1,26 @@
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local backpack = player:WaitForChild("Backpack")
+
+-- Function to check and reload weapons
+local function checkAndReload()
+    while true do
+        -- Iterate through all tools in the backpack
+        for _, tool in ipairs(backpack:GetChildren()) do
+            if tool:IsA("Tool") and tool:FindFirstChild("Ammo") then
+                local ammo = tool.Ammo
+                
+                if ammo.Value == 0 then
+                    -- Reload the weapon
+                    tool:Activate() -- Or use the appropriate method for reloading
+                end
+            end
+        end
+
+        wait(1) -- Check every second (adjust as needed)
+    end
+end
+
+-- Start the auto-reload function
+checkAndReload()
