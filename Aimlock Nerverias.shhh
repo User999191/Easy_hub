@@ -163,7 +163,7 @@ mouse.KeyDown:Connect(function(key)
                 sendNotification("Locked onto: " .. lockedTarget.Name)
 
                 if getgenv().Airshot and isAirshot(lockedTarget) then
-                    sendNotification("Airshot Detected!")
+                    print("Airshot Detected!")
                 end
             else
                 sendNotification("No target found")
@@ -177,7 +177,7 @@ game:GetService("RunService").RenderStepped:Connect(function()
     if aimEnabled and lockedTarget and lockedTarget.Character and lockedTarget.Character:FindFirstChild(getgenv().AimPart) then
         if getgenv().KoCheck and isKo(lockedTarget) then
             aimEnabled = false
-            sendNotification("KO detected, Aimlock disabled")
+            print("detected")
             return
         end
         aimAt(lockedTarget)
