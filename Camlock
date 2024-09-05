@@ -7,7 +7,7 @@ getgenv().Smoothness = 5  -- Controls the lerp smoothness (higher = smoother)
 getgenv().Airshot = true
 getgenv().Notification = true
 getgenv().KoCheck = true  -- Stops camlock when the target's health is 1 or below
-getgenv().Keybind = "q"   -- Configurable keybind for toggling camlock
+getgenv().Keybind = "c"   -- Configurable keybind for toggling camlock
 
 -- Services
 local player = game.Players.LocalPlayer
