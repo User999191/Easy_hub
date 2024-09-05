@@ -1,0 +1,139 @@
+-- Services and Variables
+local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local Mouse = LocalPlayer:GetMouse()
+local CC = game.Workspace.CurrentCamera
+
+-- Aimlock settings
+local Enabled = false
+local PredictionX = 0.1
+local PredictionY = 0.1
+local Airshot = false
+local AimKey = Enum.KeyCode.Q
+local closestPlayer
+
+-- Create the purple dot GUI
+local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
+
+-- Dot (purple circle)
+local Dot = Instance.new("Frame", ScreenGui)
+Dot.Size = UDim2.new(0, 10, 0, 10) -- Size of the dot (10x10 pixels)
+Dot.AnchorPoint = Vector2.new(0.5, 0.5) -- Center the dot
+Dot.BackgroundColor3 = Color3.fromRGB(128, 0, 128) -- Purple color
+Dot.BorderSizePixel = 0 -- Remove border
+Dot.Visible = false -- Initially hidden
+
+-- Player name label
+local NameLabel = Instance.new("TextLabel", ScreenGui)
+NameLabel.Size = UDim2.new(0, 100, 0, 20)
+NameLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+NameLabel.BackgroundTransparency = 1 -- Transparent background
+NameLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
+NameLabel.TextStrokeTransparency = 0.5 -- Slight stroke for readability
+NameLabel.Visible = false
+NameLabel.Font = Enum.Font.SourceSansBold
+NameLabel.TextSize = 14
+
+-- Distance label
+local DistanceLabel = Instance.new("TextLabel", ScreenGui)
+DistanceLabel.Size = UDim2.new(0, 100, 0, 20)
+DistanceLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+DistanceLabel.Position = UDim2.new(0.5, 0, 0.5, 15) -- Below the dot
+DistanceLabel.BackgroundTransparency = 1
+DistanceLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
+DistanceLabel.TextStrokeTransparency = 0.5
+DistanceLabel.Visible = false
+DistanceLabel.Font = Enum.Font.SourceSansBold
+DistanceLabel.TextSize = 14
+
+-- Function to find the closest player
+local function GetClosestPlayer()
+    local shortestDistance = math.huge
+    local closestPlayer = nil
+
+    for i, v in pairs(Players:GetPlayers()) do
+        if v ~= LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 then
+            local pos = CC:WorldToViewportPoint(v.Character.PrimaryPart.Position)
+            local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).Magnitude
+            if magnitude < shortestDistance then
+                closestPlayer = v
+                shortestDistance = magnitude
+            end
+        end
+    end
+    return closestPlayer
+end
+
+-- Toggle Aimlock
+UIS.InputBegan:Connect(function(input)
+    if input.KeyCode == AimKey then
+        Enabled = not Enabled
+        closestPlayer = GetClosestPlayer()
+        
+        if Enabled and closestPlayer then
+            -- Show the dot, name, and distance ESP
+            Dot.Visible = true
+            NameLabel.Visible = true
+            DistanceLabel.Visible = true
+            NameLabel.Text = closestPlayer.Name
+            print("Target Locked: " .. closestPlayer.Name)
+        else
+            -- Hide the dot, name, and distance ESP
+            Dot.Visible = false
+            NameLabel.Visible = false
+            DistanceLabel.Visible = false
+            print("Aimlock Disabled")
+        end
+    end
+end)
+
+-- Update Aimlock position, prediction, name, and distance ESP
+RunService.RenderStepped:Connect(function()
+    if Enabled and closestPlayer and closestPlayer.Character and closestPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local targetPosition = closestPlayer.Character.HumanoidRootPart.Position
+        local targetVelocity = closestPlayer.Character.HumanoidRootPart.Velocity
+        local predictedPosition = targetPosition + (targetVelocity * Vector3.new(PredictionX, PredictionY, PredictionX))
+        
+        -- Move the camera to predicted position
+        Mouse.Hit = CFrame.new(predictedPosition)
+        
+        -- Move the dot and labels to predicted position
+        local screenPos = CC:WorldToViewportPoint(predictedPosition)
+        Dot.Position = UDim2.new(0, screenPos.X, 0, screenPos.Y)
+        NameLabel.Position = UDim2.new(0, screenPos.X, 0, screenPos.Y - 20) -- Name above the dot
+        DistanceLabel.Position = UDim2.new(0, screenPos.X, 0, screenPos.Y + 20) -- Distance below the dot
+
+        -- Calculate the distance and update the label
+        local distance = (LocalPlayer.Character.HumanoidRootPart.Position - targetPosition).Magnitude
+        DistanceLabel.Text = string.format("Distance: %.2f", distance)
+        
+        -- Handle Airshot functionality
+        if Airshot and closestPlayer.Character.HumanoidRootPart.Velocity.Y > 2 then
+            print("Airshot Detected!")
+        end
+    end
+end)
+
+-- Handling metatables for FireServer
+local mt = getrawmetatable(game)
+local old = mt.__namecall
+setreadonly(mt, false)
+mt.__namecall = newcclosure(function(...)
+    local args = {...}
+    if Enabled and getnamecallmethod() == "FireServer" and args[2] == "UpdateMousePos" then
+        local predictedPosition = closestPlayer.Character.HumanoidRootPart.Position +
+            (closestPlayer.Character.HumanoidRootPart.Velocity * Vector3.new(PredictionX, PredictionY, PredictionX))
+        args[3] = predictedPosition
+        return old(unpack(args))
+    end
+    return old(...)
+end)
+
+-- Display Aimlock settings
+print("Aimlock Settings:")
+print("PredictionX: " .. PredictionX)
+print("PredictionY: " .. PredictionY)
+print("Airshot: " .. tostring(Airshot))
+print("Enabled: " .. tostring(Enabled))
