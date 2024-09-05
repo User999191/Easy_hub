@@ -50,13 +50,13 @@ a:button("Enable Camlock", function()
 end)
 
 -- Execute Script Button
-a:button("Execute Script 1", function()
+a:button("q tool", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/scripthubekitten/qtoolv3/main/qtoolv3", true))()
     print("Script 1 Executed!")
 end)
 
 -- Execute Script Button 2
-b:button("Execute Script 2", function()
+b:button("Aimlock", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Easy_hub/main/Aimlock", true))()
     print("Script 2 Executed!")
 end)
@@ -66,7 +66,13 @@ b:input("Prediction", tostring(getgenv().PredictionX), true, function(v)
     print("Prediction X set to: " .. v)
 end)
 
-b:label("Aimlock")
+c:button("fly", function()
+    loadstring(game:HttpGet("https://github.com/User999191/Easy_hub/blob/main/Fly", true))()
+    print("Script 1 Executed!")
+end)
+
+c:label("Speed soon")
+b:label("Idk")
 
 -- Camlock Configuration
 getgenv().AimlockEnabled = true
