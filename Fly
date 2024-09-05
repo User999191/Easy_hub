@@ -1,0 +1,65 @@
+local user = game.Players.LocalPlayer
+local character = user.Character or user.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+local flying = false
+local speed = 50
+
+-- Create UI
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = user.PlayerGui
+ScreenGui.Name = "FlyUI"
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 200, 0, 100)
+frame.Position = UDim2.new(0, 10, 0, 10)
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+frame.Parent = ScreenGui
+
+local speedLabel = Instance.new("TextLabel")
+speedLabel.Size = UDim2.new(1, 0, 0.5, 0)
+speedLabel.Position = UDim2.new(0, 0, 0, 0)
+speedLabel.Text = "Speed: " .. speed
+speedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+speedLabel.BackgroundTransparency = 1
+speedLabel.Parent = frame
+
+local enableButton = Instance.new("TextButton")
+enableButton.Size = UDim2.new(1, 0, 0.5, 0)
+enableButton.Position = UDim2.new(0, 0, 0.5, 0)
+enableButton.Text = "Enable Fly"
+enableButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+enableButton.BackgroundColor3 = Color3.fromRGB(0, 128, 0)
+enableButton.Parent = frame
+
+local function toggleFly()
+    flying = not flying
+    if flying then
+        enableButton.Text = "Disable Fly"
+        humanoid.PlatformStand = true
+        local bodyVelocity = Instance.new("BodyVelocity")
+        bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+        bodyVelocity.MaxForce = Vector3.new(4000, 4000, 4000)
+        bodyVelocity.P = 1250
+        bodyVelocity.Parent = character.PrimaryPart
+        while flying do
+            bodyVelocity.Velocity = (user.Character.HumanoidRootPart.Position - user.Character.HumanoidRootPart.Position) * speed
+            wait(0.1)
+        end
+        bodyVelocity:Destroy()
+        humanoid.PlatformStand = false
+    else
+        enableButton.Text = "Enable Fly"
+        character.PrimaryPart:FindFirstChildOfClass("BodyVelocity"):Destroy()
+    end
+end
+
+enableButton.MouseButton1Click:Connect(toggleFly)
+
+-- Adjust speed
+local function updateSpeed(newSpeed)
+    speed = newSpeed
+    speedLabel.Text = "Speed: " .. speed
+end
+
+-- Example of changing speed dynamically
+-- updateSpeed(100)  -- Uncomment this line to set speed to 100
