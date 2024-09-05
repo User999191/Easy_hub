@@ -1,216 +1,185 @@
+-- Load the UI Library
+local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/laagginq/ui-libraries/main/shit-lib/src.lua"))()
+
+-- UI Setup
+local win = lib:Create("Nerverias.shhh [Beta]","Game Name")
+local a = win:tab("Camlock Settings",true)
+local b = win:tab("Other Settings",false)
+
+a:label("Camlock")
+
+-- Smoothness Input
+a:input("Smoothness", tostring(getgenv().Smoothness), true, function(v)
+    getgenv().Smoothness = tonumber(v)
+    print("Smoothness set to: " .. v)
+end)
+
+-- AimPart Input Textbox
+a:input("AimPart", getgenv().AimPart, false, function(v)
+    getgenv().AimPart = tostring(v)
+    print("AimPart set to: " .. v)
+end)
+
+a:input("Prediction X", tostring(getgenv().PredictionX), true, function(v)
+    getgenv().PredictionX = tonumber(v)
+    print("Prediction X set to: " .. v)
+end)
+
+-- Prediction Y Input
+a:input("Prediction Y", tostring(getgenv().PredictionY), true, function(v)
+    getgenv().PredictionY = tonumber(v)
+    print("Prediction Y set to: " .. v)
+end)
+
+-- Enable Camlock Button
+a:button("Enable Camlock", function()
+    if not aimEnabled then
+        lockedTarget = getClosestPlayer()
+        if lockedTarget then
+            aimEnabled = true
+            sendNotification("Locked onto: " .. lockedTarget.Name)
+        else
+            sendNotification("No target found")
+        end
+    else
+        aimEnabled = false
+        lockedTarget = nil
+        sendNotification("Camlock Disabled")
+    end
+end)
+
+-- Execute Script Button
+a:button("Execute Script 1", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/scripthubekitten/qtoolv3/main/qtoolv3", true))()
+    print("Script 1 Executed!")
+end)
+
+-- Execute Script Button 2
+b:button("Execute Script 2", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Easy_hub/main/Aimlock", true))()
+    print("Script 2 Executed!")
+end)
+
+b:input("Prediction", tostring(getgenv().PredictionX), true, function(v)
+    getgenv().Prediction = tonumber(v)
+    print("Prediction X set to: " .. v)
+end)
+
+b:label("Aimlock")
+
+-- Camlock Configuration
+getgenv().AimlockEnabled = true
+getgenv().AimPart = "HumanoidRootPart"  -- Default aim part
+getgenv().Airshot = true
+getgenv().Notification = true
+getgenv().KoCheck = true
+getgenv().Smoothness = 5
+getgenv().PredictionX = 0.165
+getgenv().PredictionY = 0.165
+getgenv().Keybind = "q"
+
 -- Services
-local players = game:GetService("Players")
-local userInputService = game:GetService("UserInputService")
-local runService = game:GetService("RunService")
-local replicatedStorage = game:GetService("ReplicatedStorage")
-local starterGui = game:GetService("StarterGui")
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
+local camera = game.Workspace.CurrentCamera
 
 -- Variables
-local localPlayer = players.LocalPlayer
-local mouse = localPlayer:GetMouse()
-local camera = workspace.CurrentCamera
-local target = nil
+local lockedTarget
+local aimEnabled = false
 
--- Aimlock Settings
-local aimlockSettings = {
-    key = Enum.KeyCode.C, -- Change this to your preferred key
-    prediction = 0.1220, -- Base prediction factor
-    enabled = false
-}
-
--- Box Settings
-local boxSettings = {
-    size = Vector3.new(10, 10, 10), -- Box dimensions
-    color = Color3.new(1, 0, 0), -- Box color (red)
-    transparency = 0.5, -- Box transparency
-}
-
--- Data to send to the server
-local data = {
-    "Argument1",
-    "Argument2"
-}
-
--- Function to create a marker (example implementation)
-local function makemarker(guimain, aimpart, color, transparency, size)
-    local marker = Instance.new("BillboardGui")
-    marker.Parent = guimain
-    marker.Size = UDim2.new(size, 0, size, 0)
-    marker.Adornee = aimpart
-    marker.AlwaysOnTop = true
-
-    local frame = Instance.new("Frame")
-    frame.Parent = marker
-    frame.BackgroundColor3 = color
-    frame.BackgroundTransparency = transparency
-    frame.Size = UDim2.new(1, 0, 1, 0)
-
-    return marker
-end
-
--- Secure prediction function
-local function predictPosition(target)
-    if not target or not target:FindFirstChild("HumanoidRootPart") then
-        return nil
-    end
-
-    local humanoidRootPart = target.HumanoidRootPart
-    local velocity = humanoidRootPart.Velocity
-    local acceleration = humanoidRootPart.AssemblyLinearVelocity - velocity
-    local basePrediction = aimlockSettings.prediction
-
-    -- Adjust prediction based on velocity and acceleration
-    local predictedPosition = humanoidRootPart.Position + (velocity * basePrediction) + (0.5 * acceleration * basePrediction^2)
-
-    return predictedPosition
-end
-
--- Function to get the closest player within the box
-local function getClosestPlayerInBox()
-    local closestPlayer = nil
-    local shortestDistance = math.huge
-
-    for _, player in ipairs(players:GetPlayers()) do
-        if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            local targetPosition = player.Character.HumanoidRootPart.Position
-            local screenPoint, onScreen = camera:WorldToScreenPoint(targetPosition)
-            local distance = (Vector2.new(screenPoint.X, screenPoint.Y) - Vector2.new(mouse.X, mouse.Y)).magnitude
-
-            if onScreen and distance < shortestDistance then
-                local relativePosition = camera.CFrame:PointToObjectSpace(targetPosition)
-                if math.abs(relativePosition.X) < boxSettings.size.X and math.abs(relativePosition.Y) < boxSettings.size.Y and math.abs(relativePosition.Z) < boxSettings.size.Z then
-                    closestPlayer = player
-                    shortestDistance = distance
-                end
-            end
-        end
-    end
-
-    return closestPlayer
-end
-
--- Function to create and display the aimlock box
-local function createAimlockBox()
-    local box = Instance.new("Part")
-    box.Size = boxSettings.size
-    box.Transparency = boxSettings.transparency
-    box.Color = boxSettings.color
-    box.Anchored = true
-    box.CanCollide = false
-    box.Parent = workspace
-    return box
-end
-
--- Function to update the aimlock box position
-local function updateAimlockBox(box, target)
-    if target and target:FindFirstChild("HumanoidRootPart") then
-        box.Position = target.HumanoidRootPart.Position
-    else
-        box.Position = Vector3.new(0, 9999, 0) -- Default position if no target
-    end
-end
-
--- Function to notify with the target's name
-local function notifyTargetName(target)
-    if target then
-        starterGui:SetCore("SendNotification", {
-            Title = "Target Locked",
-            Text = "Target: " .. target.Name,
-            Duration = 2
+-- Function to send notifications
+local function sendNotification(message)
+    if getgenv().Notification then
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "Nerverias.shhh",
+            Text = message,
+            Duration = 5
         })
     end
 end
 
--- Function to handle new players and existing data
-local function noob(player)
-    local character
-    repeat
-        wait()
-    until player.Character
-    local guimain = player.PlayerGui -- Replace with the appropriate GUI reference if needed
-    local aimpart = player.Character:WaitForChild("HumanoidRootPart") -- Assuming `configs.main.aimpart` is HumanoidRootPart
-    local handler = makemarker(guimain, aimpart, Color3.fromRGB(107, 184, 255), 0.10, 8)
-    handler.Name = player.Name
-    player.CharacterAdded:Connect(function(Char)
-        handler.Adornee = Char:WaitForChild("HumanoidRootPart")
-    end)
-end
+-- Get the closest player
+local function getClosestPlayer()
+    local closestDistance = math.huge
+    local closestPlayer = nil
 
--- Initialize existing players
-for _, player in ipairs(players:GetPlayers()) do
-    if player ~= localPlayer then
-        noob(player)
-    end
-end
-
--- Handle new players joining the game
-players.PlayerAdded:Connect(function(player)
-    noob(player)
-end)
-
--- Function to disable teleportation bypass
-local function disableTeleportBypass()
-    local teleportService = game:GetService("TeleportService")
-    -- Logic to disable teleportation bypass (e.g., modify teleportation behavior or settings)
-    -- This is an example and may need to be adapted based on your specific needs
-end
-
--- Function to lock onto the target without camera locking
-local function aimlock()
-    local aimlockBox = createAimlockBox()
-
-    runService.Stepped:Connect(function()
-        if aimlockSettings.enabled and target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
-            local predictedPosition = predictPosition(target)
-
-            if predictedPosition then
-                -- Update aimlock box position based on prediction
-                aimlockBox.CFrame = CFrame.new(
-                    target.Character[aimlockSettings.prediction].Position +
-                    (target.Character.UpperTorso.Velocity * aimlockSettings.prediction)
-                )
-
-                -- Update HumanoidRootPart properties
-                target.Character.HumanoidRootPart.Size = Vector3.new(10, 10, 10)
-                target.Character.HumanoidRootPart.CanCollide = false
-
-                -- FireServer logic to keep the aimlock stable
-                local remoteEvent = replicatedStorage:WaitForChild("RemoteEventName") -- Replace with the actual RemoteEvent name
-                remoteEvent:FireServer(target, data)
-
-                -- Update aimlock box position
-                updateAimlockBox(aimlockBox, target)
+    for _, target in pairs(game.Players:GetPlayers()) do
+        if target ~= player and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+            local distance = (target.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
+            if distance < closestDistance then
+                closestDistance = distance
+                closestPlayer = target
             end
-        else
-            -- Hide the box if aimlock is disabled
-            aimlockBox.CFrame = CFrame.new(0, 9999, 0)
         end
-    end)
+    end
+    return closestPlayer
 end
 
--- Function to handle tool activation (e.g., 'Q' tool)
-local function onToolActivated()
-    if target then
-        notifyTargetName(target) -- Notify with the target's name
+-- Aim at the target with smoothness
+local function aimAt(target)
+    if not target then return end
+
+    local targetPart = target.Character:FindFirstChild(getgenv().AimPart)
+    if targetPart then
+        local aimPosition = targetPart.Position + Vector3.new(getgenv().PredictionX, getgenv().PredictionY, 0)
+        local smoothAim = camera.CFrame:Lerp(CFrame.new(camera.CFrame.Position, aimPosition), 1 / getgenv().Smoothness)
+        camera.CFrame = smoothAim
     end
 end
 
--- Toggle aimlock on key press
-userInputService.InputBegan:Connect(function(input)
-    if input.KeyCode == aimlockSettings.key then
-        aimlockSettings.enabled = not aimlockSettings.enabled
-        if aimlockSettings.enabled then
-            target = getClosestPlayerInBox()
+-- Check if target is in the air (airshot)
+local function isAirshot(target)
+    if not target then return false end
+
+    local humanoid = target.Character:FindFirstChild("Humanoid")
+    if humanoid and humanoid.FloorMaterial == Enum.Material.Air then
+        return true
+    end
+    return false
+end
+
+-- Check if target is KO'd
+local function isKo(target)
+    if not target then return false end
+
+    local humanoid = target.Character:FindFirstChild("Humanoid")
+    if humanoid and humanoid.Health <= 1 then
+        return true
+    end
+    return false
+end
+
+-- Keybind for toggling aimlock
+mouse.KeyDown:Connect(function(key)
+    if key == getgenv().Keybind then
+        if aimEnabled then
+            aimEnabled = false
+            lockedTarget = nil
+            sendNotification("Aimlock Disabled")
         else
-            target = nil
+            lockedTarget = getClosestPlayer()
+            if lockedTarget then
+                aimEnabled = true
+                sendNotification("Locked onto: " .. lockedTarget.Name)
+
+                if getgenv().Airshot and isAirshot(lockedTarget) then
+                    sendNotification("Airshot Detected!")
+                end
+            else
+                sendNotification("No target found")
+            end
         end
-    elseif input.KeyCode == Enum.KeyCode.Q then
-        onToolActivated()
     end
 end)
 
--- Call the function to disable teleportation bypass if needed
-disableTeleportBypass()
-
-aimlock()
-return target -- Return the current target for potential external use
+-- Aimlock loop with KO check
+game:GetService("RunService").RenderStepped:Connect(function()
+    if aimEnabled and lockedTarget and lockedTarget.Character and lockedTarget.Character:FindFirstChild(getgenv().AimPart) then
+        if getgenv().KoCheck and isKo(lockedTarget) then
+            aimEnabled = false
+            sendNotification("KO detected, Aimlock disabled")
+            return
+        end
+        aimAt(lockedTarget)
+    end
+end)
