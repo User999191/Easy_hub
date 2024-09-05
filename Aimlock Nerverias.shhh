@@ -390,42 +390,49 @@ d:label("Protected Scripts Indeed Hit Notification")
 d:label("Highlight and distance esp are here *In v0.55*")
 d:label("Update was in 4:41 2024/9/6")
 
--- Toggle Notification on Shoot for Da Hood
 local notifyEnabled = false
 
 a:button("Toggle Shoot Notification", function()
     notifyEnabled = not notifyEnabled
     game.StarterGui:SetCore("SendNotification", {
         Title = notifyEnabled and "Shoot Notification Enabled" or "Shoot Notification Disabled";
-        Text = "Will notify on hit for 2 seconds.";
+        Text = "Will notify damage dealt with health info.";
     })
 
     if notifyEnabled then
-        -- Detect when damage is dealt in Da Hood
         local Players = game:GetService("Players")
         local LocalPlayer = Players.LocalPlayer
+        local function onDamageDetected(player)
+            if player.Character and player.Character:FindFirstChild("Humanoid") then
+                local humanoid = player.Character:FindFirstChild("Humanoid")
 
-        local function onPlayerDamage(hit)
-            -- Check if hit part belongs to another player's character
-            local humanoid = hit.Parent:FindFirstChildOfClass("Humanoid")
-            if humanoid and humanoid ~= LocalPlayer.Character.Humanoid then
-                humanoid.HealthChanged:Connect(function(health)
-                    if health < humanoid.MaxHealth then
+                -- Detect changes in the enemy player's health
+                humanoid.HealthChanged:Connect(function(newHealth)
+                    if humanoid.Health < humanoid.MaxHealth then
+                        local damageDealt = humanoid.MaxHealth - humanoid.Health
                         game.StarterGui:SetCore("SendNotification", {
                             Title = "Hit!";
-                            Text = "Damage dealt!";
-                            Duration = 2;
+                            Text = string.format("Damage dealt: %d | Health: %d/%d", damageDealt, math.floor(newHealth), humanoid.MaxHealth);
+                            Duration = 2; -- Notification lasts for 2 seconds
                         })
                     end
                 end)
             end
         end
 
-        -- Track bullets or projectiles hitting enemies
-        LocalPlayer:GetMouse().Hit:Connect(function(hit)
-            if hit and hit.Parent and hit.Parent:FindFirstChildOfClass("Humanoid") then
-                onPlayerDamage(hit)
+        -- Detect whenever a player is hit
+        local function onPlayerAdded(player)
+            if player ~= LocalPlayer then
+                onDamageDetected(player)
             end
-        end)
+        end
+
+        -- Connect to existing players
+        for _, player in ipairs(Players:GetPlayers()) do
+            onPlayerAdded(player)
+        end
+
+        -- Connect new players that join
+        Players.PlayerAdded:Connect(onPlayerAdded)
     end
 end)
