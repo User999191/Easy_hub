@@ -2,7 +2,7 @@
 local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/laagginq/ui-libraries/main/shit-lib/src.lua"))()
 
 -- UI Setup
-local win = lib:Create("Nerverias.shhh [Beta]","Da hood,Southwest Florida")
+local win = lib:Create("Nerverias.shhh","Da hood,Southwest Florida")
 local a = win:tab("Camlock",true)
 local b = win:tab("Aimlock",false)
 local c = win:tab("Fly & Speed",false)
@@ -233,11 +233,9 @@ b:button("Aimlock", function()
     }
 }
 
-
 local boxsettings = {
     box = {
         Showbox = true,
-
         boxsize = Vector3.new(5, 5, 5), -- Box Size
         markercolor = Color3.fromRGB(128, 0, 128), -- Marker Color (Purple)
         markersize = UDim2.new(0.5, 1, 2, 0.5) -- Marker Size
@@ -245,9 +243,13 @@ local boxsettings = {
 }
 
 local box = Instance.new("Part", game.Workspace)
+box.Anchored = true
+box.CanCollide = false
+box.Size = boxsettings.box.boxsize
 
 local Mouse = game.Players.LocalPlayer:GetMouse()
 
+-- Function to create marker
 function makemarker(Parent, Adornee, Color, Size, Size2)
     local box = Instance.new("BillboardGui", Parent)
     box.Name = "Creds To Vio"
@@ -261,16 +263,17 @@ function makemarker(Parent, Adornee, Color, Size, Size2)
 
     local g = Instance.new("UICorner", a)
     g.CornerRadius = UDim.new(69, 30)
-    return (box)
+    return box
 end
 
 local Plr
+
+-- KeyPress detection for aimlock activation
 Mouse.KeyDown:Connect(function(KeyPressed)
     if KeyPressed == (configs.main.aimlockkey) then
-        if configs.main.enabled == true then
+        if configs.main.enabled then
             configs.main.enabled = false
-            if configs.main.notifications == true then
-                Plr = FindClosestUser()
+            if configs.main.notifications then
                 game.StarterGui:SetCore("SendNotification", {
                     Title = "Nerverias.shhh",
                     Text = "Op But Why :("
@@ -278,46 +281,45 @@ Mouse.KeyDown:Connect(function(KeyPressed)
             end
         else
             Plr = FindClosestUser()
-            configs.main.enabled = true
-            if configs.main.notifications == true then
-                game.StarterGui:SetCore("SendNotification", {
-                    Title = "Nerverias.shhh",
-                    Text = "Locked On;  " .. tostring(Plr.Character.Humanoid.DisplayName)
-                })
+            if Plr then
+                configs.main.enabled = true
+                if configs.main.notifications then
+                    game.StarterGui:SetCore("SendNotification", {
+                        Title = "Nerverias.shhh",
+                        Text = "Locked On: " .. tostring(Plr.Character.Humanoid.DisplayName)
+                    })
+                end
             end
         end
     end
 end)
 
-local data = game.Players:GetPlayers()
-function noob(player)
-    local character
-    repeat
-        wait()
-    until player.Character
-    local handler = makemarker(guimain, player.Character:WaitForChild(configs.main.aimpart),
+-- Function to add markers to players
+local function noob(player)
+    local character = player.Character or player.CharacterAdded:Wait()
+    local handler = makemarker(game.Workspace, character:WaitForChild(configs.main.aimpart),
         Color3.fromRGB(10, 76, 25), 0.10, 8)
     handler.Name = player.Name
-    player.CharacterAdded:connect(function(Char)
+    player.CharacterAdded:Connect(function(Char)
         handler.Adornee = Char:WaitForChild("HumanoidRootPart")
     end)
 end
 
-for i = 1, #data do
-    if data[i] ~= game.Players.LocalPlayer then
-        noob(data[i])
+-- Adding markers to existing players
+for _, player in pairs(game.Players:GetPlayers()) do
+    if player ~= game.Players.LocalPlayer then
+        noob(player)
     end
 end
 
-game.Players.PlayerAdded:connect(function(Player)
+-- Adding markers to new players
+game.Players.PlayerAdded:Connect(function(Player)
     noob(Player)
 end)
 
+-- Show box settings
 spawn(function()
-    box.Anchored = true
-    box.CanCollide = false
-    box.Size = boxsettings.box.boxsize
-    if boxsettings.box.Showbox == true then
+    if boxsettings.box.Showbox then
         box.Transparency = 0.3
     else
         box.Transparency = 0.2
@@ -325,17 +327,16 @@ spawn(function()
     makemarker(box, box, boxsettings.box.markercolor, 0.12, 1)
 end)
 
+-- Function to find the closest user to the mouse position
 function FindClosestUser()
     local closestPlayer
     local ShortestDistance = 300
 
-    for i, v in pairs(game.Players:GetPlayers()) do
+    for _, v in pairs(game.Players:GetPlayers()) do
         if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and
-            v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild("HumanoidRootPart") then
-            local pos = game:GetService "Workspace".CurrentCamera:WorldToViewportPoint(v.Character.PrimaryPart.Position)
-            local magnitude = (Vector2.new(pos.X, pos.Y) -
-                                  Vector2.new(game.Players.LocalPlayer:GetMouse().X,
-                    game.Players.LocalPlayer:GetMouse().Y)).magnitude
+            v.Character.Humanoid.Health > 0 and v.Character:FindFirstChild("HumanoidRootPart") then
+            local pos = game.Workspace.CurrentCamera:WorldToViewportPoint(v.Character.PrimaryPart.Position)
+            local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).Magnitude
             if magnitude < ShortestDistance then
                 closestPlayer = v
                 ShortestDistance = magnitude
@@ -345,18 +346,17 @@ function FindClosestUser()
     return closestPlayer
 end
 
-game:GetService "RunService".Stepped:connect(function()
-    if configs.main.enabled and Plr.Character and Plr.Character:FindFirstChild("HumanoidRootPart") then
+-- Adjust box CFrame to track the player
+game:GetService("RunService").Stepped:Connect(function()
+    if configs.main.enabled and Plr and Plr.Character and Plr.Character:FindFirstChild(configs.main.aimpart) then
         box.CFrame = CFrame.new(Plr.Character[configs.main.aimpart].Position +
-                                    (Plr.Character.UpperTorso.Velocity * configs.main.prediction))
+            (Plr.Character.UpperTorso.Velocity * configs.main.prediction))
     else
         box.CFrame = CFrame.new(9999, 9999, 9999)
     end
 end)
 
-repeat
-    wait()
-until game:IsLoaded()
+-- Metatable hook for mouse position update (aimlock logic)
 local mt = getrawmetatable(game)
 local old = mt.__namecall
 setreadonly(mt, false)
@@ -364,7 +364,7 @@ mt.__namecall = newcclosure(function(...)
     local args = {...}
     if configs.main.enabled and getnamecallmethod() == "FireServer" and args[2] == "UpdateMousePos" then
         args[3] = Plr.Character[configs.main.aimpart].Position +
-                      (Plr.Character[configs.main.aimpart].Velocity * configs.main.prediction)
+            (Plr.Character[configs.main.aimpart].Velocity * configs.main.prediction)
         return old(unpack(args))
     end
     return old(...)
