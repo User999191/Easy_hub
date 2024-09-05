@@ -389,3 +389,43 @@ d:label("Aimlock is e keybind and camlock is c bind now!")
 d:label("Protected Scripts Indeed Hit Notification")
 d:label("Highlight and distance esp are here *In v0.55*")
 d:label("Update was in 4:41 2024/9/6")
+
+-- Toggle Notification on Shoot for Da Hood
+local notifyEnabled = false
+
+a:button("Toggle Shoot Notification", function()
+    notifyEnabled = not notifyEnabled
+    game.StarterGui:SetCore("SendNotification", {
+        Title = notifyEnabled and "Shoot Notification Enabled" or "Shoot Notification Disabled";
+        Text = "Will notify on hit for 2 seconds.";
+    })
+
+    if notifyEnabled then
+        -- Detect when damage is dealt in Da Hood
+        local Players = game:GetService("Players")
+        local LocalPlayer = Players.LocalPlayer
+
+        local function onPlayerDamage(hit)
+            -- Check if hit part belongs to another player's character
+            local humanoid = hit.Parent:FindFirstChildOfClass("Humanoid")
+            if humanoid and humanoid ~= LocalPlayer.Character.Humanoid then
+                humanoid.HealthChanged:Connect(function(health)
+                    if health < humanoid.MaxHealth then
+                        game.StarterGui:SetCore("SendNotification", {
+                            Title = "Hit!";
+                            Text = "Damage dealt!";
+                            Duration = 2;
+                        })
+                    end
+                end)
+            end
+        end
+
+        -- Track bullets or projectiles hitting enemies
+        LocalPlayer:GetMouse().Hit:Connect(function(hit)
+            if hit and hit.Parent and hit.Parent:FindFirstChildOfClass("Humanoid") then
+                onPlayerDamage(hit)
+            end
+        end)
+    end
+end)
