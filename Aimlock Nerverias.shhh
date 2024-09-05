@@ -6,6 +6,7 @@ local win = lib:Create("Nerverias.shhh [Beta]","Da hood,Southwest Florida")
 local a = win:tab("Camlock",true)
 local b = win:tab("Aimlock",false)
 local c = win:tab("Fly & Speed",false)
+local d = win:tab("UpdateLog",false)
 
 a:label("Camlock")
 
@@ -70,6 +71,38 @@ end)
     print("Script 1 Executed!")
 end)
 
+a:button("e tool", function()
+    getgenv().keytoclick = "E"
+tool = Instance.new("Tool")
+tool.RequiresHandle = false
+tool.Name = keytoclick
+tool.Activated:connect(function()
+local vim = game:service("VirtualInputManager")
+vim:SendKeyEvent(true, keytoclick, false, game)
+end)
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+game.StarterGui:SetCore("SendNotification", {
+Title = "Injected succesfully!";
+Text = "nice!";
+})
+
+local player = game.Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local espConnection
+
+local function connectCharacterAdded()
+player.CharacterAdded:Connect(onCharacterAdded)
+end
+
+connectCharacterAdded()
+
+player.CharacterRemoving:Connect(function()
+tool.Parent = game.Players.LocalPlayer.Backpack
+end)
+    print("Script 1 Executed!")
+end)
+
 -- Execute Script Button 2
 b:button("Aimlock", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Easy_hub/main/Aimlock", true))()
@@ -87,4 +120,10 @@ c:button("fly", function()
 end)
 
 c:label("Speed soon")
-b:label("Idk")
+b:label("Aimlock Section")
+d:label("New Update Nerverias.shhh v0.3")
+d:label("New Ui And Cam lock is diff and Aimlock is changed")
+d:label("Aimlock is e keybind and camlock is c bind now!")
+d:label("Protected Scripts Indeed Hit Notification")
+d:label("Highlight and distance esp are here *In v0.55*")
+d:label("Update was in 4:41 2024/9/6")
