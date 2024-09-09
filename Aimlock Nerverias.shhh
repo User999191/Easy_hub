@@ -437,10 +437,129 @@ a:button("Toggle Shoot Notification", function()
     end
 end)
 
-c:button("Auto Reload", function()
+c:button("Auto Reload *broken*", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Easy_hub/main/Auto%20reload"))()
 end)
 
 c:button("Auto Heal *U need reach 20 health to work*", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Easy_hub/main/Auto%20heal"))()
+end)
+
+c:button("Auto Reload", function()
+     -- Services
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Camera = workspace.CurrentCamera
+
+-- Function to create ESP for a player
+local function createESP(player)
+    local char = player.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+
+    local esp = Instance.new("BillboardGui")
+    esp.Name = "ESP"
+    esp.Adornee = char.HumanoidRootPart
+    esp.Size = UDim2.new(0, 200, 0, 100)
+    esp.StudsOffset = Vector3.new(0, 3, 0)
+    esp.AlwaysOnTop = true
+    esp.Parent = Camera:FindFirstChildOfClass("PlayerGui")
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 1, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    frame.BackgroundTransparency = 0.5
+    frame.Parent = esp
+
+    local username = Instance.new("TextLabel")
+    username.Text = player.Name
+    username.Size = UDim2.new(1, 0, 0.2, 0)
+    username.Position = UDim2.new(0, 0, 0, 0)
+    username.TextColor3 = Color3.fromRGB(255, 255, 255)
+    username.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    username.TextStrokeTransparency = 0.5
+    username.Parent = frame
+
+    local healthFrame = Instance.new("Frame")
+    healthFrame.Size = UDim2.new(1, 0, 0.2, 0)
+    healthFrame.Position = UDim2.new(0, 0, 0.2, 0)
+    healthFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    healthFrame.BackgroundTransparency = 0.7
+    healthFrame.Parent = frame
+
+    local healthBar = Instance.new("Frame")
+    healthBar.Size = UDim2.new(1, 0, 1, 0)
+    healthBar.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    healthBar.BorderSizePixel = 0
+    healthBar.Parent = healthFrame
+
+    local healthText = Instance.new("TextLabel")
+    healthText.Size = UDim2.new(1, 0, 1, 0)
+    healthText.Position = UDim2.new(0, 0, 0, 0)
+    healthText.BackgroundTransparency = 1
+    healthText.TextColor3 = Color3.fromRGB(255, 255, 255)
+    healthText.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    healthText.TextStrokeTransparency = 0.5
+    healthText.TextScaled = true
+    healthText.Parent = healthFrame
+
+    local distance = Instance.new("TextLabel")
+    distance.Size = UDim2.new(1, 0, 0.2, 0)
+    distance.Position = UDim2.new(0, 0, 0.4, 0)
+    distance.TextColor3 = Color3.fromRGB(0, 255, 0)
+    distance.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    distance.TextStrokeTransparency = 0.5
+    distance.Parent = frame
+
+    -- Update ESP every 0.5 seconds
+    local function updateESP()
+        while esp and esp.Parent do
+            local rootPart = char:FindFirstChild("HumanoidRootPart")
+            if rootPart then
+                local dist = (Camera.CFrame.Position - rootPart.Position).magnitude
+                distance.Text = "Distance: " .. math.floor(dist) .. " studs"
+                
+                if char:FindFirstChild("Humanoid") then
+                    local humanoid = char.Humanoid
+                    local healthPercent = humanoid.Health / humanoid.MaxHealth
+                    healthBar.Size = UDim2.new(healthPercent, 0, 1, 0)
+                    healthText.Text = "Health: " .. math.floor(humanoid.Health) .. "/" .. math.floor(humanoid.MaxHealth)
+                end
+            end
+            wait(0.5)
+        end
+    end
+
+    -- Start updating ESP
+    coroutine.wrap(updateESP)()
+end
+
+-- Function to update ESP for all players
+local function updateAllESP()
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= Players.LocalPlayer then
+            local esp = player.Character and player.Character:FindFirstChild("ESP")
+            if not esp then
+                createESP(player)
+            end
+        end
+    end
+end
+
+-- Handle player joining or leaving
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function()
+        createESP(player)
+    end)
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+    local esp = player.Character and player.Character:FindFirstChild("ESP")
+    if esp then
+        esp:Destroy()
+    end
+end)
+
+-- Initial setup
+updateAllESP()
+RunService.RenderStepped:Connect(updateAllESP)
 end)
