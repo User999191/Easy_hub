@@ -10,12 +10,6 @@ local d = win:tab("UpdateLog",false)
 
 a:label("Camlock")
 
--- Smoothness Input
-a:input("airshot", tostring(getgenv().airshot), true, function(v)
-    getgenv().airshot = tonumber(v)
-    print("Smoothness set to: " .. v)
-end)
-
 -- AimPart Input Textbox
 a:input("AimPart", getgenv().AimPart, false, function(v)
     getgenv().AimPart = tostring(v)
@@ -37,7 +31,6 @@ end)
 a:button("Enable Camlock", function()
 getgenv().smoothness = 0.2
 getgenv().Prediction = 0.15038
-getgenv().airshot = 0.167
 getgenv().AimPart = "HumanoidRootPart"
 getgenv().Key = "c"
 getgenv().DisableKey = "P"
@@ -145,23 +138,6 @@ function getClosest()
     end
     return closestPlayer
 end
- 
- RS.RenderStepped:Connect(function()
-    update()
-    if AimlockState == true then
-        if Victim ~= nil then
-            local prediction = Victim.Character[getgenv().AimPart].Velocity * getgenv().Prediction
-            -- Incorporate airshot adjustment if the target is in the air
-            local airshotAdjustment = getgenv().airshot
-            if Victim.Character.Humanoid.Jumping or Victim.Character.Humanoid.FreeFalling then
-                airshotAdjustment = 2 -- Adjust as needed
-            else
-                airshotAdjustment = 0.0001
-            end
-            Camera.CFrame = CFrame.new(Camera.CFrame.p, Victim.Character[getgenv().AimPart].Position + prediction + Vector3.new(0, airshotAdjustment, 0))
-        end
-    end
-end)
 
 RS.RenderStepped:Connect(function()
     update()
