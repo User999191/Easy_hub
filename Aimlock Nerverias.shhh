@@ -28,16 +28,16 @@ a:input("Prediction", tostring(getgenv().Prediction), true, function(v)
 end)
 
 -- Prediction Y Input
-a:input("Prediction Y", tostring(getgenv().smoothness), true, function(v)
+a:input("smoothness", tostring(getgenv().smoothness), true, function(v)
     getgenv().smoothness = tonumber(v)
     print("Prediction Y set to: " .. v)
 end)
 
 -- Enable Camlock Button
 a:button("Enable Camlock", function()
-getgenv().smoothness = 0.5
+getgenv().smoothness = 0.2
 getgenv().Prediction = 0.15038
-getgenv().airshot = 0.1
+getgenv().airshot = 0.167
 getgenv().AimPart = "HumanoidRootPart"
 getgenv().Key = "c"
 getgenv().DisableKey = "P"
@@ -154,7 +154,7 @@ end
             -- Incorporate airshot adjustment if the target is in the air
             local airshotAdjustment = getgenv().airshot
             if Victim.Character.Humanoid.Jumping or Victim.Character.Humanoid.FreeFalling then
-                airshotAdjustment = 6.6 -- Adjust as needed
+                airshotAdjustment = 2 -- Adjust as needed
             else
                 airshotAdjustment = 0.0001
             end
@@ -678,48 +678,4 @@ end)
 -- Initial setup
 updateAllESP()
 RunService.RenderStepped:Connect(updateAllESP)
-end)
-
-c:button("esp", function()
--- Variables
-local button = script.Parent
-local speedInputBox = game.Players.LocalPlayer.PlayerGui:WaitForChild("SpeedInputBox")
-local toggleState = false
-local currentSpeed = 0
-
--- Function to toggle speed
-local function toggleSpeed()
-    -- Update the toggle state
-    toggleState = not toggleState
-
-    if toggleState then
-        -- Activate the toggle (set the speed)
-        local newSpeed = tonumber(speedInputBox.Text) or 0
-        currentSpeed = newSpeed
-        print("Speed set to: " .. currentSpeed)  -- Replace this with actual speed change logic
-
-        -- Update the button appearance to indicate activation
-        button.BackgroundColor3 = Color3.fromRGB(0, 255, 0)  -- Green for activated
-        button.Text = "Speed: " .. currentSpeed
-    else
-        -- Deactivate the toggle (reset speed or stop)
-        print("Speed toggle deactivated")  -- Replace this with actual deactivation logic
-
-        -- Update the button appearance to indicate deactivation
-        button.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red for deactivated
-        button.Text = "Speed Toggle"
-    end
-end
-
--- Connect the button click to the toggle function
-button.MouseButton1Click:Connect(toggleSpeed)
-
--- Styling
-button.Size = UDim2.new(0, 200, 0, 50)
-button.Text = "Speed Toggle"
-button.TextScaled = true
-button.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Initial color
-button.TextColor3 = Color3.fromRGB(255, 255, 255)
-button.AutoButtonColor = false
-button.TextStrokeTransparency = 0.5
 end)
