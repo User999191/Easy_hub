@@ -11,8 +11,8 @@ local d = win:tab("UpdateLog",false)
 a:label("Camlock")
 
 -- Smoothness Input
-a:input("Smoothness", tostring(getgenv().Smoothness), true, function(v)
-    getgenv().Smoothness = tonumber(v)
+a:input("airshot", tostring(getgenv().airshot), true, function(v)
+    getgenv().airshot = tonumber(v)
     print("Smoothness set to: " .. v)
 end)
 
@@ -22,138 +22,251 @@ a:input("AimPart", getgenv().AimPart, false, function(v)
     print("AimPart set to: " .. v)
 end)
 
-a:input("Prediction X", tostring(getgenv().PredictionX), true, function(v)
-    getgenv().PredictionX = tonumber(v)
+a:input("Prediction", tostring(getgenv().Prediction), true, function(v)
+    getgenv().Prediction = tonumber(v)
     print("Prediction X set to: " .. v)
 end)
 
 -- Prediction Y Input
-a:input("Prediction Y", tostring(getgenv().PredictionY), true, function(v)
-    getgenv().PredictionY = tonumber(v)
+a:input("Prediction Y", tostring(getgenv().smoothness), true, function(v)
+    getgenv().smoothness = tonumber(v)
     print("Prediction Y set to: " .. v)
 end)
 
 -- Enable Camlock Button
 a:button("Enable Camlock", function()
-    -- Configuration 
-getgenv().AimlockEnabled = true
-getgenv().AimPart = "HumanoidRootPart"  -- Set to HumanoidRootPart
-getgenv().PredictionX = 0.165
-getgenv().PredictionY = 0.165
-getgenv().Smoothness = 5  -- Controls the lerp smoothness (higher = smoother)
-getgenv().Airshot = true
-getgenv().Notification = true
-getgenv().KoCheck = true  -- Stops camlock when the target's health is 1 or below
-getgenv().Keybind = "c"   -- Configurable keybind for toggling camlock
+getgenv().smoothness = 0.5
+getgenv().Prediction = 0.15038
+getgenv().airshot = 0.1
+getgenv().AimPart = "HumanoidRootPart"
+getgenv().Key = "c"
+getgenv().DisableKey = "P"
 
--- Services
-local player = game.Players.LocalPlayer
-local mouse = player:GetMouse()
-local camera = game.Workspace.CurrentCamera
+getgenv().FOV = true
+getgenv().ShowFOV = false
+getgenv().FOVSize = 55
 
--- Variables
-local lockedTarget
-local aimEnabled = false
+--// Variables (Service)
 
--- Function to notify the player
-local function sendNotification(message)
-    if getgenv().Notification then
-        game.StarterGui:SetCore("SendNotification", {
-            Title = "Nerverias.shhh",
-            Text = message,
-            Duration = 5
-        })
+local Players = game:GetService("Players")
+local RS = game:GetService("RunService")
+local WS = game:GetService("Workspace")
+local GS = game:GetService("GuiService")
+local SG = game:GetService("StarterGui")
+
+--// Variables (regular)
+
+local LP = Players.LocalPlayer
+local Mouse = LP:GetMouse()
+local Camera = WS.CurrentCamera
+local GetGuiInset = GS.GetGuiInset
+
+local AimlockState = true
+local Locked
+local Victim
+
+local SelectedKey = getgenv().Key
+local SelectedDisableKey = getgenv().DisableKey
+
+--// Notification function
+
+function Notify(tx)
+    SG:SetCore("SendNotification", {
+        Title = "Neverias.shhh",
+        Text = tx,
+        Duration = 5
+    })
+end
+
+--// Check if aimlock is loaded
+
+if getgenv().Loaded == true then
+    Notify("Aimlock is already loaded!")
+    return
+end
+
+getgenv().Loaded = true
+
+--// FOV Circle
+
+local fov = Drawing.new("Circle")
+fov.Filled = false
+fov.Transparency = 1
+fov.Thickness = 1
+fov.Color = Color3.fromRGB(255, 255, 0)
+fov.NumSides = 1000
+
+--// Functions
+
+function update()
+    if getgenv().FOV == true then
+        if fov then
+            fov.Radius = getgenv().FOVSize * 2
+            fov.Visible = getgenv().ShowFOV
+            fov.Position = Vector2.new(Mouse.X, Mouse.Y + GetGuiInset(GS).Y)
+
+            return fov
+        end
     end
 end
 
--- Function to get the closest player
-local function getClosestPlayer()
-    local closestDistance = math.huge
-    local closestPlayer = nil
+function WTVP(arg)
+    return Camera:WorldToViewportPoint(arg)
+end
 
-    for _, target in pairs(game.Players:GetPlayers()) do
-        if target ~= player and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
-            local distance = (target.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
-            if distance < closestDistance then
-                closestDistance = distance
-                closestPlayer = target
+function WTSP(arg)
+    return Camera.WorldToScreenPoint(Camera, arg)
+end
+
+function getClosest()
+    local closestPlayer
+    local shortestDistance = math.huge
+
+    for i, v in pairs(game.Players:GetPlayers()) do
+        local notKO = v.Character:WaitForChild("BodyEffects")["K.O"].Value ~= true
+        local notGrabbed = v.Character:FindFirstChild("GRABBING_COINSTRAINT") == nil
+        
+        if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild(getgenv().AimPart) and notKO and notGrabbed then
+            local pos = Camera:WorldToViewportPoint(v.Character.PrimaryPart.Position)
+            local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).magnitude
+            
+            if (getgenv().FOV) then
+                if (fov.Radius > magnitude and magnitude < shortestDistance) then
+                    closestPlayer = v
+                    shortestDistance = magnitude
+                end
+            else
+                if (magnitude < shortestDistance) then
+                    closestPlayer = v
+                    shortestDistance = magnitude
+                end
             end
         end
     end
     return closestPlayer
 end
-
--- Function to aim at the target with Lerp Smoothness
-local function aimAt(target)
-    if not target then return end
-
-    local targetPart = target.Character:FindFirstChild(getgenv().AimPart)
-    if targetPart then
-        local aimPosition = targetPart.Position + Vector3.new(getgenv().PredictionX, getgenv().PredictionY, 0)
-        -- Lerp for smooth camera movement
-        local smoothAim = camera.CFrame:Lerp(CFrame.new(camera.CFrame.Position, aimPosition), 1 / getgenv().Smoothness)
-        camera.CFrame = smoothAim
-    end
-end
-
--- Function for airshot detection
-local function isAirshot(target)
-    if not target then return false end
-
-    local humanoid = target.Character:FindFirstChild("Humanoid")
-    if humanoid and humanoid.FloorMaterial == Enum.Material.Air then
-        return true
-    end
-    return false
-end
-
--- Function to check KO (Health <= 1) state
-local function isKo(target)
-    if not target then return false end
-
-    local humanoid = target.Character:FindFirstChild("Humanoid")
-    if humanoid and humanoid.Health <= 1 then
-        return true
-    end
-    return false
-end
-
--- Keybind for toggling aimlock (Configurable via getgenv)
-mouse.KeyDown:Connect(function(key)
-    if key == getgenv().Keybind then
-        if aimEnabled then
-            aimEnabled = false
-            lockedTarget = nil
-            sendNotification("Aimlock Disabled")
-        else
-            lockedTarget = getClosestPlayer()
-            if lockedTarget then
-                aimEnabled = true
-                sendNotification("Locked onto: " .. lockedTarget.Name)
-
-                -- Check for airshot
-                if getgenv().Airshot and isAirshot(lockedTarget) then
-                    sendNotification("Airshot Detected!")
-                end
+ 
+ RS.RenderStepped:Connect(function()
+    update()
+    if AimlockState == true then
+        if Victim ~= nil then
+            local prediction = Victim.Character[getgenv().AimPart].Velocity * getgenv().Prediction
+            -- Incorporate airshot adjustment if the target is in the air
+            local airshotAdjustment = getgenv().airshot
+            if Victim.Character.Humanoid.Jumping or Victim.Character.Humanoid.FreeFalling then
+                airshotAdjustment = 6.6 -- Adjust as needed
             else
-                sendNotification("No target found")
+                airshotAdjustment = 0.0001
             end
+            Camera.CFrame = CFrame.new(Camera.CFrame.p, Victim.Character[getgenv().AimPart].Position + prediction + Vector3.new(0, airshotAdjustment, 0))
         end
     end
 end)
 
--- Aimlock loop with KO check and lerp smoothness
-game:GetService("RunService").RenderStepped:Connect(function()
-    if aimEnabled and lockedTarget and lockedTarget.Character and lockedTarget.Character:FindFirstChild(getgenv().AimPart) then
-        -- Check for KO condition
-        if getgenv().KoCheck and isKo(lockedTarget) then
-            aimEnabled = false
-            sendNotification("KO detected, Aimlock disabled")
-            return
+RS.RenderStepped:Connect(function()
+    update()
+    if AimlockState == true then
+        if Victim ~= nil then
+            local prediction = Victim.Character[getgenv().AimPart].Velocity * getgenv().Prediction
+            local airshotAdjustment = getgenv().airshot
+            
+            -- Calculate the target CFrame
+            local targetPosition = Victim.Character[getgenv().AimPart].Position + prediction + Vector3.new(0, airshotAdjustment, 0)
+            local targetCFrame = CFrame.new(Camera.CFrame.p, targetPosition)
+            
+            -- Smoothly interpolate the camera's CFrame
+            Camera.CFrame = Camera.CFrame:Lerp(targetCFrame, getgenv().smoothness)
         end
-        aimAt(lockedTarget)
     end
 end)
+--// Checks if key is down
+
+Mouse.KeyDown:Connect(function(k)
+    SelectedKey = SelectedKey:lower()
+    SelectedDisableKey = SelectedDisableKey:lower()
+    if k == SelectedKey then
+        if AimlockState == true then
+            Locked = not Locked
+            if Locked then
+                Victim = getClosest()
+
+                Notify("Locked onto: "..tostring(Victim.Character.Humanoid.DisplayName))
+            else
+                if Victim ~= nil then
+                    Victim = nil
+
+                    Notify("Unlocked!")
+                end
+            end
+        else
+            Notify("Aimlock is not enabled!")
+        end
+    end
+    if k == SelectedDisableKey then
+        AimlockState = not AimlockState
+    end
+end)
+
+--// Loop update FOV and loop camera lock onto target
+
+RS.RenderStepped:Connect(function()
+    update()
+    if AimlockState == true then
+        if Victim ~= nil then
+            Camera.CFrame = CFrame.new(Camera.CFrame.p, Victim.Character[getgenv().AimPart].Position + Victim.Character[getgenv().AimPart].Velocity*getgenv().Prediction)
+        end
+    end
+end)
+	while wait() do
+        if getgenv().AutoPrediction == true then
+        local pingvalue = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()
+        local split = string.split(pingvalue,'(')
+        local ping = tonumber(split[1])
+            if ping < 225 then
+            getgenv().Prediction = 1.4
+        elseif ping < 215 then
+            getgenv().Prediction = 1.2
+	    elseif ping < 205 then
+            getgenv().Prediction = 1.0
+	    elseif ping < 190 then
+            getgenv().Prediction = 0.10
+        elseif ping < 180 then
+            getgenv().Prediction = 0.12
+	    elseif ping < 170 then
+            getgenv().Prediction = 0.15
+	    elseif ping < 160 then
+            getgenv().Prediction = 0.18
+	    elseif ping < 150 then
+            getgenv().Prediction = 0.110
+        elseif ping < 140 then
+            getgenv().Prediction = 0.113
+        elseif ping < 130 then
+            getgenv().Prediction = 0.116
+        elseif ping < 120 then
+            getgenv().Prediction = 0.120
+        elseif ping < 110 then
+            getgenv().Prediction = 0.124
+        elseif ping < 105 then
+            getgenv().Prediction = 0.127
+        elseif ping < 90 then
+            getgenv().Prediction = 0.130
+        elseif ping < 80 then
+            getgenv().Prediction = 0.133
+        elseif ping < 70 then
+            getgenv().Prediction = 0.136
+        elseif ping < 60 then
+            getgenv().Prediction = 0.15038
+        elseif ping < 50 then
+            getgenv().Prediction = 0.15038
+        elseif ping < 40 then
+            getgenv().Prediction = 0.145
+        elseif ping < 30 then
+            getgenv().Prediction = 0.155
+        elseif ping < 20 then
+            getgenv().Prediction = 0.157
+        end
+        end
+	end
 end)
 
 -- Execute Script Button
@@ -445,7 +558,7 @@ c:button("Auto Heal *U need reach 20 health to work*", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/User999191/Easy_hub/main/Auto%20heal"))()
 end)
 
-c:button("Auto Reload", function()
+c:button("esp", function()
      -- Services
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -455,6 +568,9 @@ local Camera = workspace.CurrentCamera
 local function createESP(player)
     local char = player.Character
     if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+
+    -- Debug print
+    print("Creating ESP for:", player.Name)
 
     local esp = Instance.new("BillboardGui")
     esp.Name = "ESP"
@@ -562,4 +678,48 @@ end)
 -- Initial setup
 updateAllESP()
 RunService.RenderStepped:Connect(updateAllESP)
+end)
+
+c:button("esp", function()
+-- Variables
+local button = script.Parent
+local speedInputBox = game.Players.LocalPlayer.PlayerGui:WaitForChild("SpeedInputBox")
+local toggleState = false
+local currentSpeed = 0
+
+-- Function to toggle speed
+local function toggleSpeed()
+    -- Update the toggle state
+    toggleState = not toggleState
+
+    if toggleState then
+        -- Activate the toggle (set the speed)
+        local newSpeed = tonumber(speedInputBox.Text) or 0
+        currentSpeed = newSpeed
+        print("Speed set to: " .. currentSpeed)  -- Replace this with actual speed change logic
+
+        -- Update the button appearance to indicate activation
+        button.BackgroundColor3 = Color3.fromRGB(0, 255, 0)  -- Green for activated
+        button.Text = "Speed: " .. currentSpeed
+    else
+        -- Deactivate the toggle (reset speed or stop)
+        print("Speed toggle deactivated")  -- Replace this with actual deactivation logic
+
+        -- Update the button appearance to indicate deactivation
+        button.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red for deactivated
+        button.Text = "Speed Toggle"
+    end
+end
+
+-- Connect the button click to the toggle function
+button.MouseButton1Click:Connect(toggleSpeed)
+
+-- Styling
+button.Size = UDim2.new(0, 200, 0, 50)
+button.Text = "Speed Toggle"
+button.TextScaled = true
+button.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Initial color
+button.TextColor3 = Color3.fromRGB(255, 255, 255)
+button.AutoButtonColor = false
+button.TextStrokeTransparency = 0.5
 end)
