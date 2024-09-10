@@ -10,7 +10,6 @@ local d = win:tab("UpdateLog",false)
 
 a:label("Camlock")
 
--- AimPart Input Textbox
 a:input("AimPart", getgenv().AimPart, false, function(v)
     getgenv().AimPart = tostring(v)
     print("AimPart set to: " .. v)
@@ -18,13 +17,13 @@ end)
 
 a:input("Prediction", tostring(getgenv().Prediction), true, function(v)
     getgenv().Prediction = tonumber(v)
-    print("Prediction X set to: " .. v)
+    print("Prediction set to: " .. v)
 end)
 
--- Prediction Y Input
-a:input("smoothness", tostring(getgenv().smoothness), true, function(v)
+-- Smoothness Input
+a:input("Smoothness", tostring(getgenv().smoothness), true, function(v)
     getgenv().smoothness = tonumber(v)
-    print("Prediction Y set to: " .. v)
+    print("Smoothness set to: " .. v)
 end)
 
 -- Enable Camlock Button
