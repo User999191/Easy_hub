@@ -330,7 +330,7 @@ local boxsettings = {
     }
 }
 
-local offset = Vector3.new(0, 2, 0) -- Offset for positioning the box above the target
+local offset = Vector3.new(0, 0.4, 0) -- Offset for positioning the box above the target
 
 local box = Instance.new("Part", game.Workspace)
 box.Anchored = true
