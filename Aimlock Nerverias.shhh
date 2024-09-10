@@ -311,7 +311,7 @@ end)
 
 -- Execute Script Button 2
 b:button("Aimlock", function()
-    local configs = {
+local configs = {
     main = {
         enabled = true,
         aimlockkey = "e",
@@ -329,6 +329,8 @@ local boxsettings = {
         markersize = UDim2.new(0.5, 1, 2, 0.5) -- Marker Size
     }
 }
+
+local offset = Vector3.new(0, 2, 0) -- Offset for positioning the box above the target
 
 local box = Instance.new("Part", game.Workspace)
 box.Anchored = true
@@ -404,6 +406,7 @@ Mouse.KeyDown:Connect(function(KeyPressed)
             -- Update box visibility based on target status
             if Plr and Plr.Character and Plr.Character:FindFirstChild(configs.main.aimpart) then
                 box.CFrame = CFrame.new(Plr.Character[configs.main.aimpart].Position +
+                    offset +
                     (Plr.Character.UpperTorso.Velocity * configs.main.prediction))
                 box.Transparency = boxsettings.box.Showbox and 0.3 or 0.2
             else
@@ -434,6 +437,7 @@ end
 game:GetService("RunService").Stepped:Connect(function()
     if configs.main.enabled and Plr and Plr.Character and Plr.Character:FindFirstChild(configs.main.aimpart) then
         box.CFrame = CFrame.new(Plr.Character[configs.main.aimpart].Position +
+            offset +
             (Plr.Character.UpperTorso.Velocity * configs.main.prediction))
     else
         box.CFrame = CFrame.new(9999, 9999, 9999) -- Hide the box when no target
@@ -452,6 +456,7 @@ mt.__namecall = newcclosure(function(...)
     local args = {...}
     if configs.main.enabled and getnamecallmethod() == "FireServer" and args[2] == "UpdateMousePos" then
         args[3] = Plr.Character[configs.main.aimpart].Position +
+            offset +
             (Plr.Character[configs.main.aimpart].Velocity * configs.main.prediction)
         return oldNamecall(unpack(args))
     end
