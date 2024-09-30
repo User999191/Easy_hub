@@ -42,7 +42,7 @@ VIN9 = {
         ["ShakeValue"] = 12,
 
         ["UseSmoothing"] = false,
-        ["SmoothingAmount"] = 0.3,
+        ["SmoothingAmount"] = 0.2,
         ["EasingStyle"] = Enum.EasingStyle.Linear,
         ["EasingDirection"] = Enum.EasingDirection.In,
 
@@ -83,8 +83,8 @@ VIN9 = {
         ["ResolverTune"] = 0.138,
 
         ["TargetStrafe"] = false,
-        ["StrafeRadius"] = 14,
-        ["StrafeSpeed"] = 6,
+        ["StrafeRadius"] = 19,
+        ["StrafeSpeed"] = 12,
         ["StrafeHeight"] = 10,
 
         ["Notify"] = false,
@@ -92,7 +92,7 @@ VIN9 = {
         Drawings = {
             ["Tracer"] = false,
             ["Color"] = Color3.fromRGB(255,255,255),
-            ["Thickness"] = 1,
+            ["Thickness"] = 2,
             ["Transparency"] = 1,
         },
     },
