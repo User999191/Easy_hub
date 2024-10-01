@@ -61,7 +61,7 @@ local function optimizeGraphics(enable)
     if enable then
         lighting.GlobalShadows = false
         lighting.FogEnd = 9e9
-        lighting.Brightness = 0
+        lighting.Brightness = 0 -- Remove sun brightness
         lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
         settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
         settings().Rendering.FrameSkipLevel = 0
@@ -86,10 +86,20 @@ local function removeCharacterAccessories(character)
     end
 end
 
+-- Remove all MeshParts from the workspace
+local function removeMeshParts()
+    for _, obj in pairs(workspace:GetDescendants()) do
+        if obj:IsA("MeshPart") then
+            obj:Destroy()
+        end
+    end
+end
+
 -- Apply Skibidi mode
 local function applySkibidiMode()
     local character = player.Character or player.CharacterAdded:Wait()
     removeCharacterAccessories(character)
+    removeMeshParts() -- Call to remove MeshParts
     for _, obj in pairs(workspace:GetDescendants()) do
         if obj:IsA("BasePart") then
             obj.Material = Enum.Material.SmoothPlastic -- Set all parts to SmoothPlastic
@@ -134,6 +144,7 @@ spawn(rainbowText)
 local function onCharacterAdded(character)
     wait(1) -- Wait for the character to fully load
     removeCharacterAccessories(character)
+    removeMeshParts() -- Ensure MeshParts are removed on respawn
     applyFpsMode(fpsmode)
 
     character:WaitForChild("Humanoid").Died:Connect(function()
@@ -153,6 +164,11 @@ local function smoothCameraMovement()
         if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
             local targetPosition = player.Character.HumanoidRootPart.Position + Vector3.new(0, 2, 5)
             camera.CFrame = camera.CFrame:Lerp(CFrame.new(targetPosition), 0.1) -- Adjust the smoothness factor
+        else
+            -- If the player character is not found, set the camera position with specified offsets
+            local currentCFrame = camera.CFrame
+            local newPosition = Vector3.new(currentCFrame.Position.X + 0.2, currentCFrame.Position.Y + 0.2, currentCFrame.Position.Z)
+            camera.CFrame = CFrame.new(newPosition)
         end
     end)
 end
