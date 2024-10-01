@@ -1,0 +1,127 @@
+local fpsmode = "Skibidi"
+local fps = 5000
+local fpsFloor = 3000
+
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui")
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local watermark = Instance.new("TextLabel")
+watermark.Parent = gui
+watermark.AnchorPoint = Vector2.new(0.5, 0)
+watermark.Position = UDim2.new(0.5, 0, 0, 10)
+watermark.Size = UDim2.new(0, 300, 0, 50)  -- Medium size adjustment
+watermark.BackgroundTransparency = 1
+watermark.TextScaled = true
+watermark.Font = Enum.Font.SourceSansBold
+watermark.TextStrokeTransparency = 0
+watermark.TextStrokeColor3 = Color3.new(0, 0, 0)
+
+local function updateWatermark()
+    while true do
+        local time = os.date("%H:%M:%S")
+        watermark.Text = "Subscribe to IgnoreDev v0.2 | Time: " .. time
+        wait(1)
+    end
+end
+
+-- Function to smoothly transition through rainbow colors
+local function rainbowText()
+    local hue = 0
+    while true do
+        hue = hue + (1 / 120)  -- 2-second rainbow cycle
+        if hue >= 1 then
+            hue = 0
+        end
+        local color = Color3.fromHSV(hue, 1, 1)  -- Full saturation and value
+        watermark.TextColor3 = color
+        wait(1 / 60)  -- Smooth transition at 60 frames per second
+    end
+end
+
+local function calculateFPS()
+    local frames = 0
+    game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
+        frames = frames + 1
+        if frames >= 30 then
+            fps = math.floor(1 / deltaTime)
+            fpsFloor = math.floor(fps)
+            frames = 0
+        end
+    end)
+end
+
+local function optimizeGraphics(enable)
+    if enable then
+        local lighting = game:GetService("Lighting")
+        lighting.GlobalShadows = false
+        lighting.FogEnd = 9e9
+        lighting.Brightness = 0
+        lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
+
+        settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+        settings().Rendering.FrameSkipLevel = 0
+        settings().Rendering.EnableFRM = true
+        settings().Rendering.ShadowLevel = 0
+    else
+        local lighting = game:GetService("Lighting")
+        lighting.GlobalShadows = true
+        lighting.Brightness = 2
+        lighting.FogEnd = 100000
+        lighting.OutdoorAmbient = Color3.fromRGB(255, 255, 255)
+
+        settings().Rendering.QualityLevel = Enum.QualityLevel.Automatic
+        settings().Rendering.ShadowLevel = 1
+    end
+end
+
+local function applySkibidiMode()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+
+    for _, item in pairs(character:GetChildren()) do
+        if item:IsA("Shirt") or item:IsA("Pants") or item:IsA("Accessory") then
+            item:Destroy()
+        end
+    end
+
+    for _, obj in pairs(workspace:GetDescendants()) do
+        if obj:IsA("BasePart") then
+            obj.Material = Enum.Material.Plastic
+        end
+    end
+end
+
+local function applyRageMode()
+    local lighting = game:GetService("Lighting")
+
+    lighting.GlobalShadows = false
+    settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+    settings().Rendering.ShadowLevel = 0
+    settings().Rendering.UseHighQualityDOF = false
+
+    for _, obj in pairs(workspace:GetDescendants()) do
+        if obj:IsA("ParticleEmitter") or obj:IsA("Trail") or obj:IsA("Smoke") or obj:IsA("Fire") or obj:IsA("Sparkles") then
+            obj:Destroy()
+        end
+    end
+end
+
+local function applyFpsMode(mode)
+    if mode == "Skibidi" then
+        applySkibidiMode()
+        optimizeGraphics(true)
+    elseif mode == "Rage" then
+        applyRageMode()
+        optimizeGraphics(true)
+    else
+        print("Invalid mode selected")
+    end
+end
+
+applyFpsMode(fpsmode)
+
+calculateFPS()
+
+spawn(updateWatermark)  -- Ensure watermark updates
+spawn(rainbowText)      -- Start rainbow text effect
