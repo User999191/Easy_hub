@@ -1,6 +1,6 @@
 local fpsmode = "Skibidi"
 local fps = 10000
-local fpsFloor = 5000
+local fpsFloor = 10000
 
 local player = game.Players.LocalPlayer
 local camera = game.Workspace.CurrentCamera
@@ -19,6 +19,7 @@ watermark.TextStrokeTransparency = 0
 watermark.TextStrokeColor3 = Color3.new(0, 0, 0)
 watermark.TextColor3 = Color3.new(1, 1, 1) -- Set initial text color to white
 
+-- Update watermark text with current time
 local function updateWatermark()
     while true do
         local time = os.date("%H:%M:%S")
@@ -27,6 +28,7 @@ local function updateWatermark()
     end
 end
 
+-- Rainbow text effect
 local function rainbowText()
     local hue = 0
     while true do
@@ -40,6 +42,7 @@ local function rainbowText()
     end
 end
 
+-- Calculate FPS
 local function calculateFPS()
     local frames = 0
     game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
@@ -52,9 +55,10 @@ local function calculateFPS()
     end)
 end
 
+-- Optimize graphics settings
 local function optimizeGraphics(enable)
+    local lighting = game:GetService("Lighting")
     if enable then
-        local lighting = game:GetService("Lighting")
         lighting.GlobalShadows = false
         lighting.FogEnd = 9e9
         lighting.Brightness = 0
@@ -64,7 +68,6 @@ local function optimizeGraphics(enable)
         settings().Rendering.EnableFRM = true
         settings().Rendering.ShadowLevel = 0
     else
-        local lighting = game:GetService("Lighting")
         lighting.GlobalShadows = true
         lighting.Brightness = 2
         lighting.FogEnd = 100000
@@ -74,6 +77,7 @@ local function optimizeGraphics(enable)
     end
 end
 
+-- Remove character accessories
 local function removeCharacterAccessories(character)
     for _, item in pairs(character:GetChildren()) do
         if item:IsA("Shirt") or item:IsA("Pants") or item:IsA("Accessory") or item:IsA("Hair") then
@@ -82,6 +86,7 @@ local function removeCharacterAccessories(character)
     end
 end
 
+-- Apply Skibidi mode
 local function applySkibidiMode()
     local character = player.Character or player.CharacterAdded:Wait()
     removeCharacterAccessories(character)
@@ -92,6 +97,7 @@ local function applySkibidiMode()
     end
 end
 
+-- Apply Rage mode
 local function applyRageMode()
     local lighting = game:GetService("Lighting")
     lighting.GlobalShadows = false
@@ -105,6 +111,7 @@ local function applyRageMode()
     end
 end
 
+-- Apply FPS mode based on the selected mode
 local function applyFpsMode(mode)
     if mode == "Skibidi" then
         applySkibidiMode()
@@ -135,6 +142,7 @@ local function onCharacterAdded(character)
     end)
 end
 
+-- Connect to the CharacterAdded event
 player.CharacterAdded:Connect(onCharacterAdded)
 
 local function smoothCameraMovement()
@@ -144,7 +152,7 @@ local function smoothCameraMovement()
     runService.RenderStepped:Connect(function()
         if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
             local targetPosition = player.Character.HumanoidRootPart.Position + Vector3.new(0, 2, 5)
-            camera.CFrame = camera.CFrame:Lerp(CFrame.new(targetPosition), 0.05) -- Increased smoothness
+            camera.CFrame = camera.CFrame:Lerp(CFrame.new(targetPosition), 0.1) -- Adjust the smoothness factor
         end
     end)
 end
