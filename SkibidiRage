@@ -86,15 +86,6 @@ local function removeCharacterAccessories(character)
     end
 end
 
--- Remove all MeshParts from the workspace
-local function removeMeshParts()
-    for _, obj in pairs(workspace:GetDescendants()) do
-        if obj:IsA("MeshPart") then
-            obj:Destroy()
-        end
-    end
-end
-
 -- Apply Skibidi mode
 local function applySkibidiMode()
     local character = player.Character or player.CharacterAdded:Wait()
