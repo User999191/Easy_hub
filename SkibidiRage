@@ -1,6 +1,6 @@
 local fpsmode = "Skibidi"
-local fps = 5000
-local fpsFloor = 4000
+local fps = 10000
+local fpsFloor = 5000
 
 local player = game.Players.LocalPlayer
 local camera = game.Workspace.CurrentCamera
@@ -17,6 +17,7 @@ watermark.TextScaled = true
 watermark.Font = Enum.Font.SourceSansBold
 watermark.TextStrokeTransparency = 0
 watermark.TextStrokeColor3 = Color3.new(0, 0, 0)
+watermark.TextColor3 = Color3.new(1, 1, 1) -- Set initial text color to white
 
 local function updateWatermark()
     while true do
@@ -86,8 +87,7 @@ local function applySkibidiMode()
     removeCharacterAccessories(character)
     for _, obj in pairs(workspace:GetDescendants()) do
         if obj:IsA("BasePart") then
-            local materials = {Enum.Material.Wood, Enum.Material.SmoothPlastic, Enum.Material.Concrete, Enum.Material.Sand, Enum.Material.WoodPlanks}
-            obj.Material = materials[math.random(1, #materials)]
+            obj.Material = Enum.Material.SmoothPlastic -- Set all parts to SmoothPlastic
         end
     end
 end
@@ -124,23 +124,34 @@ calculateFPS()
 spawn(updateWatermark)
 spawn(rainbowText)
 
-player.CharacterAdded:Connect(function(character)
-    wait(1)
+local function onCharacterAdded(character)
+    wait(1) -- Wait for the character to fully load
     removeCharacterAccessories(character)
     applyFpsMode(fpsmode)
-end)
+
+    character:WaitForChild("Humanoid").Died:Connect(function()
+        wait(1) -- Delay to allow respawn
+        removeCharacterAccessories(character)
+    end)
+end
+
+player.CharacterAdded:Connect(onCharacterAdded)
 
 local function smoothCameraMovement()
     local runService = game:GetService("RunService")
-    local player = game.Players.LocalPlayer
     local camera = game.Workspace.CurrentCamera
 
     runService.RenderStepped:Connect(function()
         if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
             local targetPosition = player.Character.HumanoidRootPart.Position + Vector3.new(0, 2, 5)
-            camera.CFrame = camera.CFrame:Lerp(CFrame.new(targetPosition), 0.1)
+            camera.CFrame = camera.CFrame:Lerp(CFrame.new(targetPosition), 0.05) -- Increased smoothness
         end
     end)
 end
 
 smoothCameraMovement()
+
+-- Initial call to handle the current character if it exists
+if player.Character then
+    onCharacterAdded(player.Character)
+end
